@@ -36,9 +36,9 @@ new_activity = send_discord = welcome = False
 
 ###vars
 check_interval_minutes = 10
-check_interval = check_interval_minutes*60*60
-status_interval_minutes = 60
-status_interval = status_interval_minutes*60*60
+check_interval = check_interval_minutes*60
+status_interval_minutes = 55
+status_interval = status_interval_minutes*60
 niceNum = .00000001
 activity_data = ''
 activity_cursor = ''
@@ -117,7 +117,7 @@ if bool(activity['data']):
 elif 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
-    print('Nothing new. Quietly Quiting. Will try again Later')
+    print('Nothing new. Quietly Quiting. Will try again Later 🤙')
     quit()
 else:
     #get activity using cursor
