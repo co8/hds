@@ -8,6 +8,7 @@
 ############################
 
 ####import libs
+from time import time
 import requests
 import json
 from datetime import datetime
@@ -19,17 +20,22 @@ with open("config.json") as json_data_file:
 
 ###dictionary
 hs = {} #main
-new_activity = False
+new_activity = send_discord = welcome = False
 
 ###vars
+check_interval_minutes = 10
+check_interval = check_interval_minutes*60*60
+status_interval_minutes = 60
+status_interval = status_interval_minutes*60*60
 niceNum = .00000001
+activity_data = ''
 activity_cursor = ''
 discord_content = ''
 api_endpoint = 'https://api.helium.io/v1/'
 
 ###functions
 def NiceName(name):
-    return name.replace('-', ' ').title()
+    return name.replace('-', ' ').title().upper()
 
 def NameInitials(name):
     nicename = NiceName(name)
@@ -38,7 +44,7 @@ def NameInitials(name):
 def NiceBalance(balance):
     intbal = int(balance)
     bal = str(round(intbal*niceNum, 2))
-    return str(bal)+" HNT"
+    return str(bal) +" 🌮"
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
@@ -56,10 +62,11 @@ hs = {
     'height' : hotspot_response['data']['status']['height'],
     'block' : hotspot_response['data']['block'],
     'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
-    #'last_time' : 0,
+    #'activity_last_time' : 0,
     'rewards' : []
 }
 hs['rewards'] = {'amount_nice': NiceBalance(0)}
+del hotspot_request, hotspot_response
 
 ###add owner to config
 if 'owner' not in config:
@@ -73,71 +80,97 @@ hs['height_percentage'] = str(round(hs['height'] / hs['block'] * 100, 3)) +'%'
 wallet_request = requests.get(api_endpoint +"accounts/"+ hs['owner'])
 w = wallet_request.json()
 hs['balance'] = NiceBalance(w['data']['balance'])
+del wallet_request, w
 
 #### New User Welcome
-if 'last_time' not in config:
+if 'activity_last_time' not in config:
     print('Adding Welcome msg')
-    discord_content += '🤙 Status for '+ hs['name'] +' aka '+ hs['initials'] +'\n'
+    send_discord = welcome = True
+    discord_content += '🤙 '+ hs['name'] +' ('+ hs['initials'] +') 📡\n'
 
     
 ###activity data
 activity_endpoint = api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
 #get fresh activity
-activity_cursor_request = requests.get(activity_endpoint)
-activity = activity_cursor_request.json() 
+activity_request = requests.get(activity_endpoint)
+activity = activity_request.json() 
+del activity_request
+
 
 if bool(activity['data']):
+    #if data in first request, use that new data
     print('have fresh activity data')
-    activity_data = activity['data']
+    activity_data = activity['data'][0]
+    send_discord = True
 else:
     #get activity using cursor
     print('getting activity with cursor') 
     config['activity_cursor'] = activity['cursor']
-    activity_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
-    activity = activity_request.json()
-    activity_data = activity['data']
+    activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
+    activity = activity_cursor_request.json()
+    activity_data = activity['data'][0]
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
     UpdateConfig(config)
+    del activity_cursor_request
+del activity
 
+#######################################################
 ### check for new activity 
 #get hs.last_time from activity_data
-hs['last_time'] = activity['data'][0]['time']
+hs['activity_last_time'] = activity_data['time']
 #check for config.last_time
-if 'last_time' not in config:
-    config['last_time'] = 0
-
+if 'activity_last_time' not in config:
+    config['activity_last_time'] = 0
+#######################################################
 
 #get rewards for activity if exists
-if 'rewards' in activity['data'][0]:
+if 'rewards' in activity_data:
     print('YES rewards in actvity')
-    hs_rewards = activity['data'][0]['rewards'][0]
-    hs_rewards['time'] = activity['data'][0]['time']
-    hs_rewards['amount_nice'] = NiceBalance(activity['data'][0]['rewards'][0]['amount'])
-    hs['rewards'] = hs_rewards
+    hs_rewards = activity_data['rewards'][0]
+    hs_rewards['time'] = activity_data['time']
+    hs_rewards['amount_nice'] = NiceBalance(hs_rewards['amount'])
+    hs['rewards'] = hs_rewards # add into hs
+    del hs_rewards
 else:
     print('no rewards in actvity')
 
 #compare config.last_time to hs.last_time
-#print(config['last_time'], type(config['last_time']), hs['last_time'], type(hs['last_time']))
-#exit()
-if config['last_time'] == hs['last_time']:
+if config['activity_last_time'] == hs['activity_last_time']:
     #new_activity = False
     print('last_times are equal. no new activity')
 else:
     print('New Activity. last_times are NOT equal')
     new_activity = True
     #set last_time in config
-    config['last_time'] = hs['last_time'] = activity_data[0]['time']
-    config['last_type'] = hs['last_type'] = activity_data[0]['type']
+    config['activity_last_time'] = hs['activity_last_time'] = activity_data['time']
+    config['activity_last_type'] = hs['activity_last_type'] = activity_data['type']
     #write to config
     print('writing new activity last_type and last_time to config')
     UpdateConfig(config)
 
 ###get timestamp NOW
 now = datetime.now()
-current_time = now.strftime("%D %H:%M")
-hs['time'] = current_time
+hs['now'] = round(datetime.timestamp(now))
+hs['time'] = now.strftime("%D %H:%M")
+del now
+
+#######################################################
+### Send Status if no new activity, but >60min since last msg sent
+####
+# time since last sent?
+minutes = 0
+if 'status_last_sent' in config:
+    total_seconds = (hs['now'] - config['status_last_sent'])
+    minutes = round(total_seconds/60)
+    #exit()
+else:
+    config['status_last_sent'] = hs['now']
+
+if minutes >= 60:
+    send_discord = True
+print('Time since last status: '+ str(minutes))
+#######################################################
 
 ###discord - create content msg
 #default msg
@@ -146,16 +179,28 @@ discord_content += '📡 '+ hs['initials'] +' Status: '+ hs['status'] +' / Heigh
 #new msg if new activity
 if bool(new_activity):
     print('adding new activity msg')
-    activity_time = str(datetime.fromtimestamp(hs['last_time']))
-    discord_content += '🚀 '+ hs['initials'] +' Activity: '+ str(config['last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +') '+ activity_time
+    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %m/%d")
+    #for first status msg
+    if bool(welcome):
+        discord_content += 'Last '
+    else:
+        discord_content += '🚀 '
+    discord_content += hs['initials'] +' Activity: '+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +') '+ activity_time
 
-
+print('welcome: '+ str(welcome))
+print('new_activity: '+ str(new_activity))
+print('send discord: '+ str(send_discord))
 print(discord_content)
-#print(hs)
+#print(config)
 exit()
 
 ###discord send###
-webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
-webhook_response = webhook.execute()
-print(webhook_response)
-hs = {} #main
+if bool(send_discord):
+    webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
+    webhook_response = webhook.execute()
+    print(webhook_response)
+    del webhook, webhook_response
+
+### clean up
+UpdateConfig(config)
+del hs,config 
