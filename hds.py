@@ -7,6 +7,12 @@
 # Helium Hotspot Discord Status
 ############################
 
+########
+# crontab -e
+# check every 5 minutes
+# */5 * * * * cd /home/pi/hds; /usr/bin/python3 hds.py  >> ~/cron.log 2>&1
+########
+
 ####import libs
 from time import time
 import requests
@@ -102,6 +108,10 @@ if bool(activity['data']):
     print('have fresh activity data')
     activity_data = activity['data'][0]
     send_discord = True
+else 'status_last_sent' in config: 
+    # quit and done until next check. 
+    # don't get activity if sent activity and no new data
+    quit()
 else:
     #get activity using cursor
     print('getting activity with cursor') 
