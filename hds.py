@@ -2,7 +2,10 @@
 
 ############################
 # 07/04/21 JULY
-# co8.com
+# co8.com 
+# enrique r grullon
+# e@co8.com
+# discord: co8#1934 
 # HDS
 # Helium Hotspot Discord Status
 ############################
@@ -11,6 +14,9 @@
 # crontab -e
 # check every 5 minutes
 # */5 * * * * cd /home/pi/hds; /usr/bin/python3 hds.py  >> ~/cron.log 2>&1
+###
+# install DiscordWebhook module
+# % pip3 install discord-webhook
 ########
 
 ####import libs
@@ -111,6 +117,7 @@ if bool(activity['data']):
 elif 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
+    print('Nothing new. Quietly Quiting. Will try again Later')
     quit()
 else:
     #get activity using cursor
