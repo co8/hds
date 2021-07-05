@@ -197,7 +197,7 @@ print('send discord: '+ str(send_discord))
 testSend = True
 
 ###discord send###
-if bool(send_discord) or bool(testSend):
+if bool(testSend) or bool(send_discord):
     if bool(testSend):
         discord_content = 'welcome: '+ str(welcome) +' new_activity: '+ str(new_activity) +' send discord: '+ str(send_discord)
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
