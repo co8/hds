@@ -197,17 +197,9 @@ if bool(new_activity):
         discord_content += '🚀 '
     discord_content += hs['initials'] +' Activity: '+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +') '+ activity_time
 
-print('welcome: '+ str(welcome))
-print('new_activity: '+ str(new_activity))
-print('send discord: '+ str(send_discord))
-#print(discord_content)
-#print(config)
-#exit()
 
 ###discord send###
-if bool(testSend) or bool(send_discord):
-    if bool(testSend):
-        discord_content += 'welcome: '+ str(welcome) +' new_activity: '+ str(new_activity) +' send discord: '+ str(send_discord)
+if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
     print(webhook_response)
