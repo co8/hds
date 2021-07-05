@@ -1,1 +1,4 @@
-{"hotspot": "HOTSPOT_ADDRESS_HERE", "discord_webhook": "WEBHOOK_HERE"}
+{
+    "hotspot": "HOTSPOT_ADDRESS_HERE", 
+    "discord_webhook": "WEBHOOK_HERE"
+}
