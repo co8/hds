@@ -108,7 +108,7 @@ if bool(activity['data']):
     print('have fresh activity data')
     activity_data = activity['data'][0]
     send_discord = True
-else 'status_last_sent' in config: 
+else if 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
     quit()
