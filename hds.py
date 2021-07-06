@@ -13,7 +13,7 @@
 ########
 # crontab -e
 # check every 5 minutes
-# */5 * * * * cd /home/pi/hds; /usr/bin/python3 hds.py  >> ~/cron.log 2>&1
+# */5 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 ###
 # install DiscordWebhook module
 # % pip3 install discord-webhook
@@ -37,7 +37,7 @@ new_activity = send_discord = welcome = False
 ###vars
 check_interval_minutes = 10
 check_interval = check_interval_minutes*60
-status_interval_minutes = 55
+status_interval_minutes = 58
 status_interval = status_interval_minutes*60
 niceNum = .00000001
 activity_data = ''
@@ -88,7 +88,6 @@ del now
 ###add owner to config
 if 'owner' not in config:
     config['owner'] = hs['owner']
-    UpdateConfig(config)
 
 hs['initials'] = NameInitials(hs['name'])
 hs['height_percentage'] = str(round(hs['height'] / hs['block'] * 100, 3)) +'%'
@@ -113,13 +112,27 @@ activity_request = requests.get(activity_endpoint)
 activity = activity_request.json() 
 del activity_request
 
+#######################################################
+### Send Status if no new activity, but >60min since last msg sent
+####
+# time since last sent?
+minutes = 0
+if 'status_last_sent' in config:
+    total_seconds = (hs['now'] - config['status_last_sent'])
+    minutes = round(total_seconds/60)
+
+
+if minutes >= 60:
+    send_discord = True
+print('Time since last status: '+ str(minutes))
+#######################################################
 
 if bool(activity['data']):
     #if data in first request, use that new data
     print('have fresh activity data')
     activity_data = activity['data'][0]
     send_discord = True
-elif 'status_last_sent' in config: 
+elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
     print(hs['time'] +' Nothing new. Quietly Quiting. Will try again Later 🤙')
@@ -171,22 +184,6 @@ else:
     print('writing new activity last_type and last_time to config')
     UpdateConfig(config)
 
-#######################################################
-### Send Status if no new activity, but >60min since last msg sent
-####
-# time since last sent?
-minutes = 0
-if 'status_last_sent' in config:
-    total_seconds = (hs['now'] - config['status_last_sent'])
-    minutes = round(total_seconds/60)
-    #exit()
-else:
-    config['status_last_sent'] = hs['now']
-
-if minutes >= 60:
-    send_discord = True
-print('Time since last status: '+ str(minutes))
-#######################################################
 
 ###discord - create content msg
 #default msg
@@ -206,6 +203,7 @@ if bool(new_activity):
 
 ###discord send###
 if bool(send_discord):
+    config['status_last_sent'] = hs['now']
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
     print(webhook_response)
