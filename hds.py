@@ -96,7 +96,7 @@ hs['balance'] = NiceBalance(w['data']['balance'])
 del wallet_request, w
 
 #### New User Welcome
-if 'activity_last_time' not in config:
+if 'status_last_sent' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
     discord_content += '🤙 '+ hs['name'] +' ('+ hs['initials'] +') 📡\n'
@@ -172,7 +172,7 @@ if config['activity_last_time'] == hs['activity_last_time']:
     #new_activity = False
     print('last_times are equal. no new activity')
 else:
-    print('New Activity. last_times are NOT equal')
+    print('New Activity. activity_last_times are NOT equal')
     new_activity = True
     #set last_time in config
     config['activity_last_time'] = hs['activity_last_time'] = activity_data['time']
@@ -196,7 +196,7 @@ if bool(new_activity):
         discord_content += 'Last '
     else:
         discord_content += '🚀 '
-    discord_content += hs['initials'] +' Activity: '+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +') '+ activity_time
+    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +'**, '+ hs['rewards']['amount_nice'] +' ('+ activity_time +')'
 
 #print(send_discord)
 #exit()
