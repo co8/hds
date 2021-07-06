@@ -35,10 +35,7 @@ hs = {} #main
 new_activity = send_discord = welcome = False
 
 ###vars
-check_interval_minutes = 10
-check_interval = check_interval_minutes*60
 status_interval_minutes = 58
-status_interval = status_interval_minutes*60
 niceNum = .00000001
 activity_data = ''
 activity_cursor = ''
@@ -122,7 +119,7 @@ if 'status_last_sent' in config:
     minutes = round(total_seconds/60)
 
 
-if minutes >= 60:
+if minutes >= status_interval_minutes:
     send_discord = True
 print('Time since last status: '+ str(minutes))
 #######################################################
