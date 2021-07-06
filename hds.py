@@ -184,7 +184,7 @@ else:
 
 ###discord - create content msg
 #default msg
-discord_content += '📡 '+ hs['initials'] +' 🔥 '+ hs['status'] +' / 🛢 '+ hs['height_percentage'] +' / 🍕 '+ hs['reward_scale'] +' / 💰 '+ hs['balance']
+discord_content += '📡 '+ hs['initials'] +'   🔥 '+ hs['status'] +'   📦 '+ hs['height_percentage'] +'   🍕 '+ hs['reward_scale'] +'   💰   '+ hs['balance']
 
 #new msg if new activity
 if bool(new_activity):
