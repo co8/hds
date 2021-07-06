@@ -191,6 +191,7 @@ if bool(new_activity):
     print('adding new activity msg')
     activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %m/%d")
     #for first status msg
+    discord_content += '\n'
     if bool(welcome):
         discord_content += 'Last '
     else:
