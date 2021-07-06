@@ -53,11 +53,11 @@ def NameInitials(name):
 def NiceBalance(balance):
     intbal = int(balance)
     bal = str(round(intbal*niceNum, 2))
-    return str(bal) +" 🦴🦴"
+    return str(bal) +" 🥓"
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
-        json.dump(config, outfile)
+        json.dump(config, outfile
 
 
 ###hotspot data
@@ -82,15 +82,15 @@ hs['now'] = round(datetime.timestamp(now))
 hs['time'] = str(now.strftime("%D %H:%M"))
 del now
 
-###add owner to config
-if 'owner' not in config:
-    config['owner'] = hs['owner']
-
 hs['initials'] = NameInitials(hs['name'])
 hs['height_percentage'] = str(round(hs['height'] / hs['block'] * 100, 3)) +'%'
 
+###add owner to config
+if 'owner' not in config:
+    config['owner'] = hs['owner']
+    
 ###wallet data
-wallet_request = requests.get(api_endpoint +"accounts/"+ hs['owner'])
+wallet_request = requests.get(api_endpoint +"accounts/"+ config['owner'])
 w = wallet_request.json()
 hs['balance'] = NiceBalance(w['data']['balance'])
 del wallet_request, w
@@ -184,7 +184,7 @@ else:
 
 ###discord - create content msg
 #default msg
-discord_content += '📡 '+ hs['initials'] +' Status: '+ hs['status'] +' / Height: '+ hs['height_percentage'] +' / Scale: '+ hs['reward_scale'] +'\n💰 Wallet: '+ hs['balance'] +'\n'
+discord_content += '📡 '+ hs['initials'] +' 🔥 '+ hs['status'] +' / 🛢 '+ hs['height_percentage'] +' / 🍕 '+ hs['reward_scale'] +' / 💰 '+ hs['balance']
 
 #new msg if new activity
 if bool(new_activity):
