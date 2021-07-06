@@ -53,7 +53,7 @@ def NameInitials(name):
 def NiceBalance(balance):
     intbal = int(balance)
     bal = str(round(intbal*niceNum, 2))
-    return str(bal) +" 🌮"
+    return str(bal) +" 🦴🦴"
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
