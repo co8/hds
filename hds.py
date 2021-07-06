@@ -200,12 +200,13 @@ if bool(new_activity):
 
 ###discord send###
 if bool(send_discord):
-    config['status_last_sent'] = hs['now']
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
     print(webhook_response)
     del webhook, webhook_response
+    ###update config
+    config['status_last_sent'] = hs['now']
+    UpdateConfig(config)
 
 ### clean up
-UpdateConfig(config)
 del hs,config 
