@@ -175,6 +175,7 @@ else:
 if config['activity_last_time'] == hs['activity_last_time']:
     #new_activity = False
     print('last_times are equal. no new activity')
+    send_discord = False
 else:
     print('New Activity. activity_last_times are NOT equal')
     new_activity = True
