@@ -188,19 +188,19 @@ else:
 
 ###discord - create content msg
 #default msg
-discord_content += '📡  **'+ hs['initials'] +'**   🔥  '+ hs['status'] +'   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓 '+ hs['balance']
+discord_content += '📡  **'+ hs['initials'] +'  🔥  '+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓 '+ hs['balance']
 
 #new msg if new activity
 if bool(new_activity):
     print('adding new activity msg')
-    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d.%b")
+    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %b.%d").upper()
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
         discord_content += 'Last '
     else:
         discord_content += '🚀 '
-    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +'🥓)** '+ activity_time
+    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
 #print(send_discord)
 #exit()
