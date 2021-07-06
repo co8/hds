@@ -197,6 +197,8 @@ if bool(new_activity):
         discord_content += '🚀 '
     discord_content += hs['initials'] +' Activity: '+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +') '+ activity_time
 
+#print(send_discord)
+#exit()
 
 ###discord send###
 if bool(send_discord):
