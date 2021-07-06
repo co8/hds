@@ -54,7 +54,7 @@ def NiceBalance(balance):
     intbal = int(balance)
     bal = '{:.2f}'.format(round(intbal*niceNum, 2))
     #bal = str(round(intbal*niceNum, 2))
-    return str(bal) +" 🥓"
+    return str(bal)
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
@@ -100,7 +100,7 @@ del wallet_request, w
 if 'status_last_sent' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
-    discord_content += '🤙 **'+ hs['name'] +'aka '+ hs['initials'] +'** 📡\n'
+    discord_content += '🤙 '+ hs['name'] +'  🪄   **'+ hs['initials'] +'**\n'
 
     
 ###activity data
@@ -185,7 +185,7 @@ else:
 
 ###discord - create content msg
 #default msg
-discord_content += '📡 **'+ hs['initials'] +'**   🔥 '+ hs['status'] +'   📦 '+ hs['height_percentage'] +'   🍕 '+ hs['reward_scale'] +'   💰   '+ hs['balance']
+discord_content += '📡  **'+ hs['initials'] +'**   🔥  '+ hs['status'] +'   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓 '+ hs['balance']
 
 #new msg if new activity
 if bool(new_activity):
@@ -197,7 +197,7 @@ if bool(new_activity):
         discord_content += 'Last '
     else:
         discord_content += '🚀 '
-    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +')** '+ activity_time
+    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' ('+ hs['rewards']['amount_nice'] +'🥓)** '+ activity_time
 
 #print(send_discord)
 #exit()
