@@ -44,7 +44,7 @@ api_endpoint = 'https://api.helium.io/v1/'
 
 ###functions
 def NiceName(name):
-    return name.replace('-', ' ').title()
+    return name.replace('-', ' ').upper()
 
 def NameInitials(name):
     nicename = NiceName(name)
