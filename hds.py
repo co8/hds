@@ -63,7 +63,6 @@ def UpdateConfig(config):
         json.dump(config, outfile)
 
 
-
 ###hotspot data
 hotspot_request = requests.get(api_endpoint +"hotspots/"+ config['hotspot'])
 hotspot_response = hotspot_request.json()
@@ -79,6 +78,12 @@ hs = {
 }
 hs['rewards'] = {'amount_nice': NiceBalance(0)}
 del hotspot_request, hotspot_response
+
+### get NOW
+now = datetime.now()
+hs['now'] = round(datetime.timestamp(now))
+hs['time'] = str(now.strftime("%D %H:%M"))
+del now
 
 ###add owner to config
 if 'owner' not in config:
@@ -117,7 +122,7 @@ if bool(activity['data']):
 elif 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
-    print('Nothing new. Quietly Quiting. Will try again Later 🤙')
+    print(hs['time'] +' Nothing new. Quietly Quiting. Will try again Later 🤙')
     quit()
 else:
     #get activity using cursor
@@ -165,12 +170,6 @@ else:
     #write to config
     print('writing new activity last_type and last_time to config')
     UpdateConfig(config)
-
-###get timestamp NOW
-now = datetime.now()
-hs['now'] = round(datetime.timestamp(now))
-hs['time'] = now.strftime("%D %H:%M")
-del now
 
 #######################################################
 ### Send Status if no new activity, but >60min since last msg sent
