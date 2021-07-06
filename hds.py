@@ -193,7 +193,7 @@ discord_content += '📡  **'+ hs['initials'] +'**   🔥  '+ hs['status'] +'   
 #new msg if new activity
 if bool(new_activity):
     print('adding new activity msg')
-    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %m/%d")
+    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d.%b")
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
@@ -216,4 +216,4 @@ if bool(send_discord):
     UpdateConfig(config)
 
 ### clean up
-del hs,config 
+del hs,config
