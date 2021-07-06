@@ -12,7 +12,7 @@
 
 ########
 # crontab -e
-# check every 5 minutes
+# check every 5 minutes. log to file
 # */5 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 ###
 # install DiscordWebhook module
@@ -57,7 +57,7 @@ def NiceBalance(balance):
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
-        json.dump(config, outfile
+        json.dump(config, outfile)
 
 
 ###hotspot data
