@@ -100,7 +100,7 @@ del wallet_request, w
 if 'status_last_sent' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
-    discord_content += '🤙 **'+ hs['name'] +'** ( '+ hs['initials'] +' ) 📡\n'
+    discord_content += '🤙 **'+ hs['name'] +'aka '+ hs['initials'] +'** 📡\n'
 
     
 ###activity data
