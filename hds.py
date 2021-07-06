@@ -44,7 +44,7 @@ api_endpoint = 'https://api.helium.io/v1/'
 
 ###functions
 def NiceName(name):
-    return name.replace('-', ' ').title().upper()
+    return name.replace('-', ' ').title()
 
 def NameInitials(name):
     nicename = NiceName(name)
@@ -52,7 +52,8 @@ def NameInitials(name):
 
 def NiceBalance(balance):
     intbal = int(balance)
-    bal = str(round(intbal*niceNum, 2))
+    bal = '{:.2f}'.format(round(intbal*niceNum, 2))
+    #bal = str(round(intbal*niceNum, 2))
     return str(bal) +" 🥓"
 
 def UpdateConfig(config):
@@ -99,7 +100,7 @@ del wallet_request, w
 if 'status_last_sent' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
-    discord_content += '🤙 '+ hs['name'] +' ('+ hs['initials'] +') 📡\n'
+    discord_content += '🤙 **'+ hs['name'] +'** ( '+ hs['initials'] +' ) 📡\n'
 
     
 ###activity data
