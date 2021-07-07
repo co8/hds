@@ -208,6 +208,7 @@ else:
 discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓  '+ hs['balance']
 
 if bool(new_activity):
+    send_discord = True
     print('adding new activity msg')
     activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %b.%d").upper()
     #for first status msg
