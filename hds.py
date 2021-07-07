@@ -35,11 +35,12 @@ with open("config.json") as json_data_file:
 
 ###dictionary
 hs = {} #main
-new_activity = send_discord = welcome = new_balance = False
+new_activity = send_discord = welcome = new_balance = new_reward_scale = new_height_percentage = False
 
 ###vars
 status_interval_minutes = 58
 niceNum = .00000001
+niceNumSmall = 100000000
 activity_data = ''
 activity_cursor = ''
 discord_content = ''
@@ -54,8 +55,15 @@ def NameInitials(name):
     return "".join(item[0].upper() for item in nicename.split())
 
 def NiceBalance(balance):
-    intbal = int(balance)
-    bal = '{:.2f}'.format(round(intbal*niceNum, 2))
+    bal = '{:.2f}'.format(round(balance*niceNum, 2))
+    #print('*******************')
+   #print('int balance = '+ str(intbal))
+   #print('bal format 1st = '+ str(bal))
+    if balance > 0 and balance < niceNumSmall:
+        bal = '{:.8f}'.format(balance / niceNumSmall)
+        #print(type(bal))
+        #print('bal format 2nd = '+ bal)
+    #print('*******************')
     return str(bal)
 
 def UpdateConfig(config):
@@ -95,11 +103,19 @@ hs = {
     #'activity_last_time' : 0,
     'rewards' : []
 }
-hs['rewards'] = {
-    'new_balance' : new_balance,
-    'amount_nice': NiceBalance(0)
-    }
+hs['initials'] = NameInitials(hs['name'])
+hs['rewards'] = {'new_balance' : new_balance}
 del hotspot_request, hotspot_response
+
+###check for change in reward_scale
+config_reward_scale = ''
+if 'reward_scale_last' in config:
+    config_reward_scale = config['reward_scale_last']
+if hs['reward_scale'] != config_reward_scale:
+    new_reward_scale = True
+    config['reward_scale_last'] = hs['reward_scale']
+    UpdateConfig(config)
+
 
 ### get NOW
 now = datetime.now()
@@ -107,8 +123,16 @@ hs['now'] = round(datetime.timestamp(now))
 hs['time'] = str(now.strftime("%D %H:%M"))
 del now
 
-hs['initials'] = NameInitials(hs['name'])
+###block height percentage
+config_height_percentage = ''
+if 'height_percentage_last' in config:
+    config_height_percentage = config['height_percentage_last']
 hs['height_percentage'] = str(round(hs['height'] / hs['block'] * 100, 3)) +'%'
+#check for change in reward_scale
+if hs['height_percentage'] != config_height_percentage:
+    new_height_percentage = True
+    config['height_percentage_last'] = hs['height_percentage']
+    UpdateConfig(config)
 
 ###add owner to config
 if 'owner' not in config:
@@ -121,9 +145,9 @@ hs['balance'] = NiceBalance(w['data']['balance'])
 if 'balance_last' not in config:
     config['balance_last'] = '0'
 ###add to config if new
-if hs['balance'] > config['balance_last']:
+if hs['balance'] != config['balance_last']:
     new_balance = True
-    print('config.balance_last: '+ str(config['balance_last']) +'\nhs.balance: '+ str(hs['balance']) +'\nnew_balance: '+ str(new_balance))
+    #print('config.balance_last: '+ str(config['balance_last']) +'\nhs.balance: '+ str(hs['balance']) +'\nnew_balance: '+ str(new_balance))
     config['balance_last'] = hs['balance']
     UpdateConfig(config)
 del wallet_request, w
@@ -216,13 +240,21 @@ else:
 
 
 ###discord - create content msg
-### bold balance has increased
-balance_style = hs['balance']
+### bold balance if has changed
+balance_style = '`'+ hs['balance'] +'`'
 if bool(new_balance):
-    balance_style = '🧨**'+ hs['balance'] +'**'
+    balance_style = balance_style +'  👀'
+### bold reward_scale if has changed
+reward_scale_style = hs['reward_scale']
+if bool(new_reward_scale):
+    reward_scale_style = '**'+ reward_scale_style +'**'
+### bold height_percentage if has changed
+height_percentage_style = hs['height_percentage']
+if bool(new_height_percentage):
+    height_percentage_style = '**'+ height_percentage_style +'**'
 
 #default msg
-discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓  '+ balance_style
+discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ height_percentage_style +'   🍕  '+ reward_scale_style +'   🥓 '+ balance_style
 
 if bool(new_activity):
     send_discord = True
@@ -240,8 +272,12 @@ if bool(new_activity):
     #print(hs['rewards'])
     #exit()
     if 'rewards' in hs:
-        if_reward = ' 🥓'+ hs['rewards']['amount_nice']
-    discord_content += hs['initials'] +' Activity: **'+ shortname + if_reward +'**   '+ activity_time
+        if_reward = ' 🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
+        #print('*****************')
+        #print(hs['rewards']['amount'])
+        #print(NiceBalance(hs['rewards']['amount']))
+        #print('*****************')
+    discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +'   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
