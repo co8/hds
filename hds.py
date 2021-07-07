@@ -239,4 +239,5 @@ if bool(send_discord):
     UpdateConfig(config)
 
 ### clean up
+print('************')
 del hs,config
