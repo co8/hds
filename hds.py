@@ -131,6 +131,20 @@ activity_request = requests.get(activity_endpoint)
 activity = activity_request.json() 
 del activity_request
 
+#######################################################
+### Send Status if no new activity, but >60min since last msg sent
+####
+# time since last sent?
+minutes = 0
+if 'status_last_sent' in config:
+    total_seconds = (hs['now'] - config['status_last_sent'])
+    minutes = round(total_seconds/60)
+if minutes >= status_interval_minutes:
+    send_discord = True
+    print('send_discord = True. minutes >= status_interval_minutes')
+    
+print('last status: '+ str(minutes) +'min ago')
+#######################################################
 
 if bool(activity['data']):
     #if data in first request, use that new data
@@ -217,8 +231,6 @@ minutes = 0
 if 'status_last_sent' in config:
     total_seconds = (hs['now'] - config['status_last_sent'])
     minutes = round(total_seconds/60)
-
-
 if minutes >= status_interval_minutes:
     send_discord = True
     print('send_discord = True. minutes >= status_interval_minutes')
