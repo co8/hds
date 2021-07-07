@@ -56,12 +56,28 @@ def NameInitials(name):
 def NiceBalance(balance):
     intbal = int(balance)
     bal = '{:.2f}'.format(round(intbal*niceNum, 2))
-    #bal = str(round(intbal*niceNum, 2))
     return str(bal)
 
 def UpdateConfig(config):
     with open("config.json", "w") as outfile:
         json.dump(config, outfile)
+
+### Activity Short Names
+typeShortNames = {
+    'poc_receipts_v1' : 'PoC',
+    'poc_receipts_v2' : 'PoC',
+    'rewards_v1' : 'Reward',
+    'rewards_v2' : 'Reward',
+    'state_channel_close_v1' : 'Packets',
+    'state_channel_close_v2' : 'Packets'
+}
+def ActivityShortName(type):
+    if type in typeShortNames:
+        output = typeShortNames[type]
+    else:
+        output = type
+    return output
+
 
 
 ###hotspot data
@@ -191,7 +207,6 @@ else:
 #default msg
 discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓  '+ hs['balance']
 
-#new msg if new activity
 if bool(new_activity):
     print('adding new activity msg')
     activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %b.%d").upper()
@@ -201,12 +216,17 @@ if bool(new_activity):
         discord_content += 'Last '
     else:
         discord_content += '🚀 '
-    discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
+
+    
+    shortname = ActivityShortName(str(config['activity_last_type']))
+    discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
+    #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
 #print(send_discord)
 #exit()
 
 ###discord send###
+print('send_discord: '+ str(send_discord))
 if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
