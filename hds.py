@@ -217,7 +217,6 @@ if bool(new_activity):
     else:
         discord_content += '🚀 '
 
-    
     shortname = ActivityShortName(str(config['activity_last_type']))
     discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
