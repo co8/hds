@@ -131,21 +131,6 @@ activity_request = requests.get(activity_endpoint)
 activity = activity_request.json() 
 del activity_request
 
-#######################################################
-### Send Status if no new activity, but >60min since last msg sent
-####
-# time since last sent?
-minutes = 0
-if 'status_last_sent' in config:
-    total_seconds = (hs['now'] - config['status_last_sent'])
-    minutes = round(total_seconds/60)
-
-
-if minutes >= status_interval_minutes:
-    print('minutes more than status_interval_minutes')
-    send_discord = True
-print('last status: '+ str(minutes) +'min ago')
-#######################################################
 
 if bool(activity['data']):
     #if data in first request, use that new data
@@ -224,8 +209,22 @@ if bool(new_activity):
     discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
-#print(send_discord)
-#exit()
+#######################################################
+### Send Status if no new activity, but >60min since last msg sent
+####
+# time since last sent?
+minutes = 0
+if 'status_last_sent' in config:
+    total_seconds = (hs['now'] - config['status_last_sent'])
+    minutes = round(total_seconds/60)
+
+
+if minutes >= status_interval_minutes:
+    send_discord = True
+    print('send_discord = True. minutes >= status_interval_minutes')
+    
+print('last status: '+ str(minutes) +'min ago')
+#######################################################
 
 ###discord send###
 print('send_discord: '+ str(send_discord))
