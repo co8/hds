@@ -35,7 +35,7 @@ with open("config.json") as json_data_file:
 
 ###dictionary
 hs = {} #main
-new_activity = send_discord = welcome = False
+new_activity = send_discord = welcome = new_balance = False
 
 ###vars
 status_interval_minutes = 58
@@ -64,8 +64,8 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC Beacon||Witness',
-    'poc_receipts_v2' : 'PoC Beacon||Witness',
+    'poc_receipts_v1' : 'PoC B||W',
+    'poc_receipts_v2' : 'PoC B||W',
     'poc_request_v1' : 'PoC CHALLENGER',
     'poc_request_v2' : 'PoC CHALLENGER',
     'rewards_v1' : 'REWARD',
@@ -95,7 +95,10 @@ hs = {
     #'activity_last_time' : 0,
     'rewards' : []
 }
-hs['rewards'] = {'amount_nice': NiceBalance(0)}
+hs['rewards'] = {
+    'new_balance' : new_balance,
+    'amount_nice': NiceBalance(0)
+    }
 del hotspot_request, hotspot_response
 
 ### get NOW
@@ -115,6 +118,14 @@ if 'owner' not in config:
 wallet_request = requests.get(api_endpoint +"accounts/"+ config['owner'])
 w = wallet_request.json()
 hs['balance'] = NiceBalance(w['data']['balance'])
+if 'balance_last' not in config:
+    config['balance_last'] = '0'
+###add to config if new
+if hs['balance'] > config['balance_last']:
+    new_balance = True
+    print('config.balance_last: '+ str(config['balance_last']) +'\nhs.balance: '+ str(hs['balance']) +'\nnew_balance: '+ str(new_balance))
+    config['balance_last'] = hs['balance']
+    UpdateConfig(config)
 del wallet_request, w
 
 #### New User Welcome
@@ -205,8 +216,13 @@ else:
 
 
 ###discord - create content msg
+### bold balance has increased
+balance_style = hs['balance']
+if bool(new_balance):
+    balance_style = '🧨**'+ hs['balance'] +'**'
+
 #default msg
-discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓  '+ hs['balance']
+discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ hs['height_percentage'] +'   🍕  '+ hs['reward_scale'] +'   🥓  '+ balance_style
 
 if bool(new_activity):
     send_discord = True
@@ -220,7 +236,13 @@ if bool(new_activity):
         discord_content += '🚀 '
 
     shortname = ActivityShortName(str(config['activity_last_type']))
-    discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
+    if_reward = ''
+    #print(hs['rewards'])
+    #exit()
+    if 'rewards' in hs:
+        if_reward = ' 🥓'+ hs['rewards']['amount_nice']
+    discord_content += hs['initials'] +' Activity: **'+ shortname + if_reward +'**   '+ activity_time
+    #discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
 #######################################################
@@ -240,6 +262,7 @@ print('last status: '+ str(minutes) +'min ago')
 
 ###discord send###
 print('send_discord: '+ str(send_discord))
+print(discord_content)
 if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
