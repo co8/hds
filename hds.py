@@ -297,6 +297,12 @@ print('send_discord: '+ str(send_discord))
 #print(discord_content)
 if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
+    ###create embed object for webhook
+    #embed = DiscordEmbed(title=hs['name'], description='Hotspot Discord Status')
+    #embed.set_timestamp()
+    ####add embed object to webhook
+    #webhook.add_embed(embed)
+    ###send
     webhook_response = webhook.execute()
     print(webhook_response)
     del webhook, webhook_response
