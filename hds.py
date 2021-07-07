@@ -64,18 +64,20 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC',
-    'poc_receipts_v2' : 'PoC',
-    'rewards_v1' : 'Reward',
-    'rewards_v2' : 'Reward',
-    'state_channel_close_v1' : 'Packets',
-    'state_channel_close_v2' : 'Packets'
+    'poc_receipts_v1' : 'PoC Beacon||Witness',
+    'poc_receipts_v2' : 'PoC Beacon||Witness',
+    'poc_request_v1' : 'PoC CHALLENGER',
+    'poc_request_v2' : 'PoC CHALLENGER',
+    'rewards_v1' : 'REWARD',
+    'rewards_v2' : 'REWARD',
+    'state_channel_close_v1' : 'PACKETS',
+    'state_channel_close_v2' : 'PACKETS'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
         output = typeShortNames[type]
     else:
-        output = type
+        output = type.upper()
     return output
 
 
