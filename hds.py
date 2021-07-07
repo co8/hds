@@ -73,13 +73,9 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : 'PoC B||W',
-    'poc_receipts_v2' : 'PoC B||W',
     'poc_request_v1' : 'PoC CHALLENGER',
-    'poc_request_v2' : 'PoC CHALLENGER',
-    'rewards_v1' : 'REWARD',
     'rewards_v2' : 'REWARD',
     'state_channel_close_v1' : 'PACKETS',
-    'state_channel_close_v2' : 'PACKETS'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
@@ -241,9 +237,9 @@ else:
 
 ###discord - create content msg
 ### bold balance if has changed
-balance_style = '`'+ hs['balance'] +'`'
+balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
 if bool(new_balance):
-    balance_style = balance_style +'  👀'
+    balance_style = '✨'+ balance_style
 ### bold reward_scale if has changed
 reward_scale_style = hs['reward_scale']
 if bool(new_reward_scale):
