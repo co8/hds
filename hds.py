@@ -140,6 +140,7 @@ if 'status_last_sent' in config:
 
 
 if minutes >= status_interval_minutes:
+    print('minutes more than status_interval_minutes')
     send_discord = True
 print('Time since last status: '+ str(minutes))
 #######################################################
@@ -189,12 +190,11 @@ else:
 
 #compare config.last_time to hs.last_time
 if config['activity_last_time'] == hs['activity_last_time']:
-    #new_activity = False
+    new_activity = send_discord = False
     print('last_times are equal. no new activity')
-    send_discord = False
 else:
     print('New Activity. activity_last_times are NOT equal')
-    new_activity = True
+    new_activity = send_discord = True
     #set last_time in config
     config['activity_last_time'] = hs['activity_last_time'] = activity_data['time']
     config['activity_last_type'] = hs['activity_last_type'] = activity_data['type']
