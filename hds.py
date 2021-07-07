@@ -262,7 +262,7 @@ print('last status: '+ str(minutes) +'min ago')
 
 ###discord send###
 print('send_discord: '+ str(send_discord))
-print(discord_content)
+#print(discord_content)
 if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
     webhook_response = webhook.execute()
