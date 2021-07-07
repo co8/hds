@@ -144,7 +144,7 @@ if 'status_last_sent' in config:
 if minutes >= status_interval_minutes:
     print('minutes more than status_interval_minutes')
     send_discord = True
-print('last status: '+ str(minutes)) +'min ago'
+print('last status: '+ str(minutes) +'min ago')
 #######################################################
 
 if bool(activity['data']):
