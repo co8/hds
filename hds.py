@@ -56,14 +56,8 @@ def NameInitials(name):
 
 def NiceBalance(balance):
     bal = '{:.3f}'.format(balance*niceNum)
-    #print('*******************')
-    #print('int balance = '+ str(intbal))
-    #print('bal format 1st = '+ str(bal))
     if balance > 0 and balance < 100000 :
         bal = '{:.8f}'.format(balance / niceNumSmall)
-        #print(type(bal))
-        #print('bal format 2nd = '+ bal)
-    #print('*******************')
     return str(bal)
 
 def UpdateConfig(config):
@@ -72,10 +66,10 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC B||W',
-    'poc_request_v1' : 'PoC Challenger',
+    'poc_receipts_v1' : 'PoC 🔈B || 👀W',
+    'poc_request_v1' : 'PoC 🤼 Challenger',
     'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
-    'state_channel_close_v1' : 'Data Packets'
+    'state_channel_close_v1' : '📟 Data Packets'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
@@ -99,10 +93,6 @@ hs = {
 }
 hs['initials'] = NameInitials(hs['name'])
 del hotspot_request, hotspot_response
-
-###add owner to config
-if 'owner' not in config:
-    config['owner'] = hs['owner']
 
 ###check for change in reward_scale
 config_reward_scale = ''
@@ -136,7 +126,7 @@ if hs['height_percentage'] != config_height_percentage:
     UpdateConfig(config)
     
 ###wallet data
-wallet_request = requests.get(api_endpoint +"accounts/"+ config['owner'])
+wallet_request = requests.get(api_endpoint +"accounts/"+ hs['owner'])
 w = wallet_request.json()
 hs['balance'] = NiceBalance(w['data']['balance'])
 if 'balance_last' not in config:
@@ -153,6 +143,7 @@ del wallet_request, w
 if 'owner' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
+    config['owner'] = hs['owner']
     discord_content += '🤙 **'+ hs['name'] +'   [ '+ hs['initials'] +' ]**  🤘\n'
 
     
@@ -182,6 +173,8 @@ if bool(activity['data']):
     #if data in first request, use that new data
     print('have fresh activity data')
     activity_data = activity['data'][0]
+    print('activity_data count: ' + str(len(activity_data)+1))
+    exit()
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
@@ -317,5 +310,6 @@ if bool(send_discord):
     UpdateConfig(config)
 
 ### clean up
+print(hs['time'])
 print('************')
 del hs,config
