@@ -125,8 +125,8 @@ config_height_percentage = ''
 if 'height_percentage_last' in config:
     config_height_percentage = config['height_percentage_last']
 hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 3)
-if(hs['height_percentage'] > 100):
-    hs['height_percentage'] = 100   
+if(hs['height_percentage'] >= 100):
+    hs['height_percentage'] = 100
 hs['height_percentage'] = str(hs['height_percentage']) +'%'
 
 #check for change in reward_scale
