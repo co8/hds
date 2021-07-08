@@ -73,10 +73,9 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : 'PoC B||W',
-    'poc_request_v1' : 'PoC CHALLENGER',
-    'rewards_v2' : 'REWARD',
-    'state_channel_close_v1' : 'PACKETS',
-    'data_credits' : 'data'
+    'poc_request_v1' : 'PoC Challenger',
+    'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
+    'state_channel_close_v1' : 'Data Packets'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
