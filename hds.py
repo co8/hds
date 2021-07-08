@@ -258,7 +258,7 @@ discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '
 if bool(new_activity):
     send_discord = True
     print('adding new activity msg')
-    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %b.%d").upper()
+    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d.%b").upper()
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
@@ -276,7 +276,7 @@ if bool(new_activity):
         #print(hs['rewards']['amount'])
         #print(NiceBalance(hs['rewards']['amount']))
         #print('*****************')
-    discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +'   '+ activity_time
+    discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +' '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
     #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
 
