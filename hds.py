@@ -184,6 +184,7 @@ elif send_discord == False and 'status_last_sent' in config:
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
     print(hs['time'] +' Nothing new. Quietly Quiting. Will try again Later 🤙')
+    print('************')
     quit()
 else:
     #get activity using cursor
@@ -253,7 +254,7 @@ if hs['status'] != 'ONLINE':
     status_style = '**'+ hs['status'] +'**'
 
 #default msg
-discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +'  🍕'+ reward_scale_style +' 🥓'+ balance_style
+discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
 
 if bool(new_activity):
     send_discord = True
