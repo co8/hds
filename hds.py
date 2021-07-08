@@ -242,7 +242,7 @@ else:
 ###discord - create content msg
 ### bold balance if has changed
 #balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
-balance_style = hs['balance'] +' hnt'
+balance_style = hs['balance'] #+' hnt'
 if bool(new_balance):
     balance_style = '**'+ balance_style +'**'
 ### bold reward_scale if has changed
@@ -259,12 +259,12 @@ if hs['status'] != 'ONLINE':
     status_style = '**'+ hs['status'] +'**'
 
 #default msg
-discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
+discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓 '+ balance_style
 
 if bool(new_activity):
     send_discord = True
     print('adding new activity msg')
-    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d.%b").upper()
+    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d/%b").upper()
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
