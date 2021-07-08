@@ -169,12 +169,12 @@ if minutes >= status_interval_minutes:
 print('last status: '+ str(minutes) +'min ago')
 #######################################################
 
+print('activity[data] count: ' + str(len(activity['data'])+1))
+
 if bool(activity['data']):
     #if data in first request, use that new data
     print('have fresh activity data')
     activity_data = activity['data'][0]
-    print('activity_data count: ' + str(len(activity_data)+1))
-    exit()
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
