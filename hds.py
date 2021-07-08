@@ -56,11 +56,10 @@ def NameInitials(name):
 
 def NiceBalance(balance):
     bal = '{:.3f}'.format(balance*niceNum)
-    #bal = '{:.2f}'.format(round(balance*niceNum, 3))
     #print('*******************')
     #print('int balance = '+ str(intbal))
     #print('bal format 1st = '+ str(bal))
-    if balance > 0 and balance < niceNumSmall:
+    if balance > 0 and balance < 100000 :
         bal = '{:.8f}'.format(balance / niceNumSmall)
         #print(type(bal))
         #print('bal format 2nd = '+ bal)
