@@ -77,6 +77,7 @@ typeShortNames = {
     'poc_request_v1' : 'PoC CHALLENGER',
     'rewards_v2' : 'REWARD',
     'state_channel_close_v1' : 'PACKETS',
+    'data_credits' : 'data'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
@@ -209,10 +210,12 @@ if 'activity_last_time' not in config:
 #######################################################
 
 #get rewards for activity if exists
+hs_rewards = {}
 if 'rewards' in activity_data:
     print('YES rewards in actvity')
-    hs_rewards['amount'] = activity_data['rewards'][0]
-    hs_rewards['time'] = activity_data['time']
+    hs_rewards['amount'] = activity_data['rewards'][0]['amount']
+    hs_rewards['type'] = activity_data['rewards'][0]['type']
+    hs_rewards['time'] = activity_data['time']  
     hs_rewards['amount_nice'] = NiceBalance(hs_rewards['amount'])
     hs['rewards'] = hs_rewards # add into hs
     del hs_rewards
@@ -267,20 +270,17 @@ if bool(new_activity):
     else:
         discord_content += '🚀 '
 
-    shortname = ActivityShortName(str(config['activity_last_type']))
+    
     if_reward = ''
-    #print(hs['rewards'])
-    #exit()
     if 'rewards' in hs:
         if_reward = ' 🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
-        #print('*****************')
-        #print(hs['rewards']['amount'])
-        #print(NiceBalance(hs['rewards']['amount']))
-        #print('*****************')
+    ### add reward type
+    shortname = ActivityShortName(str(config['activity_last_type']))
+    #if(hs['rewards']['type']):
+    #       shortname = ActivityShortName(str(config['activity_last_type']))  +' '+ hs['rewards']['type']
     discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +' '+ activity_time
-    #discord_content += hs['initials'] +' Activity: **'+ shortname +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
-    #discord_content += hs['initials'] +' Activity: **'+ str(config['activity_last_type']).upper() +' 🥓'+ hs['rewards']['amount_nice'] +'**   '+ activity_time
-
+    
+    
 #######################################################
 ### Send Status if no new activity, but >60min since last msg sent
 ####
