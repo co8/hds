@@ -251,7 +251,7 @@ if bool(new_height_percentage):
     height_percentage_style = '**'+ height_percentage_style +'**'
 
 #default msg
-discord_content += '📡 '+ hs['initials'] +' 🔥  **'+ hs['status'] +'** 📦  '+ height_percentage_style +'  🍕  '+ reward_scale_style +' 🥓  '+ balance_style
+discord_content += '📡 '+ hs['initials'] +' 🔥 **'+ hs['status'] +'** 📦 '+ height_percentage_style +'  🍕  '+ reward_scale_style +'  🥓  '+ balance_style
 
 if bool(new_activity):
     send_discord = True
