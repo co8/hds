@@ -55,10 +55,11 @@ def NameInitials(name):
     return "".join(item[0].upper() for item in nicename.split())
 
 def NiceBalance(balance):
-    bal = '{:.2f}'.format(round(balance*niceNum, 2))
+    bal = '{:.3f}'.format(balance*niceNum)
+    #bal = '{:.2f}'.format(round(balance*niceNum, 3))
     #print('*******************')
-   #print('int balance = '+ str(intbal))
-   #print('bal format 1st = '+ str(bal))
+    #print('int balance = '+ str(intbal))
+    #print('bal format 1st = '+ str(bal))
     if balance > 0 and balance < niceNumSmall:
         bal = '{:.8f}'.format(balance / niceNumSmall)
         #print(type(bal))
@@ -239,7 +240,7 @@ else:
 ### bold balance if has changed
 balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
 if bool(new_balance):
-    balance_style = '✨'+ balance_style
+    balance_style = balance_style +'✨'
 ### bold reward_scale if has changed
 reward_scale_style = hs['reward_scale']
 if bool(new_reward_scale):
@@ -250,7 +251,7 @@ if bool(new_height_percentage):
     height_percentage_style = '**'+ height_percentage_style +'**'
 
 #default msg
-discord_content += '📡 '+ hs['initials'] +'  🔥  **'+ hs['status'] +'**   📦  '+ height_percentage_style +'   🍕  '+ reward_scale_style +'   🥓 '+ balance_style
+discord_content += '📡 '+ hs['initials'] +' 🔥  **'+ hs['status'] +'** 📦  '+ height_percentage_style +'  🍕  '+ reward_scale_style +' 🥓  '+ balance_style
 
 if bool(new_activity):
     send_discord = True
