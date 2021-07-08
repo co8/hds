@@ -101,6 +101,10 @@ hs = {
 hs['initials'] = NameInitials(hs['name'])
 del hotspot_request, hotspot_response
 
+###add owner to config
+if 'owner' not in config:
+    config['owner'] = hs['owner']
+
 ###check for change in reward_scale
 config_reward_scale = ''
 if 'reward_scale_last' in config:
@@ -127,10 +131,6 @@ if hs['height_percentage'] != config_height_percentage:
     new_height_percentage = True
     config['height_percentage_last'] = hs['height_percentage']
     UpdateConfig(config)
-
-###add owner to config
-if 'owner' not in config:
-    config['owner'] = hs['owner']
     
 ###wallet data
 wallet_request = requests.get(api_endpoint +"accounts/"+ config['owner'])
@@ -235,9 +235,10 @@ else:
 
 ###discord - create content msg
 ### bold balance if has changed
-balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
+#balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
+balance_style = hs['balance'] +' hnt'
 if bool(new_balance):
-    balance_style = balance_style +'✨'
+    balance_style = '**'+ balance_style +'**'
 ### bold reward_scale if has changed
 reward_scale_style = hs['reward_scale']
 if bool(new_reward_scale):
@@ -246,9 +247,13 @@ if bool(new_reward_scale):
 height_percentage_style = hs['height_percentage']
 if bool(new_height_percentage):
     height_percentage_style = '**'+ height_percentage_style +'**'
+### bold status if not online
+status_style = hs['status']
+if hs['status'] != 'ONLINE':
+    status_style = '**'+ hs['status'] +'**'
 
 #default msg
-discord_content += '📡 '+ hs['initials'] +' 🔥 **'+ hs['status'] +'** 📦 '+ height_percentage_style +'  🍕  '+ reward_scale_style +'  🥓  '+ balance_style
+discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +'  🍕'+ reward_scale_style +' 🥓'+ balance_style
 
 if bool(new_activity):
     send_discord = True
