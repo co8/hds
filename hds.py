@@ -97,11 +97,8 @@ hs = {
     'height' : hotspot_response['data']['status']['height'],
     'block' : hotspot_response['data']['block'],
     'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
-    #'activity_last_time' : 0,
-    'rewards' : []
 }
 hs['initials'] = NameInitials(hs['name'])
-hs['rewards'] = {'new_balance' : new_balance}
 del hotspot_request, hotspot_response
 
 ###check for change in reward_scale
@@ -150,7 +147,7 @@ if hs['balance'] != config['balance_last']:
 del wallet_request, w
 
 #### New User Welcome
-if 'status_last_sent' not in config:
+if 'status_last_sent' not in config and 'activity_last_time' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
     discord_content += '🤙 **'+ hs['name'] +'   [ '+ hs['initials'] +' ]**  🤘\n'
@@ -213,7 +210,7 @@ if 'activity_last_time' not in config:
 #get rewards for activity if exists
 if 'rewards' in activity_data:
     print('YES rewards in actvity')
-    hs_rewards = activity_data['rewards'][0]
+    hs_rewards['amount'] = activity_data['rewards'][0]
     hs_rewards['time'] = activity_data['time']
     hs_rewards['amount_nice'] = NiceBalance(hs_rewards['amount'])
     hs['rewards'] = hs_rewards # add into hs
