@@ -126,7 +126,11 @@ del now
 config_height_percentage = ''
 if 'height_percentage_last' in config:
     config_height_percentage = config['height_percentage_last']
-hs['height_percentage'] = str(round(hs['height'] / hs['block'] * 100, 3)) +'%'
+hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 3)
+if(hs['height_percentage'] > 100):
+    hs['height_percentage'] = 100   
+hs['height_percentage'] = str(hs['height_percentage']) +'%'
+
 #check for change in reward_scale
 if hs['height_percentage'] != config_height_percentage:
     new_height_percentage = True
@@ -148,7 +152,7 @@ if hs['balance'] != config['balance_last']:
 del wallet_request, w
 
 #### New User Welcome
-if 'status_last_sent' not in config and 'activity_last_time' not in config:
+if 'owner' not in config:
     print('Adding Welcome msg')
     send_discord = welcome = True
     discord_content += '🤙 **'+ hs['name'] +'   [ '+ hs['initials'] +' ]**  🤘\n'
@@ -280,7 +284,7 @@ if bool(new_activity):
     #       shortname = ActivityShortName(str(config['activity_last_type']))  +' '+ hs['rewards']['type']
     discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +' '+ activity_time
     
-    
+
 #######################################################
 ### Send Status if no new activity, but >60min since last msg sent
 ####
