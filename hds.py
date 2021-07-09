@@ -66,16 +66,31 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC 🔈B || 👀W',
-    'beaconer' : 'PoC 🔈 Beaconer',
-    'valid_witness' : 'PoC 🐵 Valid Witness',
-    'invalid_witness' : 'PoC 🙈 Invalid Witness',
+    'poc_receipts_v1' : 'PoC 🔈B or 🐵VW or 🙈IW',
+    'poc_receipts_v1-beta' : {
+            'beacon' : '🔈 PoC Beacon (0)', #beacon plus witness count
+            'valid_witness' : '🐵 PoC Valid Witness',
+            'invalid_witness' : '🙈 PoC Invalid Witness'
+        },
+    'challenge' : '🏓 PoC Challenge Accepted',
     'poc_request_v1' : 'PoC 🤼 Challenger',
     'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
     'state_channel_close_v1' : '💾 Data Packets'
 }
+###activity type poc_request_v1 - which is it?
+def whichPocRequestV1(type):
+    print('whichPocRequestV1 type: '+ type)
+    #print(activity_data)
+    #exit()
+    return typeShortNames(type)
+
+
+###activity type name to short name    
 def ActivityShortName(type):
-    if type in typeShortNames:
+    if type == 'poc_receipts_v1':
+        #which PoC Receipt is it?
+        output = whichPocRequestV1(type)
+    elif type in typeShortNames:
         output = typeShortNames[type]
     else:
         output = type.upper()
@@ -120,7 +135,10 @@ if 'height_percentage_last' in config:
 hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
 if(hs['height_percentage'] >= 100):
     hs['height_percentage'] = 100
-hs['height_percentage'] = str(hs['height_percentage']) +'%'
+if hs['height_percentage'] > 98:
+    hs['height_percentage'] = 'SYNCED'
+else:
+    hs['height_percentage'] = str(hs['height_percentage']) +'%'
 
 #check for change in reward_scale
 if hs['height_percentage'] != config_height_percentage:
@@ -258,7 +276,7 @@ if hs['status'] != 'ONLINE':
     status_style = '**'+ hs['status'] +'**'
 
 #default msg
-discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 📦 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓 '+ balance_style
+discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓 '+ balance_style
 
 if bool(new_activity):
     send_discord = True
