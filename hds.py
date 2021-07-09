@@ -67,6 +67,9 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : 'PoC 🔈B || 👀W',
+    'beaconer' : 'PoC 🔈 Beaconer',
+    'valid_witness' : 'PoC 👀 Valid Witness',
+    'invalid_witness' : 'PoC 🙈 Invalid Witness',
     'poc_request_v1' : 'PoC 🤼 Challenger',
     'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
     'state_channel_close_v1' : '📟 Data Packets'
@@ -169,7 +172,9 @@ if minutes >= status_interval_minutes:
 print('last status: '+ str(minutes) +'min ago')
 #######################################################
 
-print('activity[data] count: ' + str(len(activity['data'])+1))
+### activity_data_count
+hs['activity_count'] = int(len(activity['data']))
+print('activity[data] count: ' + str(hs['activity_count']))
 
 if bool(activity['data']):
     #if data in first request, use that new data
