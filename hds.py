@@ -68,11 +68,11 @@ def UpdateConfig(config):
 typeShortNames = {
     'poc_receipts_v1' : 'PoC 🔈B || 👀W',
     'beaconer' : 'PoC 🔈 Beaconer',
-    'valid_witness' : 'PoC 👀 Valid Witness',
+    'valid_witness' : 'PoC 🐵 Valid Witness',
     'invalid_witness' : 'PoC 🙈 Invalid Witness',
     'poc_request_v1' : 'PoC 🤼 Challenger',
     'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
-    'state_channel_close_v1' : '📟 Data Packets'
+    'state_channel_close_v1' : '💾 Data Packets'
 }
 def ActivityShortName(type):
     if type in typeShortNames:
