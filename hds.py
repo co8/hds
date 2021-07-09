@@ -285,9 +285,9 @@ if bool(new_activity):
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
-        discord_content += 'Last '
+        discord_content += 'Last'
     else:
-        discord_content += '🚀 '
+        discord_content += '🚀'
 
     
     if_reward = ''
@@ -297,7 +297,7 @@ if bool(new_activity):
     shortname = ActivityShortName(str(config['activity_last_type']))
     #if(hs['rewards']['type']):
     #       shortname = ActivityShortName(str(config['activity_last_type']))  +' '+ hs['rewards']['type']
-    discord_content += hs['initials'] +' Activity: **'+ shortname +'**'+ if_reward +' '+ activity_time
+    discord_content += ' : **'+ shortname +'**'+ if_reward +' '+ activity_time
     
 
 #######################################################
