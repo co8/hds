@@ -117,7 +117,7 @@ del now
 config_height_percentage = ''
 if 'height_percentage_last' in config:
     config_height_percentage = config['height_percentage_last']
-hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 1)
+hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
 if(hs['height_percentage'] >= 100):
     hs['height_percentage'] = 100
 hs['height_percentage'] = str(hs['height_percentage']) +'%'
@@ -174,12 +174,12 @@ print('last status: '+ str(minutes) +'min ago')
 
 ### activity_data_count
 hs['activity_count'] = int(len(activity['data']))
-print('activity[data] count: ' + str(hs['activity_count']))
+print('177 activity[data] count: ' + str(hs['activity_count']))
 
 if bool(activity['data']):
     #if data in first request, use that new data
-    print('have fresh activity data')
     activity_data = activity['data'][0]
+    print('182 activity[data] count: ' + str(len(activity['data']))) #count for future dev
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
@@ -193,6 +193,7 @@ else:
     config['activity_cursor'] = activity['cursor']
     activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
     activity = activity_cursor_request.json()
+    print('196 activity[data] count: ' + str(len(activity['data']))) #count for future dev
     activity_data = activity['data'][0]
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
