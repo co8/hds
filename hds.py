@@ -96,19 +96,21 @@ def whichPocRequestV1(activity_type):
         show_witnesses = True  
         print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
-    else:
+
+    if bool(has_witnesses):
         #is witness? valid or invalid?
         #check for hotspot in witness list. check valid
         print('***********')
-        print('check if witness')
-        #print(witnesses)
-        #exit()
+        print('looping thru witnesses')
         for w in witnesses:
+            print(str(w) +': '+ w['owner'])
             if w['owner'] == config['hotspot']:
-                if bool(w['is_valid']):
+                print('is_valid: '+ w['is_valid'])             
+                if 'is_valid' in w and bool(w['is_valid']):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
+    
     #type(output)
     type('output type BEFORE: '+ output)
     output = typeShortNames[activity_type][output]
