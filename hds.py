@@ -68,7 +68,7 @@ def UpdateConfig(config):
 typeShortNames = {
     'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
     'poc_receipts_v1' : {
-            'beacon' : 'PoC 🔈 Beacon', #beacon plus witness count
+            'beacon' : 'PoC 🔈 Beacon Sent', #beacon plus witness count
             'valid_witness' : 'PoC 🐵 Valid Witness',
             'invalid_witness' : 'PoC 🙈 Invalid Witness'
         },
@@ -102,7 +102,7 @@ def whichPocRequestV1(activity_type):
 
     output = typeShortNames[activity_type][output]
     if bool(has_witnesses):
-        output += ' ('+ str(len(witnesses)) +')'
+        output += ', '+ str(len(witnesses)) +' Witnesses'
     return output
 
 
