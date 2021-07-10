@@ -111,9 +111,6 @@ def ActivityShortName(activity_type):
     if activity_type == 'poc_receipts_v1':
         #which PoC Receipt is it?
         output = whichPocRequestV1(activity_type)
-        print(output)
-        exit()
-        output = typeShortNames[output]
     elif activity_type in typeShortNames:
         output = typeShortNames[activity_type]
     else:
