@@ -67,7 +67,7 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : 'PoC 🔈B or 🐵VW or 🙈IW',
-    'poc_receipts_v1-beta' : {
+    'poc_receipts_v1_beta' : {
             'beacon' : '🔈 PoC Beacon (0)', #beacon plus witness count
             'valid_witness' : '🐵 PoC Valid Witness',
             'invalid_witness' : '🙈 PoC Invalid Witness'
@@ -78,22 +78,21 @@ typeShortNames = {
     'state_channel_close_v1' : '💾 Data Packets'
 }
 ###activity type poc_request_v1 - which is it?
-def whichPocRequestV1(type):
-    print('whichPocRequestV1 type: '+ type)
-    #print(activity_data)
-    #exit()
-    return typeShortNames(type)
+def whichPocRequestV1(activity_type):
+    print('whichPocRequestV1 activity_type: '+ activity_type)
+    output = typeShortNames[activity_type]
+    return output
 
 
 ###activity type name to short name    
-def ActivityShortName(type):
-    if type == 'poc_receipts_v1':
+def ActivityShortName(activity_type):
+    if activity_type == 'poc_receipts_v1':
         #which PoC Receipt is it?
-        output = whichPocRequestV1(type)
-    elif type in typeShortNames:
-        output = typeShortNames[type]
+        output = whichPocRequestV1(activity_type)
+    elif activity_type in typeShortNames:
+        output = typeShortNames[activity_type]
     else:
-        output = type.upper()
+        output = activity_type.upper()
     return output
 
 
@@ -136,11 +135,11 @@ hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
 if(hs['height_percentage'] >= 100):
     hs['height_percentage'] = 100
 if hs['height_percentage'] > 98:
-    hs['height_percentage'] = 'SYNCED'
+    hs['height_percentage'] = "'NSYNC"
 else:
     hs['height_percentage'] = str(hs['height_percentage']) +'%'
 
-#check for change in reward_scale
+#check for change in height_percentage
 if hs['height_percentage'] != config_height_percentage:
     new_height_percentage = True
     config['height_percentage_last'] = hs['height_percentage']
@@ -285,7 +284,7 @@ if bool(new_activity):
     #for first status msg
     discord_content += '\n'
     if bool(welcome):
-        discord_content += 'Last'
+        discord_content += 'Last:'
     else:
         discord_content += '🚀'
 
@@ -294,10 +293,11 @@ if bool(new_activity):
     if 'rewards' in hs:
         if_reward = ' 🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
     ### add reward type
-    shortname = ActivityShortName(str(config['activity_last_type']))
+    #shortname = ActivityShortName(str(config['activity_last_type']))
+    shortname = ActivityShortName(config['activity_last_type'])
     #if(hs['rewards']['type']):
     #       shortname = ActivityShortName(str(config['activity_last_type']))  +' '+ hs['rewards']['type']
-    discord_content += ' : **'+ shortname +'**'+ if_reward +' '+ activity_time
+    discord_content += ' **'+ shortname +'**'+ if_reward +'  '+ activity_time
     
 
 #######################################################
