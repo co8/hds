@@ -66,7 +66,7 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC 🔈B or 🐵VW or 🙈IW',
+    'poc_receipts_v1' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
     'poc_receipts_v1_beta' : {
             'beacon' : '🔈 PoC Beacon (0)', #beacon plus witness count
             'valid_witness' : '🐵 PoC Valid Witness',
