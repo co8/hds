@@ -70,9 +70,9 @@ typeShortNames = {
     'poc_receipts_v1' : {
             'beacon' : 'PoC 🔈 Beacon Sent', #beacon plus witness count
             'valid_witness' : 'PoC 🐵 Valid Witness',
-            'invalid_witness' : 'PoC 🙈 Invalid Witness'
+            'invalid_witness' : 'PoC 🙈 Invalid Witness',
+            'challenge_accepted' : 'PoC 🏓 Challenge Accepted',
         },
-    'challenge' : 'PoC 🏓 Challenge Accepted',
     'poc_request_v1' : 'PoC 🤼 Challenge Created',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
     'state_channel_close_v1' : '💾 Data Packets'
@@ -81,8 +81,7 @@ typeShortNames = {
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
     witnesses = {}
-    output = ''
-    show_witnesses = False
+    output = 'challenge_accepted'
     has_witnesses = show_witnesses = False
     if 'witnesses' in activity_data['path'][0]:
         witnesses = activity_data['path'][0]['witnesses']
@@ -96,6 +95,8 @@ def whichPocRequestV1(activity_type):
         show_witnesses = True  
         print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
+    else:
+        print('not beacon')
 
     if bool(has_witnesses):
         #is witness? valid or invalid?
@@ -103,18 +104,20 @@ def whichPocRequestV1(activity_type):
         print('***********')
         print('looping thru witnesses')
         for w in witnesses:
-            print(str(w) +': '+ w['owner'])
             if w['owner'] == config['hotspot']:
                 print('is_valid: '+ w['is_valid'])             
                 if 'is_valid' in w and bool(w['is_valid']):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
+                print(w['owner'] +': '+ output)
+    else:
+        print('no witnesses')
     
-    #type(output)
-    type('output type BEFORE: '+ output)
-    output = typeShortNames[activity_type][0][output]
-    type('output type: '+ output)
+    #print('output type BEFORE: '+ output)
+    #exit()
+    output = typeShortNames[activity_type][output]
+    print('output type: '+ str(output))
     #print('**************')
     #print('witnesses')
     #print('has_witnesses = '+ has_witnesses)
@@ -123,6 +126,7 @@ def whichPocRequestV1(activity_type):
     #if beacon, add witness 
     if bool(show_witnesses) and bool(has_witnesses):
         output += ', '+ str(len(witnesses)) +' Witnesses'
+        
     return output
 
 
