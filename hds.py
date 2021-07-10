@@ -82,7 +82,8 @@ def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
     witnesses = {}
     output = ''
-    has_witnesses = False
+    show_witnesses = False
+    has_witnesses = show_witnesses = False
     if 'witnesses' in activity_data['path'][0]:
         witnesses = activity_data['path'][0]['witnesses']
         hs['witness_count'] = len(witnesses)
@@ -91,15 +92,17 @@ def whichPocRequestV1(activity_type):
     
     #is beacon?
     if activity_data['path'][0]['challengee'] == config['hotspot']:
-        output = 'beacon'     
+        output = 'beacon'   
+        show_witnesses = True  
         print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
     else:
         #is witness? valid or invalid?
         #check for hotspot in witness list. check valid
-        print('witnesses')
-        print(witnesses)
-        exit()
+        print('***********')
+        print('check if witness')
+        #print(witnesses)
+        #exit()
         for w in witnesses:
             if w['owner'] == config['hotspot']:
                 if bool(w['is_valid']):
@@ -114,8 +117,9 @@ def whichPocRequestV1(activity_type):
     #print('witnesses')
     #print('has_witnesses = '+ has_witnesses)
     #print(str(len(witnesses)) +' Witnesses')
-    #if beacon, add witness count
-    if bool(has_witnesses):
+    
+    #if beacon, add witness 
+    if bool(show_witnesses) and bool(has_witnesses):
         output += ', '+ str(len(witnesses)) +' Witnesses'
     return output
 
