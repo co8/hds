@@ -66,21 +66,37 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
-    'poc_receipts_v1_beta' : {
-            'beacon' : '🔈 PoC Beacon (0)', #beacon plus witness count
-            'valid_witness' : '🐵 PoC Valid Witness',
-            'invalid_witness' : '🙈 PoC Invalid Witness'
+    'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
+    'poc_receipts_v1' : {
+            'beacon' : 'PoC 🔈 Beacon', #beacon plus witness count
+            'valid_witness' : 'PoC 🐵 Valid Witness',
+            'invalid_witness' : 'PoC 🙈 Invalid Witness'
         },
-    'challenge' : '🏓 PoC Challenge Accepted',
-    'poc_request_v1' : 'PoC 🤼 Challenger',
+    'challenge' : 'PoC 🏓 Challenge Accepted',
+    'poc_request_v1' : 'PoC 🤼 Challenge Created',
     'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
     'state_channel_close_v1' : '💾 Data Packets'
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
-    output = typeShortNames[activity_type]
+    output = ''
+    witnesses = activity_data['path']['witnesses']
+    #Beacon sent
+    if activity_data['challenger'] == config['hotspot']:
+        output = 'beacon'
+        hs['witness_count'] = len(witnesses)
+    else:
+        #check for hotspot in witness list. check valid
+        for w in witnesses:
+            if witnesses['gateway'] == config['hotspot']:
+                if bool(is_valid):
+                    output = 'valid_witness'
+                else:
+                    output = 'invalid_witness'
+    output = typeShortNames[activity_type][output]
+    if output == 'beacon':
+        output += ' ('+ len(witnesses) +')'
     return output
 
 
@@ -89,6 +105,9 @@ def ActivityShortName(activity_type):
     if activity_type == 'poc_receipts_v1':
         #which PoC Receipt is it?
         output = whichPocRequestV1(activity_type)
+        print(output)
+        exit()
+        output = typeShortNames[output]
     elif activity_type in typeShortNames:
         output = typeShortNames[activity_type]
     else:
@@ -107,6 +126,7 @@ hs = {
     'height' : hotspot_response['data']['status']['height'],
     'block' : hotspot_response['data']['block'],
     'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
+    'witness_count' : ''
 }
 hs['initials'] = NameInitials(hs['name'])
 del hotspot_request, hotspot_response
@@ -231,14 +251,15 @@ if 'activity_last_time' not in config:
 hs_rewards = {}
 if 'rewards' in activity_data:
     print('YES rewards in actvity')
-    hs_rewards['amount'] = activity_data['rewards'][0]['amount']
-    hs_rewards['type'] = activity_data['rewards'][0]['type']
-    hs_rewards['time'] = activity_data['time']  
-    hs_rewards['amount_nice'] = NiceBalance(hs_rewards['amount'])
-    hs['rewards'] = hs_rewards # add into hs
-    del hs_rewards
+    amount = activity_data['rewards'][0]['amount']
+    hs['rewards'] = {
+        'amount' : amount,
+        'type' : activity_data['rewards'][0]['type'],
+        'time' : activity_data['time'],
+        'amount_nice' : NiceBalance(amount),
+    }
 else:
-    print('no rewards in actvity')
+    print('no rewards in activity')
 
 #compare config.last_time to hs.last_time
 if config['activity_last_time'] == hs['activity_last_time']:
@@ -288,15 +309,13 @@ if bool(new_activity):
     else:
         discord_content += '🚀'
 
-    
+    ###add reward if exists
     if_reward = ''
     if 'rewards' in hs:
-        if_reward = ' 🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
+        if_reward = '  🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
     ### add reward type
-    #shortname = ActivityShortName(str(config['activity_last_type']))
     shortname = ActivityShortName(config['activity_last_type'])
-    #if(hs['rewards']['type']):
-    #       shortname = ActivityShortName(str(config['activity_last_type']))  +' '+ hs['rewards']['type']
+
     discord_content += ' **'+ shortname +'**'+ if_reward +'  '+ activity_time
     
 
