@@ -74,17 +74,22 @@ typeShortNames = {
         },
     'challenge' : 'PoC 🏓 Challenge Accepted',
     'poc_request_v1' : 'PoC 🤼 Challenge Created',
-    'rewards_v2' : ' 🌊 REWARD 🏄‍♀️ ',
+    'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
     'state_channel_close_v1' : '💾 Data Packets'
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
+    witnesses = {}
     output = ''
-    witnesses = activity_data['path']['witnesses']
-    #Beacon sent
-    if activity_data['challenger'] == config['hotspot']:
+    has_witnesses = False
+    if bool(witnesses):
+        witnesses = activity_data['path'][0]['witnesses']
+        hs['witness_count'] = len(witnesses)
+    if activity_data['path'][0]['receipt']['gateway'] == config['hotspot']:
         output = 'beacon'
+        has_witnesses = True
+        print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
     else:
         #check for hotspot in witness list. check valid
@@ -94,9 +99,10 @@ def whichPocRequestV1(activity_type):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
+
     output = typeShortNames[activity_type][output]
-    if output == 'beacon':
-        output += ' ('+ len(witnesses) +')'
+    if bool(has_witnesses):
+        output += ' ('+ str(len(witnesses)) +')'
     return output
 
 
