@@ -83,24 +83,38 @@ def whichPocRequestV1(activity_type):
     witnesses = {}
     output = ''
     has_witnesses = False
-    if bool(witnesses):
+    if 'witnesses' in activity_data['path'][0]:
         witnesses = activity_data['path'][0]['witnesses']
         hs['witness_count'] = len(witnesses)
-    if activity_data['path'][0]['receipt']['gateway'] == config['hotspot']:
-        output = 'beacon'
         has_witnesses = True
+        print('has witnesses: '+ str(hs['witness_count']))
+    
+    #is beacon?
+    if activity_data['path'][0]['challengee'] == config['hotspot']:
+        output = 'beacon'     
         print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
     else:
+        #is witness? valid or invalid?
         #check for hotspot in witness list. check valid
+        print('witnesses')
+        print(witnesses)
+        exit()
         for w in witnesses:
-            if witnesses['gateway'] == config['hotspot']:
-                if bool(is_valid):
+            if w['owner'] == config['hotspot']:
+                if bool(w['is_valid']):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
-
+    #type(output)
+    type('output type BEFORE: '+ output)
     output = typeShortNames[activity_type][output]
+    type('output type: '+ output)
+    #print('**************')
+    #print('witnesses')
+    #print('has_witnesses = '+ has_witnesses)
+    #print(str(len(witnesses)) +' Witnesses')
+    #if beacon, add witness count
     if bool(has_witnesses):
         output += ', '+ str(len(witnesses)) +' Witnesses'
     return output
