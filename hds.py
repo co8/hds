@@ -113,7 +113,7 @@ def whichPocRequestV1(activity_type):
     
     #type(output)
     type('output type BEFORE: '+ output)
-    output = typeShortNames[activity_type][output]
+    output = typeShortNames[activity_type][0][output]
     type('output type: '+ output)
     #print('**************')
     #print('witnesses')
