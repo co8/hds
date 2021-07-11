@@ -104,8 +104,9 @@ def whichPocRequestV1(activity_type):
         print('***********')
         print('looping thru witnesses')
         for w in witnesses:
-            if w['owner'] == config['hotspot']:
-                print('is_valid: '+ w['is_valid'])             
+            if w['owner'] == config['owner']:
+                print('yes, hotspot is a witness')
+                print('is_valid: '+ str(w['is_valid']))             
                 if 'is_valid' in w and bool(w['is_valid']):
                     output = 'valid_witness'
                 else:
