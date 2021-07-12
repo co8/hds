@@ -35,15 +35,13 @@ with open("config.json") as json_data_file:
 
 ###dictionary
 hs = {} #main
-new_activity = send_discord = welcome = new_balance = new_reward_scale = new_height_percentage = False
-
 ###vars
 status_interval_minutes = 238 #4hrs
+new_activity = send_discord = welcome = new_balance = new_reward_scale = new_height_percentage = False
 niceNum = .00000001
 niceNumSmall = 100000000
-activity_data = ''
-activity_cursor = ''
-discord_content = ''
+activity_data = activity_cursor = discord_content = ''
+
 api_endpoint = 'https://api.helium.io/v1/'
 
 ###functions
@@ -68,14 +66,14 @@ def UpdateConfig(config):
 typeShortNames = {
     'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
     'poc_receipts_v1' : {
-            'beacon' : 'PoC 🔈 Beacon Sent', #beacon plus witness count
-            'valid_witness' : 'PoC 🐵 Valid Witness',
-            'invalid_witness' : 'PoC 🙈 Invalid Witness',
-            'challenge_accepted' : 'PoC 🏓 Challenge Accepted',
+            'beacon' : 'PoC  🌋  Beacon sent', #beacon plus witness count
+            'valid_witness' : 'PoC  🐵  Valid Witness',
+            'invalid_witness' : 'PoC  🙈  Invalid Witness',
+            'challenge_accepted' : 'PoC  🏓  Challenge Accepted',
         },
-    'poc_request_v1' : 'PoC 🤼 Challenge Created',
+    'poc_request_v1' : 'PoC  🤼  Challenge Created',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : '💾 Data Packets'
+    'state_channel_close_v1' : ' 💾  Data Packets'
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
@@ -103,6 +101,7 @@ def whichPocRequestV1(activity_type):
         #check for hotspot in witness list. check valid
         print('***********')
         print('looping thru witnesses')
+        #x = any( w['owner'] == config['owner'] for w in witnesses )
         for w in witnesses:
             if w['owner'] == config['owner']:
                 print('yes, hotspot is a witness')
@@ -126,8 +125,7 @@ def whichPocRequestV1(activity_type):
     
     #if beacon, add witness 
     if bool(show_witnesses) and bool(has_witnesses):
-        output += ', '+ str(len(witnesses)) +' Witnesses'
-        
+        output += ', '+ str(len(witnesses)) +' Witnesses' 
     return output
 
 
