@@ -183,7 +183,7 @@ hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
 if(hs['height_percentage'] >= 100):
     hs['height_percentage'] = 100
 if hs['height_percentage'] > 98:
-    hs['height_percentage'] = "'NSYNC"
+    hs['height_percentage'] = "*NSYNC"
 else:
     hs['height_percentage'] = str(hs['height_percentage']) +'%'
 
