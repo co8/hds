@@ -38,7 +38,7 @@ hs = {} #main
 new_activity = send_discord = welcome = new_balance = new_reward_scale = new_height_percentage = False
 
 ###vars
-status_interval_minutes = 58
+status_interval_minutes = 238 #4hrs
 niceNum = .00000001
 niceNumSmall = 100000000
 activity_data = ''
