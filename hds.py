@@ -126,8 +126,8 @@ def whichPocRequestV1(activity_type):
     #if beacon, add witness 
     if bool(show_witnesses) and bool(has_witnesses):
         output += ', '+ str(hs['witness_count']) +' Witness'
-    if hs['witness_count'] != 1:
-        output += 'es' #pluralize if not 1
+        if hs['witness_count'] > 0 and hs['witness_count'] < 2:
+            output += 'es' #pluralize if not 1
     return output
 
 
