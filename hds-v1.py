@@ -125,9 +125,7 @@ def whichPocRequestV1(activity_type):
     
     #if beacon, add witness 
     if bool(show_witnesses) and bool(has_witnesses):
-        output += ', '+ str(hs['witness_count']) +' Witness'
-    if hs['witness_count'] != 1:
-        output += 'es' #pluralize if not 1
+        output += ', '+ str(len(witnesses)) +' Witnesses' 
     return output
 
 
@@ -244,7 +242,6 @@ print('177 activity[data] count: ' + str(hs['activity_count']))
 if bool(activity['data']):
     #if data in first request, use that new data
     activity_data = activity['data'][0]
-
     print('182 activity[data] count: ' + str(len(activity['data']))) #count for future dev
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
@@ -260,10 +257,6 @@ else:
     activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
     activity = activity_cursor_request.json()
     print('196 activity[data] count: ' + str(len(activity['data']))) #count for future dev
-    
-    
-    ### DEV - add activity-data loop here - not [0], but all
-
     activity_data = activity['data'][0]
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
