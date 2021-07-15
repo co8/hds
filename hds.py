@@ -64,7 +64,7 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
+    #'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
     'poc_receipts_v1' : {
             'beacon' : 'PoC  🌋  Beacon sent', #beacon plus witness count
             'valid_witness' : 'PoC  🐵  Valid Witness',
@@ -123,12 +123,9 @@ def whichPocRequestV1(activity_type):
     #print('has_witnesses = '+ has_witnesses)
     #print(str(len(witnesses)) +' Witnesses')
     
-    #if beacon, add witness 
+    #if beacon, add witness and pluralize based on count
     if bool(show_witnesses) and bool(has_witnesses):
-        output += ', '+ str(hs['witness_count']) +' Witness'
-        if hs['witness_count'] > 0 and hs['witness_count'] < 2:
-            output += 'es' #pluralize if not 1
-    return output
+        return ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']==1 else " Witness")
 
 
 ###activity type name to short name    
@@ -243,6 +240,7 @@ print('177 activity[data] count: ' + str(hs['activity_count']))
 
 if bool(activity['data']):
     #if data in first request, use that new data
+    activity_data_all = activity['data']
     activity_data = activity['data'][0]
 
     print('182 activity[data] count: ' + str(len(activity['data']))) #count for future dev
@@ -263,7 +261,7 @@ else:
     
     
     ### DEV - add activity-data loop here - not [0], but all
-
+    activity_data_all = activity['data']
     activity_data = activity['data'][0]
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
