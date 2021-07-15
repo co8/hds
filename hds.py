@@ -118,15 +118,10 @@ def whichPocRequestV1(activity_type):
     #exit()
     output = typeShortNames[activity_type][output]
     print('output type: '+ str(output))
-    #print('**************')
-    #print('witnesses')
-    #print('has_witnesses = '+ has_witnesses)
-    #print(str(len(witnesses)) +' Witnesses')
-    
     #if beacon, add witness and pluralize based on count
-    if bool(show_witnesses) and bool(has_witnesses):
-        return ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']==1 else " Witness")
-
+    if bool(show_witnesses):
+        output += ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']==1 else " Witness")
+    return output
 
 ###activity type name to short name    
 def ActivityShortName(activity_type):
