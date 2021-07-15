@@ -20,7 +20,9 @@ Requirements for the software and other tools to build, test and push
 A step by step series of examples that tell you how to get a development
 environment running
 
-Crontab - Run at Reboot and every 5 minutes
+Crontab 
+- Run every 5 minutes and at Reboot
+- Change directory path to match your own 
 
     $ crontab -e
     */5 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
@@ -42,6 +44,4 @@ Add additional notes to deploy this on a live system
 ## Authors
 
   - **Enrique R Grullon** - *Developer* -
-    [PurpleBooth](https://github.com/co8)
-  - **Billie Thompson** - *Provided README Template* -
-    [PurpleBooth](https://github.com/PurpleBooth)
+    [co8](https://github.com/co8)
