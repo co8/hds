@@ -120,7 +120,10 @@ def whichPocRequestV1(activity_type):
     print('output type: '+ str(output))
     #if beacon, add witness and pluralize based on count
     if bool(show_witnesses):
-        output += ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']==1 else " Witness")
+        output += ', '+ str(hs['witness_count']) + " Witness"
+        if hs['witness_count'] != 1 : 
+            output += 'es'
+        #output += ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']=='1' else " Witness")
     return output
 
 ###activity type name to short name    
@@ -229,16 +232,12 @@ if minutes >= status_interval_minutes:
 print('last status: '+ str(minutes) +'min ago')
 #######################################################
 
-### activity_data_count
-hs['activity_count'] = int(len(activity['data']))
-print('177 activity[data] count: ' + str(hs['activity_count']))
-
+# if activity data, get activity data
 if bool(activity['data']):
     #if data in first request, use that new data
     activity_data_all = activity['data']
-    activity_data = activity['data'][0]
-
-    print('182 activity[data] count: ' + str(len(activity['data']))) #count for future dev
+    activity_data = activity_data_all[0]
+    print('ln241 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
@@ -252,12 +251,12 @@ else:
     config['activity_cursor'] = activity['cursor']
     activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
     activity = activity_cursor_request.json()
-    print('196 activity[data] count: ' + str(len(activity['data']))) #count for future dev
     
-    
-    ### DEV - add activity-data loop here - not [0], but all
+    ###get ALL activity data
     activity_data_all = activity['data']
-    activity_data = activity['data'][0]
+    print('ln254 activity[data] via cursor count: ' + str(len(activity_data_all))) #count for future dev
+    ###get last activity only
+    activity_data = activity_data_all[0]
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
     UpdateConfig(config)
@@ -321,9 +320,11 @@ status_style = hs['status']
 if hs['status'] != 'ONLINE':
     status_style = '**'+ hs['status'] +'**'
 
-#default msg
+#default status msg
 discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓 '+ balance_style
 
+#function and loop all activities
+### compose new activity
 if bool(new_activity):
     send_discord = True
     print('adding new activity msg')
@@ -355,21 +356,16 @@ if 'status_last_sent' in config:
     minutes = round(total_seconds/60)
 if minutes >= status_interval_minutes:
     send_discord = True
-    print('send_discord = True. minutes >= status_interval_minutes')
+    #print('send_discord = True. minutes >= status_interval_minutes')
     
 print('last status: '+ str(minutes) +'min ago')
 #######################################################
 
 ###discord send###
-print('send_discord: '+ str(send_discord))
+#print('send_discord: '+ str(send_discord))
 #print(discord_content)
 if bool(send_discord):
     webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
-    ###create embed object for webhook
-    #embed = DiscordEmbed(title=hs['name'], description='Hotspot Discord Status')
-    #embed.set_timestamp()
-    ####add embed object to webhook
-    #webhook.add_embed(embed)
     ###send
     webhook_response = webhook.execute()
     print(webhook_response)
