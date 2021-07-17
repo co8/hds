@@ -78,6 +78,7 @@ typeShortNames = {
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
     witnesses = {}
+    valid_witnesses = 0
     output = 'challenge_accepted'
     has_witnesses = show_witnesses = False
     if 'witnesses' in activity_data['path'][0]:
@@ -102,6 +103,7 @@ def whichPocRequestV1(activity_type):
         print('looping thru witnesses')
         #x = any( w['owner'] == config['owner'] for w in witnesses )
         for w in witnesses:
+            #if witness, check if valid or invalid
             if w['owner'] == config['owner']:
                 print('yes, hotspot is a witness')
                 print('is_valid: '+ str(w['is_valid']))             
@@ -110,6 +112,10 @@ def whichPocRequestV1(activity_type):
                 else:
                     output = 'invalid_witness'
                 print(w['owner'] +': '+ output)
+            #if beacon, how many invalid witnesses
+            if output == 'beacon' and 'is_valid' in w and bool(w['is_valid']):
+                valid_witnesses = valid_witnesses +1 #add 1 to invalid witness count
+
     else:
         print('no witnesses')
     
@@ -122,6 +128,8 @@ def whichPocRequestV1(activity_type):
         output += ', '+ str(hs['witness_count']) + " Witness"
         if hs['witness_count'] != 1 : 
             output += 'es'
+        #if bool(valid_witnesses):
+        output += ', '+ str(valid_witnesses) +' Valid'
     return output
 
 ###activity type name to short name    
@@ -213,6 +221,8 @@ activity_endpoint = api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
 #get fresh activity
 activity_request = requests.get(activity_endpoint)
 activity = activity_request.json() 
+###add activity cursor to config
+config['activity_cursor'] = activity['cursor']
 del activity_request
 
 #######################################################
@@ -234,7 +244,11 @@ print('last status: '+ str(minutes) +'min ago')
 if bool(activity['data']):
     #if data in first request, use that new data
     activity_data_all = activity['data']
+
+    #dev - list instead of single
     activity_data = activity_data_all[0]
+    
+    
     print('ln241 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
     send_discord = True
 elif send_discord == False and 'status_last_sent' in config: 
@@ -246,7 +260,6 @@ elif send_discord == False and 'status_last_sent' in config:
 else:
     #get activity using cursor
     print('getting activity with cursor') 
-    config['activity_cursor'] = activity['cursor']
     activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
     activity = activity_cursor_request.json()
     
@@ -254,11 +267,11 @@ else:
     activity_data_all = activity['data']
     print('ln254 activity[data] via cursor count: ' + str(len(activity_data_all))) #count for future dev
     ###get last activity only
-    activity_data = activity_data_all[0]
+    activity_data = activity_data_all.pop(0) #only first element
     #add activity_cursor and write to config.json
     print('writing activity cursor to config')
     UpdateConfig(config)
-    del activity_cursor_request
+    del activity_data_all, activity_cursor_request
 del activity
 
 #######################################################
