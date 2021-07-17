@@ -55,7 +55,7 @@ def NameInitials(name):
 def NiceBalance(balance):
     bal = '{:.3f}'.format(balance*niceNum)
     if balance > 0 and balance < 100000 :
-        bal = '{:.8f}'.format(balance / niceNumSmall)
+        bal = '{:.8f}'.format(balance / niceNumSmall).rstrip('0')
     return str(bal)
 
 def UpdateConfig(config):
@@ -64,7 +64,6 @@ def UpdateConfig(config):
 
 ### Activity Short Names
 typeShortNames = {
-    #'poc_receipts_v1_og' : 'PoC 🔈B or 🐵 VW or 🙈 IW',
     'poc_receipts_v1' : {
             'beacon' : 'PoC  🌋  Beacon sent', #beacon plus witness count
             'valid_witness' : 'PoC  🐵  Valid Witness',
@@ -73,7 +72,7 @@ typeShortNames = {
         },
     'poc_request_v1' : 'PoC  🤼  Challenge Created',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Data  🚛 💿  Packets'
+    'state_channel_close_v1' : 'Data  🚛  Packets  💿 '
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
@@ -123,7 +122,6 @@ def whichPocRequestV1(activity_type):
         output += ', '+ str(hs['witness_count']) + " Witness"
         if hs['witness_count'] != 1 : 
             output += 'es'
-        #output += ', '+ str(hs['witness_count']) + (" Witnesses" if hs['witness_count']=='1' else " Witness")
     return output
 
 ###activity type name to short name    
