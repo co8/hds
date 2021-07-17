@@ -53,7 +53,7 @@ def NameInitials(name):
     return "".join(item[0].upper() for item in nicename.split())
 
 def NiceBalance(balance):
-    bal = '{:.3f}'.format(balance*niceNum)
+    bal = '{:.3f}'.format(balance*niceNum).rstrip('0')
     if balance > 0 and balance < 100000 :
         bal = '{:.8f}'.format(balance / niceNumSmall).rstrip('0')
     return str(bal)
