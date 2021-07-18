@@ -65,14 +65,14 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : {
-            'beacon' : 'PoC  🌋  Beacon sent', #beacon plus witness count
+            'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count
             'valid_witness' : 'PoC  🐵  Valid Witness',
             'invalid_witness' : 'PoC  🙈  Invalid Witness',
-            'challenge_accepted' : 'PoC  🏓  Challenge Accepted',
+            'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted',
         },
-    'poc_request_v1' : 'PoC  🤼  Challenge Created',
+    'poc_request_v1' : 'PoC  🤼  Created Challenge...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Data  🚛  Packets  💿 '
+    'state_channel_close_v1' : 'Data  💿  Packet Transfer  🚛 '
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
