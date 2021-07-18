@@ -128,8 +128,8 @@ def whichPocRequestV1(activity_type):
         output += ', '+ str(hs['witness_count']) + " Witness"
         if hs['witness_count'] != 1 : 
             output += 'es'
-        #if bool(valid_witnesses):
-        output += ', '+ str(valid_witnesses) +' Valid'
+        if bool(hs['witness_count']):
+            output += ', '+ str(valid_witnesses) +' Valid'
     return output
 
 ###activity type name to short name    
