@@ -247,8 +247,8 @@ if bool(activity['data']):
     activity_data_all = activity['data']
 
     #dev - list instead of single
-    #activity_data = activity_data_all[0]
-    activity_data = activity_data_all
+    activity_data = activity_data_all[0]
+    #activity_data = activity_data_all
 
     print('ln250 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
     send_discord = True
@@ -279,7 +279,6 @@ del activity
 #######################################################
 ### check for new activity 
 #get hs.last_time from activity_data
-
 hs['activity_last_time'] = activity_data['time']
 #check for config.last_time
 if 'activity_last_time' not in config:
