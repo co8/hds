@@ -53,7 +53,7 @@ def NameInitials(name):
     return "".join(item[0].upper() for item in nicename.split())
 
 def NiceBalance(balance):
-    bal = '{:.3f}'.format(balance*niceNum).rstrip('0')
+    bal = '{:.3f}'.format(balance*niceNum) #.rstrip('0')
     if balance > 0 and balance < 100000 :
         bal = '{:.8f}'.format(balance / niceNumSmall).rstrip('0')
     return str(bal)
@@ -65,14 +65,14 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : {
-            'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count
-            'valid_witness' : 'PoC  🐵  Valid Witness',
-            'invalid_witness' : 'PoC  🙈  Invalid Witness',
-            'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted',
-        },
+        'beacon' : 'PoC  🌋  Sent Beacon', #beacon plus witness count, plus valid count
+        'valid_witness' : 'PoC  🐵  Valid Witness',
+        'invalid_witness' : 'PoC  🙈  Invalid Witness',
+        'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted'
+    },
     'poc_request_v1' : 'PoC  🤼  Created Challenge...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Data  💿  Packet Transfer  🚛 '
+    'state_channel_close_v1' : 'Transferred  🚛  Data Packets'
 }
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
@@ -81,6 +81,7 @@ def whichPocRequestV1(activity_type):
     valid_witnesses = 0
     output = 'challenge_accepted'
     has_witnesses = show_witnesses = False
+
     if 'witnesses' in activity_data['path'][0]:
         witnesses = activity_data['path'][0]['witnesses']
         hs['witness_count'] = len(witnesses)
@@ -246,11 +247,12 @@ if bool(activity['data']):
     activity_data_all = activity['data']
 
     #dev - list instead of single
-    activity_data = activity_data_all[0]
-    
-    
-    print('ln241 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
+    #activity_data = activity_data_all[0]
+    activity_data = activity_data_all
+
+    print('ln250 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
     send_discord = True
+
 elif send_discord == False and 'status_last_sent' in config: 
     # quit and done until next check. 
     # don't get activity if sent activity and no new data
@@ -277,6 +279,7 @@ del activity
 #######################################################
 ### check for new activity 
 #get hs.last_time from activity_data
+
 hs['activity_last_time'] = activity_data['time']
 #check for config.last_time
 if 'activity_last_time' not in config:
