@@ -74,12 +74,19 @@ typeShortNames = {
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
     'state_channel_close_v1' : 'Transferred  🚛  Data  📟  Packets'
 }
+invalidReasonShortNames = {
+    'witness_too_close' : 'too close',
+    'witness_rssi_below_lower_bound' : 'RSSI below lower bound'
+}
+
+
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
     witnesses = {}
     valid_witnesses = 0
     output = 'challenge_accepted'
+    invalid_reason = ''
     has_witnesses = show_witnesses = False
 
     if 'witnesses' in activity_data['path'][0]:
@@ -112,6 +119,7 @@ def whichPocRequestV1(activity_type):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
+                    invalid_reason = invalidReasonShortNames[str(w['invalid_reason'])]
                 print(w['owner'] +': '+ output)
             #if beacon, how many invalid witnesses
             if output == 'beacon' and 'is_valid' in w and bool(w['is_valid']):
@@ -131,7 +139,11 @@ def whichPocRequestV1(activity_type):
             output += 'es'
         if bool(hs['witness_count']):
             output += ', '+ str(valid_witnesses) +' Valid'
+    if bool(invalid_reason):
+        output += '  ('+ str(invalid_reason) +')'
     return output
+
+
 
 ###activity type name to short name    
 def ActivityShortName(activity_type):
