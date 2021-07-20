@@ -65,7 +65,7 @@ def UpdateConfig(config):
 ### Activity Short Names
 typeShortNames = {
     'poc_receipts_v1' : {
-        'beacon' : 'PoC  🌋  Sent Beacon', #beacon plus witness count, plus valid count
+        'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
         'valid_witness' : 'PoC  🐵  Valid Witness',
         'invalid_witness' : 'PoC  🙈  Invalid Witness',
         'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted'
@@ -247,8 +247,7 @@ if bool(activity['data']):
     activity_data_all = activity['data']
 
     #dev - list instead of single
-    activity_data = activity_data_all[0]
-    #activity_data = activity_data_all
+    activity_data = activity_data_all[0]  #activity_data = activity_data_all
 
     print('ln250 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
     send_discord = True
