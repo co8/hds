@@ -79,6 +79,12 @@ invalidReasonShortNames = {
     'witness_rssi_below_lower_bound' : 'RSSI below lower bound'
 }
 
+#invalid reason nice name, or raw reason if not in dict
+def invalidReasonNiceName(ir):
+    output = str(ir)
+    if ir in invalidReasonShortNames:
+        output = invalidReasonShortNames[ir]
+    return output
 
 ###activity type poc_request_v1 - which is it?
 def whichPocRequestV1(activity_type):
@@ -119,7 +125,7 @@ def whichPocRequestV1(activity_type):
                     output = 'valid_witness'
                 else:
                     output = 'invalid_witness'
-                    invalid_reason = invalidReasonShortNames[str(w['invalid_reason'])]
+                    invalid_reason = invalidReasonNiceName(w['invalid_reason'])
                 print(w['owner'] +': '+ output)
             #if beacon, how many invalid witnesses
             if output == 'beacon' and 'is_valid' in w and bool(w['is_valid']):
@@ -299,7 +305,7 @@ if 'activity_last_time' not in config:
 #get rewards for activity if exists
 hs_rewards = {}
 if 'rewards' in activity_data:
-    print('YES rewards in actvity')
+    print('YES rewards in activity')
     amount = activity_data['rewards'][0]['amount']
     hs['rewards'] = {
         'amount' : amount,
