@@ -173,7 +173,9 @@ hs = {
     'status' : str(hotspot_response['data']['status']['online']).upper(),
     'height' : hotspot_response['data']['status']['height'],
     'block' : hotspot_response['data']['block'],
-    'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
+    'reward_scale' : '{:.2f}'.format(round(hotspot_response['data']['reward_scale'],2)),
+    #'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
+     #bal = '{:.3f}'.format(balance*niceNum) #.rstrip('0')
     'witness_count' : ''
 }
 hs['initials'] = NameInitials(hs['name'])
