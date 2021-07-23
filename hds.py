@@ -67,7 +67,7 @@ typeShortNames = {
     'poc_receipts_v1' : {
         'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
         'valid_witness' : 'PoC  🐵  Valid  🤘  Witness',
-        'invalid_witness' : 'PoC  🙈  Invalid  👎  Witness',
+        'invalid_witness' : 'PoC  🙈  Invalid  💩  Witness',
         'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted'
     },
     'poc_request_v1' : 'PoC  🤼  Created Challenge...',
