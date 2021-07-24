@@ -72,7 +72,7 @@ typeShortNames = {
     },
     'poc_request_v1' : 'PoC  🤼  Created Challenge...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Transferred  🚛  Data Packets  📟 '
+    'state_channel_close_v1' : 'Transferred  🚛  Data Packets  📟'
 }
 invalidReasonShortNames = {
     'witness_too_close' : 'too close',
