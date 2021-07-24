@@ -66,13 +66,13 @@ def UpdateConfig(config):
 typeShortNames = {
     'poc_receipts_v1' : {
         'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
-        'valid_witness' : 'PoC  🐵  Valid  🤘  Witness',
-        'invalid_witness' : 'PoC  🙈  Invalid  💩  Witness',
-        'challenge_accepted' : 'PoC  🏓  Created Challenge Accepted'
+        'valid_witness' : 'PoC  🤘  Valid Witness',
+        'invalid_witness' : 'PoC  💩  Invalid Witness 🙈 ',
+        'challenge_accepted' : 'PoC  🏓 ...Created Challenge Accepted'
     },
     'poc_request_v1' : 'PoC  🤼  Created Challenge...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Transferred  🚛  Data  📟  Packets'
+    'state_channel_close_v1' : 'Transferred  🚛  Data Packets  📟 '
 }
 invalidReasonShortNames = {
     'witness_too_close' : 'too close',
