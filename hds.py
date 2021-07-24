@@ -68,7 +68,7 @@ typeShortNames = {
         'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
         'valid_witness' : 'PoC  🤘  Valid Witness',
         'invalid_witness' : 'PoC  💩  Invalid Witness 🙈 ',
-        'challenge_accepted' : 'PoC  🏓 ...Created Challenge Accepted'
+        'challenge_accepted' : 'PoC  🏓  ...Challenge Accepted!'
     },
     'poc_request_v1' : 'PoC  🤼  Created Challenge...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
@@ -174,8 +174,6 @@ hs = {
     'height' : hotspot_response['data']['status']['height'],
     'block' : hotspot_response['data']['block'],
     'reward_scale' : '{:.2f}'.format(round(hotspot_response['data']['reward_scale'],2)),
-    #'reward_scale' : str(round(hotspot_response['data']['reward_scale'],2)),
-     #bal = '{:.3f}'.format(balance*niceNum) #.rstrip('0')
     'witness_count' : ''
 }
 hs['initials'] = NameInitials(hs['name'])
