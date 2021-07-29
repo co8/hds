@@ -68,14 +68,15 @@ typeShortNames = {
         'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
         'valid_witness' : 'PoC  🤘  Valid Witness',
         'invalid_witness' : 'PoC  💩  Invalid Witness 🙈 ',
-        'challenge_accepted' : 'PoC  🏓  ...Challenge Accepted!'
+        'challenge_accepted' : 'PoC  🏓  ...Challenge Accepted'
     },
-    'poc_request_v1' : 'PoC  🤼  Created Challenge...',
+    'poc_request_v1' : 'PoC  🤼  Challenge Created...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Transferred  🚛  Data Packets  📟'
+    'state_channel_close_v1' : 'Transferred  🚛  Data Packets '
 }
 invalidReasonShortNames = {
     'witness_too_close' : 'too close',
+    'witness_rssi_too_high' : 'RSSI too high',
     'witness_rssi_below_lower_bound' : 'RSSI below lower bound'
 }
 
