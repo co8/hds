@@ -67,12 +67,12 @@ typeShortNames = {
     'poc_receipts_v1' : {
         'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
         'valid_witness' : 'PoC  🤘  Valid Witness',
-        'invalid_witness' : 'PoC  💩  Invalid Witness 🙈 ',
+        'invalid_witness' : 'PoC  💩  Invalid Witness  🙈',
         'challenge_accepted' : 'PoC  🏓  ...Challenge Accepted'
     },
     'poc_request_v1' : 'PoC  🤼  Challenge Created...',
     'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Transferred  🚛  Data Packets '
+    'state_channel_close_v1' : 'Transferred  🚛  Data Packets'
 }
 invalidReasonShortNames = {
     'witness_too_close' : 'too close',
@@ -147,7 +147,7 @@ def whichPocRequestV1(activity_type):
         if bool(hs['witness_count']):
             output += ', '+ str(valid_witnesses) +' Valid'
     if bool(invalid_reason):
-        output += '  ('+ str(invalid_reason) +')'
+        output += '('+ str(invalid_reason) +')'
     return output
 
 
