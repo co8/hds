@@ -147,7 +147,7 @@ def whichPocRequestV1(activity_type):
         if bool(hs['witness_count']):
             output += ', '+ str(valid_witnesses) +' Valid'
     if bool(invalid_reason):
-        output += '('+ str(invalid_reason) +')'
+        output += ' ('+ str(invalid_reason) +')'
     return output
 
 
