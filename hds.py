@@ -6,8 +6,7 @@
 # enrique r grullon
 # e@co8.com
 # discord: co8#1934 
-# HDS
-# Helium Hotspot Discord Status
+# HDS - Hotspot Discord Status
 ############################
 
 ########
@@ -91,10 +90,10 @@ def invalidReasonNiceName(ir):
 def whichPocRequestV1(activity_type):
     print('whichPocRequestV1 activity_type: '+ activity_type)
     witnesses = {}
-    valid_witnesses = 0
+    beacon_valid_witnesses = 0
     output = 'challenge_accepted'
-    invalid_reason = ''
-    has_witnesses = show_witnesses = False
+    invalid_witness_reason = ''
+    has_witnesses = beacon_show_witnesses = valid_witness = False
 
     if 'witnesses' in activity_data['path'][0]:
         witnesses = activity_data['path'][0]['witnesses']
@@ -105,7 +104,7 @@ def whichPocRequestV1(activity_type):
     #is beacon?
     if activity_data['path'][0]['challengee'] == config['hotspot']:
         output = 'beacon'   
-        show_witnesses = True  
+        beacon_show_witnesses = True  
         print('poc_receipt_v1: ' + output)
         hs['witness_count'] = len(witnesses)
     else:
@@ -124,13 +123,14 @@ def whichPocRequestV1(activity_type):
                 print('is_valid: '+ str(w['is_valid']))             
                 if 'is_valid' in w and bool(w['is_valid']):
                     output = 'valid_witness'
+                    valid_witness = True
                 else:
                     output = 'invalid_witness'
-                    invalid_reason = invalidReasonNiceName(w['invalid_reason'])
+                    invalid_witness_reason = invalidReasonNiceName(w['invalid_witness_reason'])
                 print(w['owner'] +': '+ output)
             #if beacon, how many invalid witnesses
             if output == 'beacon' and 'is_valid' in w and bool(w['is_valid']):
-                valid_witnesses = valid_witnesses +1 #add 1 to invalid witness count
+                beacon_valid_witnesses = beacon_valid_witnesses +1 #add 1 to invalid witness count
 
     else:
         print('no witnesses')
@@ -139,16 +139,27 @@ def whichPocRequestV1(activity_type):
     #exit()
     output = typeShortNames[activity_type][output]
     print('output type: '+ str(output))
+    
     #if beacon, add witness and pluralize based on count
-    if bool(show_witnesses):
+    if bool(beacon_show_witnesses):
         output += ', '+ str(hs['witness_count']) + " Witness"
         if hs['witness_count'] != 1 : 
             output += 'es'
         if bool(hs['witness_count']):
-            output += ', '+ str(valid_witnesses) +' Valid'
-    if bool(invalid_reason):
-        output += ' ('+ str(invalid_reason) +')'
+            output += ', '+ str(beacon_valid_witnesses) +' Valid'
+    
+    #invalid witness reason
+    if bool(invalid_witness_reason):
+        output += ' ('+ str(invalid_witness_reason) +')'
+    
+    #show total number of valid witnesses with
+    if bool(valid_witness):
+        output += ' (1:'+ str(hs['witness_count']) +')'
+    
+    
     return output
+#whichPocRequestV1()
+
 
 
 
