@@ -154,7 +154,7 @@ def whichPocRequestV1(activity_type):
     
     #show total number of valid witnesses with
     if bool(valid_witness):
-        output += ' (1:'+ str(hs['witness_count']) +')'
+        output += ', 1 of '+ str(hs['witness_count'])
     
     
     return output
