@@ -301,15 +301,14 @@ def discordSend():
 def main():
     getTime()
     loadActivityData()
+
+    #if activity data...
     loadHotspotDataAndStatusMsg()   
     loopActivities()
     discord_response = discordSend()
 
-    #print(hs)
-    #exit()
-
     #status log
-    print(f"{hs['time']} discord: {discord_response} msgs:{str(len(output_message))} act:{str(len(activities))}")
+    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord: {discord_response}")
 
 ### execute main() if main is first module
 if __name__ == '__main__':
