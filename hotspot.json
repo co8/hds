@@ -1,0 +1,42 @@
+{
+    "data": {
+        "speculative_nonce": 4,
+        "lng": -80.12911939100653,
+        "lat": 25.805645578810175,
+        "timestamp_added": "2021-06-23T17:39:52.000000Z",
+        "status": {
+            "timestamp": "2021-08-05T00:24:28.225000Z",
+            "online": "online",
+            "listen_addrs": [
+                "/ip4/207.244.181.48/tcp/44158"
+            ],
+            "height": 952459
+        },
+        "reward_scale": 0.5391693115234375,
+        "payer": "14sKWeeYWQWrBSnLGq79uRQqZyw3Ldi7oBdxbF6a54QboTNBXDL",
+        "owner": "14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH",
+        "nonce": 4,
+        "name": "thankful-cotton-crocodile",
+        "mode": "full",
+        "location_hex": "8844a111d3fffff",
+        "location": "8c44a111d29e3ff",
+        "last_poc_challenge": 954759,
+        "last_change_block": 954759,
+        "geocode": {
+            "short_street": "Sheridan Ave",
+            "short_state": "FL",
+            "short_country": "US",
+            "short_city": "Miami Beach",
+            "long_street": "Sheridan Avenue",
+            "long_state": "Florida",
+            "long_country": "United States",
+            "long_city": "Miami Beach",
+            "city_id": "bWlhbWkgYmVhY2hmbG9yaWRhdW5pdGVkIHN0YXRlcw"
+        },
+        "gain": 30,
+        "elevation": 3,
+        "block_added": 894109,
+        "block": 954960,
+        "address": "112MWdscG3DjHTxdCrtuLkkXNSbxCkbqkuiu8X9zFDwsBfa2teCD"
+    }
+}
