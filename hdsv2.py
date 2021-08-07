@@ -1,14 +1,40 @@
+#!/usr/bin/python3
+
+############################
+# 08/21 JULY
+# co8.com 
+# enrique r grullon
+# e@co8.com
+# discord: co8#1934 
+# HDS v2 - Hotspot Discord Status
+############################
+
+########
+# crontab -e
+# check every 5 minutes. log to file
+# */3 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
+#
+# @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
+# - run at reboot for dedicated device, eg: RasPi Zero W
+###
+# install DiscordWebhook module
+# % pip3 install discord-webhook
+########
 
 ####import libs
 from time import time
 import requests
 import json
 from datetime import datetime
+from discord_webhook import DiscordWebhook
 
 ###temp config
 config = {
     'hotspot' : '112MWdscG3DjHTxdCrtuLkkXNSbxCkbqkuiu8X9zFDwsBfa2teCD',
-    'owner' : '14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH'
+    'owner' : '14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH',
+    'cursor' : 'eyJtaW5fYmxvY2siOjg5NDEwOSwiYmxvY2siOjk1NTUwMCwiYW5jaG9yX2Jsb2NrIjo5NTU1MDB9',
+    'api_endpoint' : 'https://api.helium.io/v1/',
+    'discord_webhook' : 'https://discord.com/api/webhooks/868199594192928809/KQ_UeCUxVBqKLCy4Gsc2ZyP6cWG9DazvCLPoUUd7gKXbrqn1JUWZ85t7v0dqXU70oC8I'
 }
 
 ### vars
@@ -16,9 +42,9 @@ activities = output_message = []
 hs = {} #main dict
 welcome = True
 invalidReasonShortNames = {
-    'witness_too_close' : 'too close',
-    'witness_rssi_too_high' : 'RSSI too high',
-    'witness_rssi_below_lower_bound' : 'RSSI below lower bound'
+    'witness_too_close' : 'Too Close',
+    'witness_rssi_too_high' : 'RSSI Too High',
+    'witness_rssi_below_lower_bound' : 'RSSI Below Lower Bound'
 }
 rewardShortNames = {
     'poc_witnesses' : 'Witness',
@@ -27,11 +53,12 @@ rewardShortNames = {
     'data_credits' : 'Data'
 }
 
-###Time functions
-now = datetime.now()
-hs['now'] = round(datetime.timestamp(now))
-hs['time'] = str(now.strftime("%H:%M %D"))
-del now
+def getTime():
+    global hs
+    ###Time functions
+    now = datetime.now()
+    hs['now'] = round(datetime.timestamp(now))
+    hs['time'] = str(now.strftime("%H:%M %D"))
 
 ###functions
 def niceDate(time):
@@ -54,6 +81,7 @@ def niceHNTAmount(amt):
     # 8 decimal places for micropayments
     if amt > 0 and amt < 100000 :
         amt_output = '{:.8f}'.format(amt / niceNumSmall).rstrip('0')
+        amt_output = f"`{amt_output}`"
     return str(amt_output)
 
 #invalid reason nice name, or raw reason if not in dict
@@ -65,21 +93,15 @@ def niceInvalidReason(ir):
 
 ###activity type name to short name    
 def rewardShortName(reward_type):
+    output = reward_type.upper()
     if reward_type in rewardShortNames:
-        output = rewardShortNames[reward_type]
-    else:
-        output = reward_type.upper()
+        output = rewardShortNames[reward_type]  
     return output
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
     witnesses = {}
-    beacon_valid_witnesses = 0
-    output = 'challenge_accepted'
-    invalid_witness_reason = ''
-    has_witnesses = beacon_show_witnesses = valid_witness = False
     valid_text = '💩  Invalid'
-
     time = niceDate(activity['time'])
 
     #challenge accepted
@@ -106,17 +128,16 @@ def poc_receipts_v1(activity):
 
     #witness - valid and invalid
     elif 'witnesses' in activity['path'][0]:
-            witnesses = activity['path'][0]['witnesses']
-            for w in witnesses:
+            for w in activity['path'][0]['witnesses']:
                 if w['gateway'] == config['hotspot']:
                     witness_info = ''
                     if bool(w['is_valid']):
                         valid_witness = True
                         valid_text = '🤘  Valid'
-                        witness_info = ', 1 of '+ str(len(witnesses))
+                        witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
                     elif 'invalid_reason' in w:
                         valid_text = '💩  Invalid'
-                        witness_info = ' ('+ niceInvalidReason(w['invalid_reason']) +')'
+                        witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
 
                     output_message.append(f" {valid_text} Witness{witness_info} {time}")
     
@@ -124,11 +145,13 @@ def poc_receipts_v1(activity):
     else:
         output_message.append(f" 🏁  poc_receipts_v1() NO MATCH {time}")
 
-def loadActivityData():
+def loadLOCALActivityData():
     global activities
+
     ###load data.json
-    with open("data.json") as json_data_file:
+    with open("data-short.json") as json_data_file:
         data = json.load(json_data_file)
+    
     if not data['data']:
         print(f"no activities data {hs['time']}")
         quit()
@@ -136,20 +159,35 @@ def loadActivityData():
         activities = data['data']
     del data
 
-def loadHotspotData():
+def loadActivityData():
+    global activities, hs
+    activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
+    activity_request = requests.get(activity_endpoint)
+    data = activity_request.json()
+    
+    if not data['data']:
+        print(f"no activities data {hs['time']}\n")
+        quit()
+    else:
+        activities = data['data']
+
+def loadHotspotDataAndStatusMsg():
     ###hotspot data
     global hs
-    ###load data.json
-    with open("hotspot.json") as json_data_file:
-        data = json.load(json_data_file)
+    new_balance = new_reward_scale = new_height_percentage = False
+
+    hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
+    hs_request = requests.get(hs_endpoint)
+    data = hs_request.json()
     if not data['data']:
         print(f"no hotspot data {hs['time']}")
         quit()
     else:
         hotspot_data = data['data']
-    
+    del hs_request
+
     ### hotspot data
-    hs = {
+    hs_add = {
         'owner' : hotspot_data['owner'],
         'name' : niceHotspotName(hotspot_data['name']),
         'status' : str(hotspot_data['status']['online']).upper(),
@@ -158,12 +196,59 @@ def loadHotspotData():
         'reward_scale' : '{:.2f}'.format(round(hotspot_data['reward_scale'],2)),
         'witness_count' : ''
     }
+    hs.update(hs_add)
     hs['initials'] = niceHotspotInitials(hs['name'])
     del data, hotspot_data
+
+    ###block height percentage
+    config_height_percentage = ''
+    #if 'height_percentage_last' in config:
+    #   config_height_percentage = config['height_percentage_last']
+    hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
+    if(hs['height_percentage'] >= 100):
+        hs['height_percentage'] = 100
+    if hs['height_percentage'] > 98:
+        hs['height_percentage'] = "*NSYNC"
+    else:
+        hs['height_percentage'] = str(hs['height_percentage']) +'%'
+    
+    ###wallet data
+    wallet_request = requests.get(config['api_endpoint'] +"accounts/"+ hs['owner'])
+    w = wallet_request.json()
+    hs['balance'] = niceHNTAmount(w['data']['balance'])
+    if 'balance_last' not in config:
+        config['balance_last'] = '0'
+    ###add to config if new
+    if hs['balance'] != config['balance_last']:
+        new_balance = True
+        #config['balance_last'] = hs['balance']
+    del wallet_request, w
+    
+    #### STYLE
+    ### bold balance if has changed
+    balance_style = hs['balance'] #+' hnt'
+    #if bool(new_balance):
+    #    balance_style = '**'+ balance_style +'**'
+    ### bold reward_scale if has changed
+    reward_scale_style = hs['reward_scale']
+    if bool(new_reward_scale):
+        reward_scale_style = '**'+ reward_scale_style +'**'
+    ### bold height_percentage if has changed
+    height_percentage_style = hs['height_percentage']
+    if bool(new_height_percentage):
+        height_percentage_style = '**'+ height_percentage_style +'**'
+    ### bold status if not online
+    status_style = hs['status']
+    if hs['status'] != 'ONLINE':
+        status_style = '**'+ hs['status'] +'**'
+
+    #default status msg
+    discord_content = ' 📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +'  🥓 '+ balance_style
+        
+    output_message.insert(0, discord_content)
+
     if bool(welcome):
         output_message.insert(0, f" 🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
-    else:
-        output_message.insert(0, f"{hs['initials']} status message here")
     
 
 ########################################################
@@ -197,19 +282,35 @@ def loopActivities():
         #other
         else:
             output_message.append(f" 🏁  Activity: {activity['type']} {time}")
-#loopActivities()       
+#loopActivities()  
+
+def discordSend():
+    msg = '\n'.join(output_message)
+    webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
+    ###send
+    webhook_response = webhook.execute()
+    return webhook_response
+    
+    ###update config
+    #config['status_last_sent'] = hs['now']
+    #UpdateConfig(config)
+
+
 
 #########################
 ### main
 def main():
+    getTime()
     loadActivityData()
-    loadHotspotData()
+    loadHotspotDataAndStatusMsg()   
     loopActivities()
+    discord_response = discordSend()
 
-    #count
-    print('activities: '+ str(len(activities)))
-    print('output_message count:'+ str(len(output_message)))
-    print(*output_message, sep="\n")
+    #print(hs)
+    #exit()
+
+    #status log
+    print(f"{hs['time']} discord: {discord_response} msgs: {str(len(output_message))}/{str(len(activities))}")
 
 ### execute main() if main is first module
 if __name__ == '__main__':
