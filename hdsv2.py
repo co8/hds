@@ -13,7 +13,6 @@
 # crontab -e
 # check every 5 minutes. log to file
 # */3 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
-#
 # @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -40,7 +39,7 @@ config = {
 ### vars
 activities = output_message = []
 hs = {} #main dict
-welcome = True
+welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
