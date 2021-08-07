@@ -309,7 +309,7 @@ def main():
     #exit()
 
     #status log
-    print(f"{hs['time']} discord: {discord_response} msgs: {str(len(output_message))}/{str(len(activities))}")
+    print(f"{hs['time']} discord: {discord_response} msgs:{str(len(output_message))} act:{str(len(activities))}")
 
 ### execute main() if main is first module
 if __name__ == '__main__':
