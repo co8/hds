@@ -27,14 +27,17 @@ import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
-###temp config
-config = {
-    'hotspot' : '112MWdscG3DjHTxdCrtuLkkXNSbxCkbqkuiu8X9zFDwsBfa2teCD',
-    'owner' : '14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH',
-    'cursor' : 'eyJtaW5fYmxvY2siOjg5NDEwOSwiYmxvY2siOjk1NTUwMCwiYW5jaG9yX2Jsb2NrIjo5NTU1MDB9',
-    'api_endpoint' : 'https://api.helium.io/v1/',
-    'discord_webhook' : 'https://discord.com/api/webhooks/868199594192928809/KQ_UeCUxVBqKLCy4Gsc2ZyP6cWG9DazvCLPoUUd7gKXbrqn1JUWZ85t7v0dqXU70oC8I'
-}
+###load config.json vars
+config_file = "configv2.json"
+def loadConfig():
+    global config
+    with open(config_file) as json_data_file:
+        config = json.load(json_data_file)
+
+def updateConfig():
+    global config
+    with open(config_file, "w") as outfile:
+        json.dump(config, outfile)
 
 ### vars
 activities = output_message = []
@@ -164,10 +167,23 @@ def loadActivityData():
     activity_request = requests.get(activity_endpoint)
     data = activity_request.json()
     
+    #print(data['data'][0]['time'] )
+    #exit()
+
+    #no data
     if not data['data']:
-        print(f"no activities data {hs['time']}\n")
+        print(f"{hs['time']} no activities\n")
         quit()
+    
+    #data, but activity_last_time matches data['data'][0][time]
+    elif data['data'] and 'activity_last_time' in config and config['activity_last_time'] == data['data'][0]['time']:
+        print(f"{hs['time']} repeat activities\n")
+        quit()
+     
     else:
+        #update config
+        config['activity_last_time'] = data['data'][0]['time']
+        updateConfig()
         activities = data['data']
 
 def loadHotspotDataAndStatusMsg():
@@ -299,6 +315,7 @@ def discordSend():
 #########################
 ### main
 def main():
+    loadConfig()
     getTime()
     loadActivityData()
 
