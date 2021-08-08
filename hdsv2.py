@@ -126,13 +126,13 @@ def loadActivityData():
     #try to get json or return error
     try:
         #LIVE API data
-        #activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
-        #activity_request = requests.get(activity_endpoint)
-        #data = activity_request.json()
+        activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
+        activity_request = requests.get(activity_endpoint)
+        data = activity_request.json()
 
         ###LOCAL load data.json
-        with open("data-broken.json") as json_data_file:
-           data = json.load(json_data_file)
+        #with open("data-broken.json") as json_data_file:
+        #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} API JSON Error: no data")
