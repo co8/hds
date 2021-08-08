@@ -348,6 +348,12 @@ def discordSend():
     #send if more than 1 (default) msg
     elif len(output_message) > 1:
         send = True
+    
+    #don't send if only 1 element - Status msg
+    elif len(output_message) == 1:
+        send = False
+        print(f"{hs['time']} repeat activities (history)")
+        quit()
 
     if bool(send):
         msg = '\n'.join(output_message)
