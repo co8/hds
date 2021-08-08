@@ -120,7 +120,7 @@ def rewardShortName(reward_type):
         output = rewardShortNames[reward_type]  
     return output
 
-def loadLOCALActivityData():
+def LOCAL_loadActivityData():
     global activities
 
     ###load data.json
@@ -152,15 +152,15 @@ def loadActivityData():
     #    config['last_activity_time'] = hs['now']
     #    updateConfig()
         
-    #no data
-    if not bool(status_send) and not data['data']:
+    #no data or status_send false
+    if not data['data']: #or not bool(status_send):
         print(f"{hs['time']} no activities")
         quit()
   
     #data, but last_activity_time matches data['data'][0][time]
-    if data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
-        print(f"{hs['time']} repeat activities")
-        quit()
+    #if data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
+    #   print(f"{hs['time']} repeat activities")
+    #   quit()
     
     #set activities, set last_activity_time, update config
     else:
@@ -168,8 +168,8 @@ def loadActivityData():
         activities = data['data']
 
         #update config
-        config['last_activity_time'] = data['data'][0]['time']
-        updateConfig()
+        #config['last_activity_time'] = data['data'][0]['time']
+        #updateConfig()
         
 
 ###activity type poc_receipts_v1
@@ -346,9 +346,9 @@ def discordSend():
         send = True
 
     #send if more than 1 (default) msg
-    #elif len(output_message) > 1:
-    #    send = True
-    
+    elif len(output_message) > 1:
+        send = True
+
     if bool(send):
         msg = '\n'.join(output_message)
         webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
