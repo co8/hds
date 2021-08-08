@@ -35,7 +35,7 @@ hs = {} #main dict
 status_lapse = 0
 status_lapse_hours = 1
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
-send = status_send = False
+send = status_send = add_welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -131,7 +131,7 @@ def loadActivityData():
         data = activity_request.json()
 
         ###LOCAL load data.json
-        #with open("data-broken.json") as json_data_file:
+        #with open("data-short.json") as json_data_file:
         #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
@@ -146,9 +146,6 @@ def loadActivityData():
     if hs['now'] > status_lapse:
         print(f"{hs['time']} status msg")
         send = status_send = True
-       #update last_activity_time to be last status sent
-        config['last_activity_time'] = hs['now']
-        updateConfig()
         
     #no data or status_send false
     elif not data['data']: #or not bool(status_send):
@@ -254,7 +251,7 @@ def loopActivities():
 
 def loadHotspotDataAndStatusMsg():
     ###hotspot data
-    global hs, config
+    global hs, config, add_welcome
     new_balance = new_reward_scale = new_height_percentage = False
 
     hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
@@ -297,12 +294,12 @@ def loadHotspotDataAndStatusMsg():
     wallet_request = requests.get(config['api_endpoint'] +"accounts/"+ hs['owner'])
     w = wallet_request.json()
     hs['balance'] = niceHNTAmount(w['data']['balance'])
-    if 'balance_last' not in config:
-        config['balance_last'] = '0'
+    #if 'balance_last' not in config:
+    #    config['balance_last'] = '0'
     ###add to config if new
-    if hs['balance'] != config['balance_last']:
-        new_balance = True
-        #config['balance_last'] = hs['balance']
+    #if hs['balance'] != config['balance_last']:
+    #    new_balance = True
+    #    config['balance_last'] = hs['balance']
     del wallet_request, w
     
     #### STYLE
@@ -329,28 +326,33 @@ def loadHotspotDataAndStatusMsg():
     #insert to top of output_message
     output_message.insert(0, discord_content)
 
-    #add welcome msg to output if no config[last_activity_time]
-    if not 'last_activity_time' in config:
-        output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
-
 def discordSend():
-    global send
+    global send, add_welcome
 
     #send if no last_activity_time in config
     if not 'last_activity_time' in config:
-        send = True
+        send = add_welcome = True
 
     #send if more than 1 (default) msg
     elif len(output_message) > 1:
         send = True
     
-    #don't send if only 1 element - Status msg only
-    elif not bool(status_send) and len(output_message) == 1:
+    #don't send 
+    elif not bool(status_send):
         send = False
         print(f"{hs['time']} repeat activities (history)")
         quit()
 
+
+    #add welcome msg to output if no config[last_activity_time]
+    if bool(add_welcome):
+        output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
+
     if bool(send):
+        #update last_activity_time to be last status sent
+        config['last_activity_time'] = hs['now']
+        updateConfig()
+
         msg = '\n'.join(output_message)
         webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
         ###send
