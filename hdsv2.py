@@ -120,25 +120,23 @@ def rewardShortName(reward_type):
         output = rewardShortNames[reward_type]  
     return output
 
-def LOCAL_loadActivityData():
-    global activities
-
-    ###load data.json
-    with open("data-short.json") as json_data_file:
-        data = json.load(json_data_file)
-    
-    if not data['data']:
-        print(f"no activities data {hs['time']}")
-        quit()
-    else:
-        activities = data['data']
-    del data
-
 def loadActivityData():
     global activities, config, hs, status_lapse, send, status_send
-    activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
-    activity_request = requests.get(activity_endpoint)
-    data = activity_request.json()
+
+    #try to get json or return error
+    try:
+        #LIVE API data
+        #activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
+        #activity_request = requests.get(activity_endpoint)
+        #data = activity_request.json()
+
+        ###LOCAL load data.json
+        with open("data-broken.json") as json_data_file:
+           data = json.load(json_data_file)
+
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
+        print(f"{hs['time']} API JSON Error: no data")
+        quit()
     
     #set status_lapse if last_activity_time exists
     if 'last_activity_time' in config:
