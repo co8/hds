@@ -34,7 +34,7 @@ activities = output_message = activity_history = []
 hs = {} #main dict
 status_lapse = 0
 status_lapse_hours = 1
-status_lapse_seconds = int(60 * 60 * 60 * status_lapse_hours)
+status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 send = status_send = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
@@ -145,22 +145,17 @@ def loadActivityData():
         status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
     #send if time lapse since last status met
-    #if hs['now'] > status_lapse:
-    #    print(f"{hs['time']} status msg")
-    #    send = status_send = True
-    #    update last_activity_time to be last status sent
-    #    config['last_activity_time'] = hs['now']
-    #    updateConfig()
+    if hs['now'] > status_lapse:
+        print(f"{hs['time']} status msg")
+        send = status_send = True
+       #update last_activity_time to be last status sent
+        config['last_activity_time'] = hs['now']
+        updateConfig()
         
     #no data or status_send false
     if not data['data']: #or not bool(status_send):
         print(f"{hs['time']} no activities")
         quit()
-  
-    #data, but last_activity_time matches data['data'][0][time]
-    #if data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
-    #   print(f"{hs['time']} repeat activities")
-    #   quit()
     
     #set activities, set last_activity_time, update config
     else:
@@ -261,7 +256,7 @@ def loopActivities():
 
 def loadHotspotDataAndStatusMsg():
     ###hotspot data
-    global hs
+    global hs, config
     new_balance = new_reward_scale = new_height_percentage = False
 
     hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
@@ -289,7 +284,7 @@ def loadHotspotDataAndStatusMsg():
     del data, hotspot_data
 
     ###block height percentage
-    config_height_percentage = ''
+    #config_height_percentage = ''
     #if 'height_percentage_last' in config:
     #   config_height_percentage = config['height_percentage_last']
     hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
@@ -332,11 +327,13 @@ def loadHotspotDataAndStatusMsg():
 
     #default status msg
     discord_content = ' 📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +'  🥓 '+ balance_style
-        
+    
+    #insert to top of output_message
     output_message.insert(0, discord_content)
 
-    #if not 'last_activity_time' in config:
-    #    output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
+    #add welcome msg to output if no config[last_activity_time]
+    if not 'last_activity_time' in config:
+        output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
 
 def discordSend():
     global send
@@ -350,7 +347,7 @@ def discordSend():
         send = True
     
     #don't send if only 1 element - Status msg only
-    elif len(output_message) == 1:
+    elif not bool(status_send) and len(output_message) == 1:
         send = False
         print(f"{hs['time']} repeat activities (history)")
         quit()
@@ -381,7 +378,8 @@ def main():
     updateActivityHistory()
 
     #status log
-    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord: {discord_response_reason}")
+    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
+
 
 ### execute main() if main is first module
 if __name__ == '__main__':
