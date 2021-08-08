@@ -145,7 +145,7 @@ def poc_receipts_v1(activity):
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏓  ...Challenge Accepted  {time}")
+        output_message.append(f"🏓  ...Challenged Beaconer  {time}")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
@@ -158,7 +158,7 @@ def poc_receipts_v1(activity):
         for wit in activity['path'][0]['witnesses']:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
-        msg = f" 🌋  Beacon Sent, {str(wit_count)} Witness{wit_plural}"
+        msg = f" 🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
         if bool(valid_wit_count):
             msg += f", {valid_wit_count} Valid"
         msg += f"  {time}"
@@ -195,7 +195,7 @@ def loopActivities():
             for reward in activity['rewards']:
                 rew = rewardShortName(reward['type'])
                 amt = niceHNTAmount(reward['amount'])
-                output_message.append(f"  REWARD: {rew}  🥓 {amt}  {time}")
+                output_message.append(f"🍪  Rewards: {rew}  🥓 {amt}  {time}")
         #transferred data
         elif activity['type'] == 'state_channel_close_v1':
             for summary in activity['state_channel']['summaries']:
