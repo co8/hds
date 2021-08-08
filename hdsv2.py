@@ -141,9 +141,11 @@ def loadActivityData():
     status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
      #send if time lapse since last status met
-    if hs['now'] >= status_lapse:
+    if hs['now'] > status_lapse:
         print(f"{hs['time']} status msg")
         send = status_send = True
+        #update last_activity_time to be last status sent
+        config['last_activity_time'] = hs['now']
         
     #no data
     elif not data['data']:
