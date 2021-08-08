@@ -172,17 +172,18 @@ def loadActivityData():
 
     #no data
     if not data['data']:
-        print(f"{hs['time']} no activities\n")
+        print(f"{hs['time']} no activities")
         quit()
     
-    #data, but activity_last_time matches data['data'][0][time]
-    elif data['data'] and 'activity_last_time' in config and config['activity_last_time'] == data['data'][0]['time']:
-        print(f"{hs['time']} repeat activities\n")
+    #data, but last_activity_time matches data['data'][0][time]
+    elif data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
+        print(f"{hs['time']} repeat activities")
         quit()
-     
+    
+    #update config and set activities lst
     else:
         #update config
-        config['activity_last_time'] = data['data'][0]['time']
+        config['last_activity_time'] = data['data'][0]['time']
         updateConfig()
         activities = data['data']
 
