@@ -27,22 +27,11 @@ import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
-###load config.json vars
-config_file = "configv2.json"
-def loadConfig():
-    global config
-    with open(config_file) as json_data_file:
-        config = json.load(json_data_file)
-
-def updateConfig():
-    global config
-    with open(config_file, "w") as outfile:
-        json.dump(config, outfile)
-
 ### vars
-activities = output_message = []
+config_file = "configv2.json"
+activities = output_message = activity_history = []
 hs = {} #main dict
-welcome = False
+status_interval_seconds = 3600 # 1hr  #856800 # ±4hrs
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -54,6 +43,33 @@ rewardShortNames = {
     'poc_challengers' : 'Challenger',
     'data_credits' : 'Data'
 }
+
+
+###load config.json vars
+def loadConfig():
+    global config
+    with open(config_file) as json_data_file:
+        config = json.load(json_data_file)
+
+def updateConfig():
+    global config
+    with open(config_file, "w") as outfile:
+        json.dump(config, outfile)
+
+def loadActivityHistory():
+    global activity_history
+    with open('activity_history.json') as json_data_file:
+        activity_history = json.load(json_data_file)
+
+def updateActivityHistory():
+    global activity_history
+
+    #truncate to newest 10 activities
+    if len(activity_history) > 10: 
+        del activity_history[10:]
+
+    with open('activity_history.json', "w") as outfile:
+        json.dump(activity_history, outfile)
 
 def getTime():
     global hs
@@ -158,7 +174,7 @@ def poc_receipts_v1(activity):
         for wit in activity['path'][0]['witnesses']:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
-        msg = f" 🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
+        msg = f"🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
         if bool(valid_wit_count):
             msg += f", {valid_wit_count} Valid"
         msg += f"  {time}"
@@ -186,7 +202,14 @@ def poc_receipts_v1(activity):
 
 def loopActivities():
     for activity in activities:
-        
+
+        #skip if activity is in history
+        if activity['hash'] in activity_history:
+            break
+        #save activity hash if not found
+        else:
+            activity_history.append(activity['hash'])
+
         #activity time
         time = niceDate(activity['time'])
         
@@ -195,7 +218,7 @@ def loopActivities():
             for reward in activity['rewards']:
                 rew = rewardShortName(reward['type'])
                 amt = niceHNTAmount(reward['amount'])
-                output_message.append(f"🍪  Rewards: {rew}  🥓 {amt}  {time}")
+                output_message.append(f"🤙  REWARD: {rew}  🥓 {amt}  {time}")
         #transferred data
         elif activity['type'] == 'state_channel_close_v1':
             for summary in activity['state_channel']['summaries']:
@@ -290,19 +313,33 @@ def loadHotspotDataAndStatusMsg():
         
     output_message.insert(0, discord_content)
 
-    if bool(welcome):
-        output_message.insert(0, f" 🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
+    #if not 'last_activity_time' in config:
+    #    output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
 
 def discordSend():
-    msg = '\n'.join(output_message)
-    webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
-    ###send
-    webhook_response = webhook.execute()
-    return webhook_response.reason
+    #more than one msg, default, in order to send
+    global status_lapse
+    status_lapse = int(config['last_activity_time'] + status_interval_seconds)
+    send = False
     
-    ###update config
-    #config['status_last_sent'] = hs['now']
-    #UpdateConfig(config)
+    #do not send if time lapse not met
+    if status_lapse > hs['now']:
+        send = False
+    
+    #send if no last_activity_time in config
+    elif not 'last_activity_time' in config:
+        send = True
+
+    #send if more than 1 (default) msg
+    elif len(output_message) > 1:
+        send = True
+    
+    if bool(send):
+        msg = '\n'.join(output_message)
+        webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
+        ###send
+        webhook_response = webhook.execute()
+        return webhook_response.reason
 
 
 
@@ -310,6 +347,7 @@ def discordSend():
 ### main
 def main():
     loadConfig()
+    loadActivityHistory()
     getTime()
     loadActivityData()
 
@@ -317,6 +355,9 @@ def main():
     loadHotspotDataAndStatusMsg()   
     loopActivities()
     discord_response_reason = discordSend()
+
+    #update history
+    updateActivityHistory()
 
     #status log
     print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord: {discord_response_reason}")
