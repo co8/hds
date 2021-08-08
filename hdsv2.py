@@ -31,7 +31,7 @@ from discord_webhook import DiscordWebhook
 config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
-status_interval_seconds = 3600 # 1hr  #856800 # ±4hrs
+status_lapse_seconds = 200 # 1hr  #856800 # ±4hrs
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -116,7 +116,7 @@ def rewardShortName(reward_type):
         output = rewardShortNames[reward_type]  
     return output
 
-def loadLOCALActivityData():
+def loadActivityData():
     global activities
 
     ###load data.json
@@ -130,7 +130,7 @@ def loadLOCALActivityData():
         activities = data['data']
     del data
 
-def loadActivityData():
+def loadLIVEActivityData():
     global activities, hs
     activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
     activity_request = requests.get(activity_endpoint)
@@ -319,12 +319,15 @@ def loadHotspotDataAndStatusMsg():
 def discordSend():
     #more than one msg, default, in order to send
     global status_lapse
-    status_lapse = int(config['last_activity_time'] + status_interval_seconds)
+    status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
     send = False
-    
-    #do not send if time lapse not met
-    if status_lapse > hs['now']:
-        send = False
+
+    #send if time lapse since last status met
+    if hs['now'] > status_lapse:
+        send = True
+
+    #print(status_lapse, hs['now'],send)
+    #exit()
     
     #send if no last_activity_time in config
     elif not 'last_activity_time' in config:
