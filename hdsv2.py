@@ -151,7 +151,7 @@ def loadActivityData():
         updateConfig()
         
     #no data or status_send false
-    if not data['data']: #or not bool(status_send):
+    elif not data['data']: #or not bool(status_send):
         print(f"{hs['time']} no activities")
         quit()
     
