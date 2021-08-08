@@ -69,8 +69,8 @@ def updateActivityHistory():
     global activity_history
 
     #truncate to newest 10 activities
-    if len(activity_history) > 10: 
-        del activity_history[10:]
+    if len(activity_history) > 25: 
+        del activity_history[25:]
 
     with open('activity_history.json', "w") as outfile:
         json.dump(activity_history, outfile)
@@ -145,12 +145,12 @@ def loadActivityData():
         status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
     #send if time lapse since last status met
-    if hs['now'] > status_lapse:
-        print(f"{hs['time']} status msg")
-        send = status_send = True
-        #update last_activity_time to be last status sent
-        config['last_activity_time'] = hs['now']
-        updateConfig()
+    #if hs['now'] > status_lapse:
+    #    print(f"{hs['time']} status msg")
+    #    send = status_send = True
+    #    update last_activity_time to be last status sent
+    #    config['last_activity_time'] = hs['now']
+    #    updateConfig()
         
     #no data
     if not bool(status_send) and not data['data']:
@@ -225,8 +225,9 @@ def loopActivities():
         for activity in activities:
 
             #skip if activity is in history
-            if activity['hash'] in activity_history:
-                break
+            if (activity['hash'] in activity_history):
+                continue #skip this element, continue for-loop
+
             #save activity hash if not found
             else:
                 activity_history.append(activity['hash'])
