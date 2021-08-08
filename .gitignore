@@ -1,4 +1,5 @@
 
+configv2.json
 config.json
 data.json
 invalid_witness.json
@@ -6,3 +7,4 @@ hds.og.py
 hds-bu.py
 hds-bu.py
 hds.20210717105000.py
+configv2.json

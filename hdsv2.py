@@ -100,53 +100,6 @@ def rewardShortName(reward_type):
         output = rewardShortNames[reward_type]  
     return output
 
-###activity type poc_receipts_v1
-def poc_receipts_v1(activity):
-    witnesses = {}
-    valid_text = '💩  Invalid'
-    time = niceDate(activity['time'])
-
-    #challenge accepted
-    if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🤼  ...Challenge Accepted {time}")
-
-    #beacon sent
-    elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
-        wit_count = len(activity['path'][0]['witnesses'])
-        wit_plural = ''
-        valid_wit_count = 0
-        if wit_count != 1:
-            wit_plural = 'es'
-        
-        for wit in activity['path'][0]['witnesses']:
-            if bool(wit['is_valid']):
-                valid_wit_count = valid_wit_count +1
-        msg = f" 🌋  Beacon Sent, {str(wit_count)} Witness{wit_plural}"
-        if bool(valid_wit_count):
-            msg += f", {valid_wit_count} Valid"
-        msg += f" {time}"
-        output_message.append(msg)
-          
-
-    #witness - valid and invalid
-    elif 'witnesses' in activity['path'][0]:
-            for w in activity['path'][0]['witnesses']:
-                if w['gateway'] == config['hotspot']:
-                    witness_info = ''
-                    if bool(w['is_valid']):
-                        valid_witness = True
-                        valid_text = '🤘  Valid'
-                        witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
-                    elif 'invalid_reason' in w:
-                        valid_text = '💩  Invalid'
-                        witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
-
-                    output_message.append(f"{valid_text} Witness{witness_info} {time}")
-    
-    #other
-    else:
-        output_message.append(f"🏁  poc_receipts_v1() NO MATCH {time}")
-
 def loadLOCALActivityData():
     global activities
 
@@ -183,6 +136,83 @@ def loadActivityData():
         config['last_activity_time'] = data['data'][0]['time']
         updateConfig()
         activities = data['data']
+
+###activity type poc_receipts_v1
+def poc_receipts_v1(activity):
+    witnesses = {}
+    valid_text = '💩  Invalid'
+    time = niceDate(activity['time'])
+
+    #challenge accepted
+    if 'challenger' in activity and activity['challenger'] == config['hotspot']:
+        output_message.append(f"🏓  ...Challenge Accepted  {time}")
+
+    #beacon sent
+    elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
+        wit_count = len(activity['path'][0]['witnesses'])
+        wit_plural = ''
+        valid_wit_count = 0
+        if wit_count != 1:
+            wit_plural = 'es'
+        
+        for wit in activity['path'][0]['witnesses']:
+            if bool(wit['is_valid']):
+                valid_wit_count = valid_wit_count +1
+        msg = f" 🌋  Beacon Sent, {str(wit_count)} Witness{wit_plural}"
+        if bool(valid_wit_count):
+            msg += f", {valid_wit_count} Valid"
+        msg += f"  {time}"
+        output_message.append(msg)
+          
+
+    #witness of beacon - valid and invalid
+    elif 'witnesses' in activity['path'][0]:
+            for w in activity['path'][0]['witnesses']:
+                if w['gateway'] == config['hotspot']:
+                    witness_info = ''
+                    if bool(w['is_valid']):
+                        valid_witness = True
+                        valid_text = '🤘  Valid'
+                        witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
+                    elif 'invalid_reason' in w:
+                        valid_text = '💩  Invalid'
+                        witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
+
+                    output_message.append(f"{valid_text} Witness{witness_info}  {time}")
+    
+    #other
+    else:
+        output_message.append(f"🏁  poc_receipts_v1() NO MATCH  {time}")
+
+def loopActivities():
+    for activity in activities:
+        
+        #activity time
+        time = niceDate(activity['time'])
+        
+        #reward
+        if activity['type'] == 'rewards_v2':
+            for reward in activity['rewards']:
+                rew = rewardShortName(reward['type'])
+                amt = niceHNTAmount(reward['amount'])
+                output_message.append(f"  REWARD: {rew}  🥓 {amt}  {time}")
+        #transferred data
+        elif activity['type'] == 'state_channel_close_v1':
+            for summary in activity['state_channel']['summaries']:
+                output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  {time}")
+        
+        #...challenge accepted
+        elif activity['type'] == 'poc_request_v1':
+            output_message.append(f"🎲  Created Challenge...  {time}")
+
+        #beacon, valid witness, invalid witness
+        elif activity['type'] == 'poc_receipts_v1':
+            poc_receipts_v1(activity)
+        
+        #other
+        else:
+            output_message.append(f"🏁  Activity: {activity['type']}  {time}")
+#loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
     ###hotspot data
@@ -262,40 +292,6 @@ def loadHotspotDataAndStatusMsg():
 
     if bool(welcome):
         output_message.insert(0, f" 🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
-    
-
-########################################################
-
-
-def loopActivities():
-    for activity in activities:
-        
-        #activity time
-        time = niceDate(activity['time'])
-        
-        #reward
-        if activity['type'] == 'rewards_v2':
-            for reward in activity['rewards']:
-                rew = rewardShortName(reward['type'])
-                amt = niceHNTAmount(reward['amount'])
-                output_message.append(f"🌊  REWARD: {rew}  🥓 {amt}  {time}")
-        #transferred data
-        elif activity['type'] == 'state_channel_close_v1':
-            for summary in activity['state_channel']['summaries']:
-                output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC) {time}")
-        
-        #...challenge accepted
-        elif activity['type'] == 'poc_request_v1':
-            output_message.append(f"🏓  Created Challenge... {time}")
-
-        #beacon, valid witness, invalid witness
-        elif activity['type'] == 'poc_receipts_v1':
-            poc_receipts_v1(activity)
-        
-        #other
-        else:
-            output_message.append(f"🏁  Activity: {activity['type']} {time}")
-#loopActivities()  
 
 def discordSend():
     msg = '\n'.join(output_message)
