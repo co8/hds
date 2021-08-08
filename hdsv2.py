@@ -32,7 +32,7 @@ config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
 status_lapse_hours = 1
-status_lapse_seconds = int(60 * 60 * status_lapse_hours)
+status_lapse_seconds = int(60 * 60 * 60 * status_lapse_hours)
 send = status_send = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
