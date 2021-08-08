@@ -11,7 +11,7 @@
 
 ########
 # crontab -e
-# check every 5 minutes. log to file
+# check every 1 minute. log to file
 # */1 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
@@ -33,7 +33,7 @@ config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
 status_lapse = 0
-status_lapse_hours = 1
+status_lapse_hours = 3 #status msg every X hours from last msg
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
@@ -156,11 +156,10 @@ def loadActivityData():
     else:
         send = True
         activities = data['data']
+    
+    print(f"ln160 activities:{len(activities)}")
 
-        #update config
-        #config['last_activity_time'] = data['data'][0]['time']
-        #updateConfig()
-        
+
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -180,6 +179,7 @@ def poc_receipts_v1(activity):
         if wit_count != 1:
             wit_plural = 'es'
         
+        #beacon sent plus witness count and valid count
         for wit in activity['path'][0]['witnesses']:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
@@ -190,7 +190,7 @@ def poc_receipts_v1(activity):
         output_message.append(msg)
           
 
-    #witness of beacon - valid and invalid
+    #witness plus valid or invalid and reason
     elif 'witnesses' in activity['path'][0]:
             for w in activity['path'][0]['witnesses']:
                 if w['gateway'] == config['hotspot']:
@@ -208,8 +208,13 @@ def poc_receipts_v1(activity):
     #other
     else:
         output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
+    print(f"ln209 activities:{len(activities)}")
 
 def loopActivities():
+
+    #load history
+    loadActivityHistory()
+
     global status_send
     if not bool(status_send):
         for activity in activities:
@@ -247,6 +252,7 @@ def loopActivities():
             #other
             else:
                 output_message.append(f"🏁  Activity: {activity['type']}  `{time}`")
+    print(f"ln252 activities:{len(activities)}")
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -321,10 +327,12 @@ def loadHotspotDataAndStatusMsg():
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    discord_content = '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +'  🥓 '+ balance_style
+    status_msg = '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +'  🥓 '+ balance_style
     
     #insert to top of output_message
-    output_message.insert(0, discord_content)
+    output_message.insert(0, status_msg)
+    print(f"ln330 activities:{len(activities)}")
+
 
 def discordSend():
     global send, add_welcome
@@ -353,11 +361,13 @@ def discordSend():
         config['last_activity_time'] = hs['now']
         updateConfig()
 
-        msg = '\n'.join(output_message)
-        webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
+        discord_message = '\n'.join(output_message)
+        webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
         webhook_response = webhook.execute()
         return webhook_response.reason
+    
+    print(f"ln365 activities:{len(activities)}")
 
 
 
@@ -365,17 +375,18 @@ def discordSend():
 ### main
 def main():
     loadConfig()
-    loadActivityHistory()
     getTime()
     loadActivityData()
 
     #if activity data...
-    loadHotspotDataAndStatusMsg()   
+    loadHotspotDataAndStatusMsg()  
     loopActivities()
     discord_response_reason = discordSend()
 
     #update history
     updateActivityHistory()
+
+    print(f"ln382 activities:{len(activities)}")
 
     #status log
     print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
