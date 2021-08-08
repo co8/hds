@@ -39,7 +39,7 @@ send = status_send = add_welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
-    'witness_rssi_below_lower_bound' : 'RSSI b.l.b.'
+    'witness_rssi_below_lower_bound' : 'RSSI BLB'
 }
 rewardShortNames = {
     'poc_witnesses' : 'Witness',
