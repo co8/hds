@@ -31,7 +31,9 @@ from discord_webhook import DiscordWebhook
 config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
-status_lapse_seconds = 200 # 1hr  #856800 # ±4hrs
+status_lapse_hours = 1
+status_lapse_seconds = int(60 * 60 * status_lapse_hours)
+send = status_send = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -131,15 +133,23 @@ def loadLOCALActivityData():
     del data
 
 def loadActivityData():
-    global activities, hs
+    global activities, hs, status_lapse, send, status_send
     activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
     activity_request = requests.get(activity_endpoint)
     data = activity_request.json()
 
+    status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
+
+     #send if time lapse since last status met
+    if hs['now'] >= status_lapse:
+        print(f"{hs['time']} status msg")
+        send = status_send = True
+        
     #no data
-    if not data['data']:
+    elif not data['data']:
         print(f"{hs['time']} no activities")
         quit()
+
     
     #data, but last_activity_time matches data['data'][0][time]
     elif data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
@@ -201,40 +211,42 @@ def poc_receipts_v1(activity):
         output_message.append(f"🏁  poc_receipts_v1() NO MATCH,  {time}")
 
 def loopActivities():
-    for activity in activities:
+    global status_send
+    if not bool(status_send):
+        for activity in activities:
 
-        #skip if activity is in history
-        if activity['hash'] in activity_history:
-            break
-        #save activity hash if not found
-        else:
-            activity_history.append(activity['hash'])
+            #skip if activity is in history
+            if activity['hash'] in activity_history:
+                break
+            #save activity hash if not found
+            else:
+                activity_history.append(activity['hash'])
 
-        #activity time
-        time = niceDate(activity['time'])
-        
-        #reward
-        if activity['type'] == 'rewards_v2':
-            for reward in activity['rewards']:
-                rew = rewardShortName(reward['type'])
-                amt = niceHNTAmount(reward['amount'])
-                output_message.append(f"🤙  REWARD: {rew}  🥓 {amt},  {time}")
-        #transferred data
-        elif activity['type'] == 'state_channel_close_v1':
-            for summary in activity['state_channel']['summaries']:
-                output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC),  {time}")
-        
-        #...challenge accepted
-        elif activity['type'] == 'poc_request_v1':
-            output_message.append(f"🎲  Created Challenge...,  {time}")
+            #activity time
+            time = niceDate(activity['time'])
+            
+            #reward
+            if activity['type'] == 'rewards_v2':
+                for reward in activity['rewards']:
+                    rew = rewardShortName(reward['type'])
+                    amt = niceHNTAmount(reward['amount'])
+                    output_message.append(f"🤙  REWARD: {rew}  🥓 {amt},  {time}")
+            #transferred data
+            elif activity['type'] == 'state_channel_close_v1':
+                for summary in activity['state_channel']['summaries']:
+                    output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC),  {time}")
+            
+            #...challenge accepted
+            elif activity['type'] == 'poc_request_v1':
+                output_message.append(f"🎲  Created Challenge...,  {time}")
 
-        #beacon, valid witness, invalid witness
-        elif activity['type'] == 'poc_receipts_v1':
-            poc_receipts_v1(activity)
-        
-        #other
-        else:
-            output_message.append(f"🏁  Activity: {activity['type']},  {time}")
+            #beacon, valid witness, invalid witness
+            elif activity['type'] == 'poc_receipts_v1':
+                poc_receipts_v1(activity)
+            
+            #other
+            else:
+                output_message.append(f"🏁  Activity: {activity['type']},  {time}")
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -317,25 +329,15 @@ def loadHotspotDataAndStatusMsg():
     #    output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
 
 def discordSend():
-    #more than one msg, default, in order to send
-    global status_lapse
-    status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
-    send = False
+    global send
 
-    #send if time lapse since last status met
-    if hs['now'] > status_lapse:
-        send = True
-
-    #print(status_lapse, hs['now'],send)
-    #exit()
-    
     #send if no last_activity_time in config
-    elif not 'last_activity_time' in config:
+    if not 'last_activity_time' in config:
         send = True
 
     #send if more than 1 (default) msg
-    elif len(output_message) > 1:
-        send = True
+    #elif len(output_message) > 1:
+    #    send = True
     
     if bool(send):
         msg = '\n'.join(output_message)
