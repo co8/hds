@@ -12,7 +12,7 @@
 ########
 # crontab -e
 # check every 5 minutes. log to file
-# */3 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
+# */1 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
