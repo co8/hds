@@ -166,9 +166,6 @@ def loadActivityData():
     activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
     activity_request = requests.get(activity_endpoint)
     data = activity_request.json()
-    
-    #print(data['data'][0]['time'] )
-    #exit()
 
     #no data
     if not data['data']:
@@ -180,7 +177,7 @@ def loadActivityData():
         print(f"{hs['time']} repeat activities")
         quit()
     
-    #update config and set activities lst
+    #set activities, set last_activity_time, update config
     else:
         #update config
         config['last_activity_time'] = data['data'][0]['time']
@@ -281,7 +278,7 @@ def loopActivities():
             for reward in activity['rewards']:
                 rew = rewardShortName(reward['type'])
                 amt = niceHNTAmount(reward['amount'])
-                output_message.append(f" 🌊  REWARD: {rew}  🥓  {amt} {time}")
+                output_message.append(f" 🌊  REWARD: {rew}  🥓 {amt}  {time}")
         #transferred data
         elif activity['type'] == 'state_channel_close_v1':
             for summary in activity['state_channel']['summaries']:
