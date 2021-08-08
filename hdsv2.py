@@ -302,7 +302,7 @@ def discordSend():
     webhook = DiscordWebhook(url=config['discord_webhook'], content=msg)
     ###send
     webhook_response = webhook.execute()
-    return webhook_response
+    return webhook_response.reason
     
     ###update config
     #config['status_last_sent'] = hs['now']
@@ -320,10 +320,10 @@ def main():
     #if activity data...
     loadHotspotDataAndStatusMsg()   
     loopActivities()
-    discord_response = discordSend()
+    discord_response_reason = discordSend()
 
     #status log
-    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord: {discord_response}")
+    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord: {discord_response_reason}")
 
 ### execute main() if main is first module
 if __name__ == '__main__':
