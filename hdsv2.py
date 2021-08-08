@@ -108,7 +108,7 @@ def poc_receipts_v1(activity):
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f" 🤼  ...Challenge Accepted {time}")
+        output_message.append(f"🤼  ...Challenge Accepted {time}")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
@@ -141,11 +141,11 @@ def poc_receipts_v1(activity):
                         valid_text = '💩  Invalid'
                         witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
 
-                    output_message.append(f" {valid_text} Witness{witness_info} {time}")
+                    output_message.append(f"{valid_text} Witness{witness_info} {time}")
     
     #other
     else:
-        output_message.append(f" 🏁  poc_receipts_v1() NO MATCH {time}")
+        output_message.append(f"🏁  poc_receipts_v1() NO MATCH {time}")
 
 def loadLOCALActivityData():
     global activities
@@ -278,15 +278,15 @@ def loopActivities():
             for reward in activity['rewards']:
                 rew = rewardShortName(reward['type'])
                 amt = niceHNTAmount(reward['amount'])
-                output_message.append(f" 🌊  REWARD: {rew}  🥓 {amt}  {time}")
+                output_message.append(f"🌊  REWARD: {rew}  🥓 {amt}  {time}")
         #transferred data
         elif activity['type'] == 'state_channel_close_v1':
             for summary in activity['state_channel']['summaries']:
-                output_message.append(f" 🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC) {time}")
+                output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC) {time}")
         
         #...challenge accepted
         elif activity['type'] == 'poc_request_v1':
-            output_message.append(f" 🏓  Created Challenge... {time}")
+            output_message.append(f"🏓  Created Challenge... {time}")
 
         #beacon, valid witness, invalid witness
         elif activity['type'] == 'poc_receipts_v1':
@@ -294,7 +294,7 @@ def loopActivities():
         
         #other
         else:
-            output_message.append(f" 🏁  Activity: {activity['type']} {time}")
+            output_message.append(f"🏁  Activity: {activity['type']} {time}")
 #loopActivities()  
 
 def discordSend():
