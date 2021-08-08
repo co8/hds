@@ -21,6 +21,7 @@
 ########
 
 ####import libs
+from os import stat
 from time import time
 import requests
 import json
@@ -31,6 +32,7 @@ from discord_webhook import DiscordWebhook
 config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
+status_lapse = 0
 status_lapse_hours = 1
 status_lapse_seconds = int(60 * 60 * 60 * status_lapse_hours)
 send = status_send = False
@@ -133,37 +135,42 @@ def loadLOCALActivityData():
     del data
 
 def loadActivityData():
-    global activities, hs, status_lapse, send, status_send
+    global activities, config, hs, status_lapse, send, status_send
     activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
     activity_request = requests.get(activity_endpoint)
     data = activity_request.json()
+    
+    #set status_lapse if last_activity_time exists
+    if 'last_activity_time' in config:
+        status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
-    status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
-
-     #send if time lapse since last status met
+    #send if time lapse since last status met
     if hs['now'] > status_lapse:
         print(f"{hs['time']} status msg")
         send = status_send = True
         #update last_activity_time to be last status sent
         config['last_activity_time'] = hs['now']
+        updateConfig()
         
     #no data
-    elif not data['data']:
+    if not bool(status_send) and not data['data']:
         print(f"{hs['time']} no activities")
         quit()
-
-    
+  
     #data, but last_activity_time matches data['data'][0][time]
-    elif data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
+    if data['data'] and 'last_activity_time' in config and config['last_activity_time'] == data['data'][0]['time']:
         print(f"{hs['time']} repeat activities")
         quit()
     
     #set activities, set last_activity_time, update config
     else:
+        send = True
+        activities = data['data']
+
         #update config
         config['last_activity_time'] = data['data'][0]['time']
         updateConfig()
-        activities = data['data']
+        
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
