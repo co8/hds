@@ -116,7 +116,7 @@ def rewardShortName(reward_type):
         output = rewardShortNames[reward_type]  
     return output
 
-def loadActivityData():
+def loadLOCALActivityData():
     global activities
 
     ###load data.json
@@ -130,7 +130,7 @@ def loadActivityData():
         activities = data['data']
     del data
 
-def loadLIVEActivityData():
+def loadActivityData():
     global activities, hs
     activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
     activity_request = requests.get(activity_endpoint)
