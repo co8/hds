@@ -193,7 +193,7 @@ def loadActivityData():
         send = True
         activities = data['data']
     
-    print(f"ln160 activities:{len(activities)}")
+    #print(f"ln160 activities:{len(activities)}")
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -242,7 +242,7 @@ def poc_receipts_v1(activity):
     #other
     else:
         output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
-    print(f"ln209 activities:{len(activities)}")
+    #print(f"ln209 activities:{len(activities)}")
 
 def loopActivities():
 
@@ -286,7 +286,7 @@ def loopActivities():
             #other
             else:
                 output_message.append(f"🏁  Activity: {activity['type']}  `{time}`")
-    print(f"ln252 activities:{len(activities)}")
+    #print(f"ln252 activities:{len(activities)}")
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -365,7 +365,7 @@ def loadHotspotDataAndStatusMsg():
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
-    print(f"ln330 activities:{len(activities)}")
+    #print(f"ln330 activities:{len(activities)}")
 
 
 def discordSend():
@@ -401,7 +401,7 @@ def discordSend():
         webhook_response = webhook.execute()
         return webhook_response.reason
     
-    print(f"ln365 activities:{len(activities)}")
+    #print(f"ln365 activities:{len(activities)}")
 
 
 
@@ -421,7 +421,7 @@ def main():
     #update history
     updateActivityHistory()
 
-    print(f"ln382 activities:{len(activities)}")
+    #print(f"ln382 activities:{len(activities)}")
 
     #status log
     print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
