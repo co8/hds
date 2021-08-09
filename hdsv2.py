@@ -59,13 +59,13 @@ def LocalBobcatMinerReport():
         #try to get json or return error
         try:
             #LIVE local data
-            #bobcat_miner_json = config['bobcat_miner_local_ip'] +"miner.json"
-            #bobcat_request = requests.get(bobcat_miner_json)
-            #data = bobcat_request.json()
+            bobcat_miner_json = config['bobcat_miner_local_ip'] +"miner.json"
+            bobcat_request = requests.get(bobcat_miner_json)
+            data = bobcat_request.json()
 
             ###LOCAL load miner.json
-            with open("miner.json") as json_data_file:
-                data = json.load(json_data_file)
+            #with open("miner.json") as json_data_file:
+            #    data = json.load(json_data_file)
 
         except ValueError:  #includes simplejson.decoder.JSONDecodeError
             print(f"{hs['time']} Bobcat Miner Local API failure")
