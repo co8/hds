@@ -80,7 +80,7 @@ def LocalBobcatMinerReport():
         block_height = str.split(data['height'][0])
         block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
         
-        minerity_report = f"🏴‍☠️ **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        minerity_report = f"💀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
         output_message.insert(1, minerity_report)
 
         print(f"{hs['time']} bobcat miner report")
