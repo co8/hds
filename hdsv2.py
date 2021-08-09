@@ -193,7 +193,7 @@ def loadActivityData():
         send = True
         activities = data['data']
     
-    #print(f"ln160 activities:{len(activities)}")
+    #print( 160 activities:{len(activities)}")
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -218,7 +218,7 @@ def poc_receipts_v1(activity):
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
         msg = f"🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
-        if bool(valid_wit_count):
+        if bool(wit_count):
             msg += f", {valid_wit_count} Valid"
         msg += f"  `{time}`"
         output_message.append(msg)
