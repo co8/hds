@@ -224,7 +224,7 @@ def poc_receipts_v1(activity):
         output_message.append(msg)
           
 
-    #witness plus valid or invalid and reason
+    #witnessed beacon plus valid or invalid and invalid reason
     elif 'witnesses' in activity['path'][0]:
             for w in activity['path'][0]['witnesses']:
                 if w['gateway'] == config['hotspot']:
