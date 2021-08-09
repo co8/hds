@@ -1,11 +1,5 @@
 {
-  "DownloadSpeed": "8 Mbit/s",
-  "UploadSpeed": "27 Mbit/s",
-  "Latency": "27.726166ms"
-}
-
-{
-  "DownloadSpeed": "0 Mbit/s",
-  "UploadSpeed": "12 Mbit/s",
-  "Latency": "21.854916ms"
+  "DownloadSpeed": "88 Mbit/s",
+  "UploadSpeed": "45 Mbit/s",
+  "Latency": "22.425375ms"
 }

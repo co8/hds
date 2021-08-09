@@ -33,7 +33,7 @@ config_file = "configv2.json"
 activities = output_message = activity_history = []
 hs = {} #main dict
 status_lapse = 0
-status_lapse_hours = 3 #status msg every X hours from last msg
+status_lapse_hours = 6 #status msg every X hours from last msg
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
@@ -48,6 +48,42 @@ rewardShortNames = {
     'data_credits' : 'Data'
 }
 
+
+#### functions
+
+def LocalBobcatMinerReport():
+    global status_send, output_message
+
+    if 'bobcat_miner_local_ip' in config and bool(status_send):
+
+        #try to get json or return error
+        try:
+            #LIVE local data
+            #bobcat_miner_json = config['bobcat_miner_local_ip'] +"miner.json"
+            #bobcat_request = requests.get(bobcat_miner_json)
+            #data = bobcat_request.json()
+
+            ###LOCAL load miner.json
+            with open("miner.json") as json_data_file:
+                data = json.load(json_data_file)
+
+        except ValueError:  #includes simplejson.decoder.JSONDecodeError
+            print(f"{hs['time']} Bobcat Miner Local API failure")
+            quit()
+
+        temp_alert = str.capitalize(data['temp_alert'])
+        if temp_alert == 'Normal':
+            temp_alert = '👌 '
+        miner_state = str.capitalize(data['miner']['State'])
+        if miner_state == 'Running':
+            miner_state = '🏃‍♂️ '
+        block_height = str.split(data['height'][0])
+        block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
+        
+        minerity_report = f"🏴‍☠️ **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        output_message.insert(1, minerity_report)
+
+        print(f"{hs['time']} bobcat miner report")
 
 ###load config.json vars
 def loadConfig():
@@ -135,7 +171,7 @@ def loadActivityData():
         #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} API JSON Error: no data")
+        print(f"{hs['time']} Helium API JSON failure")
         quit()
     
     #set status_lapse if last_activity_time exists
@@ -158,8 +194,6 @@ def loadActivityData():
         activities = data['data']
     
     print(f"ln160 activities:{len(activities)}")
-
-
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -235,7 +269,7 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪  REWARD: {rew}  🥓 {amt}  `{time}`")
+                    output_message.append(f"🍪  REWARD:  {rew}  🥓 {amt}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
@@ -245,7 +279,7 @@ def loopActivities():
             elif activity['type'] == 'poc_request_v1':
                 output_message.append(f"🎲  Created Challenge...  `{time}`")
 
-            #beacon, valid witness, invalid witness
+            #beacon sent, valid witness, invalid witness
             elif activity['type'] == 'poc_receipts_v1':
                 poc_receipts_v1(activity)
             
@@ -327,7 +361,7 @@ def loadHotspotDataAndStatusMsg():
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    status_msg = '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +'  🥓 '+ balance_style
+    status_msg = '📡 **'+ hs['initials'] +'**  🔥 '+ status_style +'  🥑 '+ height_percentage_style +'  🍕 '+ reward_scale_style +'  🥓 '+ balance_style
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
@@ -381,6 +415,7 @@ def main():
     #if activity data...
     loadHotspotDataAndStatusMsg()  
     loopActivities()
+    LocalBobcatMinerReport()
     discord_response_reason = discordSend()
 
     #update history
