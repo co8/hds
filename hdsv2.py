@@ -76,12 +76,12 @@ def LocalBobcatMinerReport():
             temp_alert = '👌 '
         miner_state = str.capitalize(data['miner']['State'])
         if miner_state == 'Running':
-            miner_state = '🏃‍♂️ '
+            miner_state = '✅ 🏃‍♂️ '
         block_height = str.split(data['height'][0])
         block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
         
-        minerity_report = f"💀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
-        output_message.insert(1, minerity_report)
+        MINERity_report = f"💀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        output_message.insert(1, MINERity_report) #insert at position 1 after status_msg
 
         print(f"{hs['time']} bobcat miner report")
 
@@ -164,7 +164,7 @@ def loadActivityData():
         #LIVE API data
         activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
         activity_request = requests.get(activity_endpoint)
-        data = activity_request.json()
+        data = activity_request.json() 
 
         ###LOCAL load data.json
         #with open("data-short.json") as json_data_file:
