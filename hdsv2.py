@@ -79,7 +79,7 @@ def LocalBobcatMinerReport():
         if miner_state == 'Running':
             miner_state = '✅ 🏃‍♂️'
         block_height = str.split(data['height'][0])
-        block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
+        block_height = '🛢'+ "{:,}".format(int(block_height[-1]))
         
         MINERity_report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
         output_message.insert(1, MINERity_report) #insert at position 1 after status_msg
