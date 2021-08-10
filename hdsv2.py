@@ -31,7 +31,7 @@ from discord_webhook import DiscordWebhook
 ### vars
 config_file = "configv2.json"
 activities = output_message = activity_history = []
-#activity_history = set()s
+#activity_history = set() #converted to set
 hs = dict()
 status_lapse = 0
 status_lapse_hours = 6 #status msg every X hours from last msg
@@ -101,6 +101,7 @@ def loadActivityHistory():
     global activity_history
     with open('activity_history.json') as json_data_file:
         activity_history = json.load(json_data_file)
+        activity_history = set(activity_history) #list to set()
 
 def updateActivityHistory():
     global activity_history
@@ -109,6 +110,10 @@ def updateActivityHistory():
     if len(activity_history) > 25 : 
         del activity_history[:25]
 
+    #set to list for saving to json file
+    activity_history = list(activity_history)
+
+    #write file
     with open('activity_history.json', "w") as outfile:
         json.dump(activity_history, outfile)
 
@@ -259,7 +264,8 @@ def loopActivities():
 
             #save activity hash if not found
             else:
-                activity_history.append(activity['hash'])
+                activity_history.add(activity['hash'])
+                #activity_history.append(activity['hash'])
 
             #activity time
             time = niceDate(activity['time'])
