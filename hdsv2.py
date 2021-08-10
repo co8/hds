@@ -74,7 +74,7 @@ def LocalBobcatMinerReport():
 
         temp_alert = str.capitalize(data['temp_alert'])
         if temp_alert == 'Normal':
-            temp_alert = '👌 '
+            temp_alert = '👍 '
         miner_state = str.capitalize(data['miner']['State'])
         if miner_state == 'Running':
             miner_state = '✅ 🏃‍♂️'
