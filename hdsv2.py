@@ -30,8 +30,8 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 config_file = "configv2.json"
-activities = output_message = list()
-activity_history = set()
+activities = output_message = activity_history = []
+#activity_history = set()s
 hs = dict()
 status_lapse = 0
 status_lapse_hours = 6 #status msg every X hours from last msg
@@ -171,7 +171,7 @@ def loadActivityData():
         #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium API JSON failure")
+        print(f"{hs['time']} Helium API Activity JSON failure")
         quit()
     
     #set status_lapse if last_activity_time exists
@@ -259,7 +259,7 @@ def loopActivities():
 
             #save activity hash if not found
             else:
-                activity_history.add(activity['hash'])
+                activity_history.append(activity['hash'])
 
             #activity time
             time = niceDate(activity['time'])
@@ -294,15 +294,21 @@ def loadHotspotDataAndStatusMsg():
     global hs, config, add_welcome
     new_balance = new_reward_scale = new_height_percentage = False
 
-    hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
-    hs_request = requests.get(hs_endpoint)
-    data = hs_request.json()
-    if not data['data']:
-        print(f"no hotspot data {hs['time']}")
+    #try to get json or return error
+    try:
+        hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
+        hs_request = requests.get(hs_endpoint)
+        data = hs_request.json()
+        if not data['data']:
+            print(f"no hotspot data {hs['time']}")
+            quit()
+        else:
+            hotspot_data = data['data']
+        del hs_request
+
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
+        print(f"{hs['time']} Helium API Hotspot JSON failure")
         quit()
-    else:
-        hotspot_data = data['data']
-    del hs_request
 
     ### hotspot data
     hs_add = {
