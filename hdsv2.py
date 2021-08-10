@@ -77,7 +77,7 @@ def LocalBobcatMinerReport():
             temp_alert = '👌 '
         miner_state = str.capitalize(data['miner']['State'])
         if miner_state == 'Running':
-            miner_state = '✅ 🏃‍♂️ '
+            miner_state = '✅ 🏃‍♂️'
         block_height = str.split(data['height'][0])
         block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
         
