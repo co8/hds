@@ -30,8 +30,9 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 config_file = "configv2.json"
-activities = output_message = activity_history = []
-hs = {} #main dict
+activities = output_message = list()
+activity_history = set()
+hs = dict()
 status_lapse = 0
 status_lapse_hours = 6 #status msg every X hours from last msg
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
@@ -80,7 +81,7 @@ def LocalBobcatMinerReport():
         block_height = str.split(data['height'][0])
         block_height = '🛢 '+ "{:,}".format(int(block_height[-1]))
         
-        MINERity_report = f"💀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        MINERity_report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
         output_message.insert(1, MINERity_report) #insert at position 1 after status_msg
 
         print(f"{hs['time']} bobcat miner report")
@@ -105,8 +106,8 @@ def updateActivityHistory():
     global activity_history
 
     #truncate to newest 10 activities
-    if len(activity_history) > 25: 
-        del activity_history[25:]
+    if len(activity_history) > 25 : 
+        del activity_history[:25]
 
     with open('activity_history.json', "w") as outfile:
         json.dump(activity_history, outfile)
@@ -122,7 +123,6 @@ def getTime():
 def niceDate(time):
     timestamp = datetime.fromtimestamp(time)
     return timestamp.strftime("%H:%M %d/%b").upper()
-    #return datetime.fromtimestamp(time.strftime("%H:%M %d/%b").upper())
 
 def niceHotspotName(name):
     return name.replace('-', ' ').upper()
@@ -134,7 +134,7 @@ def niceHNTAmount(amt):
     niceNum = .00000001
     niceNumSmall = 100000000
     # up to 3 decimal payments
-    amt_output = '{:.3f}'.format(amt*niceNum) #.rstrip('0')
+    amt_output = '{:.3f}'.format(amt*niceNum)
     
     # 8 decimal places for micropayments
     if amt > 0 and amt < 100000 :
@@ -179,7 +179,7 @@ def loadActivityData():
         status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
     #send if time lapse since last status met
-    if hs['now'] > status_lapse:
+    if hs['now'] >= status_lapse:
         print(f"{hs['time']} status msg")
         send = status_send = True
         
@@ -259,7 +259,7 @@ def loopActivities():
 
             #save activity hash if not found
             else:
-                activity_history.append(activity['hash'])
+                activity_history.add(activity['hash'])
 
             #activity time
             time = niceDate(activity['time'])
