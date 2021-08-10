@@ -1,20 +1,19 @@
 #!/usr/bin/python3
 
 ############################
-# 07/04/21 JULY
+# 08/21 JULY
 # co8.com 
 # enrique r grullon
 # e@co8.com
 # discord: co8#1934 
-# HDS - Hotspot Discord Status
+# HDS v2 - Hotspot Discord Status
 ############################
 
 ########
 # crontab -e
-# check every 5 minutes. log to file
-# */5 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
-#
-# @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1 
+# check every 2 minutes. log to file
+# */2 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
+# @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
 # install DiscordWebhook module
@@ -22,401 +21,424 @@
 ########
 
 ####import libs
+from os import stat
 from time import time
 import requests
 import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
+### vars
+config_file = config.json"
+activities = output_message = activity_history = []
+#activity_history = set() #converted to set
+hs = dict()
+status_lapse = 0
+status_lapse_hours = 6 #status msg every X hours from last msg
+status_lapse_seconds = int(60 * 60 * status_lapse_hours)
+send = status_send = add_welcome = False
+invalidReasonShortNames = {
+    'witness_too_close' : 'Too Close',
+    'witness_rssi_too_high' : 'RSSI Too High',
+    'witness_rssi_below_lower_bound' : 'RSSI BLB'
+}
+rewardShortNames = {
+    'poc_witnesses' : 'Witness',
+    'poc_challengees' : 'Beacon',
+    'poc_challengers' : 'Challenger',
+    'data_credits' : 'Data'
+}
+
+
+#### functions
+
+def LocalBobcatMinerReport():
+    global status_send, output_message
+
+    if 'bobcat_miner_local_endpoint' in config and bool(status_send):
+
+        #try to get json or return error
+        try:
+            #LIVE local data
+            bobcat_miner_json = config['bobcat_miner_local_endpoint'] +"miner.json"
+            bobcat_request = requests.get(bobcat_miner_json)
+            data = bobcat_request.json()
+
+            ###LOCAL load miner.json
+            #with open("miner.json") as json_data_file:
+            #    data = json.load(json_data_file)
+
+        except ValueError:  #includes simplejson.decoder.JSONDecodeError
+            print(f"{hs['time']} Bobcat Miner Local API failure")
+            quit()
+
+        temp_alert = str.capitalize(data['temp_alert'])
+        if temp_alert == 'Normal':
+            temp_alert = '👍 '
+        miner_state = str.capitalize(data['miner']['State'])
+        if miner_state == 'Running':
+            miner_state = '✅ 🏃‍♂️'
+        block_height = str.split(data['height'][0])
+        block_height = '🛢'+ "{:,}".format(int(block_height[-1]))
+        
+        MINERity_report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        output_message.insert(1, MINERity_report) #insert at position 1 after status_msg
+
+        print(f"{hs['time']} bobcat miner report")
+
 ###load config.json vars
-with open("config.json") as json_data_file:
-    config = json.load(json_data_file)
+def loadConfig():
+    global config
+    with open(config_file) as json_data_file:
+        config = json.load(json_data_file)
 
-###dictionary
-hs = {} #main
-###vars
-status_interval_minutes = 238 #4hrs
-new_activity = send_discord = welcome = new_balance = new_reward_scale = new_height_percentage = False
-niceNum = .00000001
-niceNumSmall = 100000000
-activity_data = activity_cursor = discord_content = ''
-
-api_endpoint = 'https://api.helium.io/v1/'
-
-###functions
-def NiceName(name):
-    return name.replace('-', ' ').upper()
-
-def NameInitials(name):
-    nicename = NiceName(name)
-    return "".join(item[0].upper() for item in nicename.split())
-
-def NiceBalance(balance):
-    bal = '{:.3f}'.format(balance*niceNum) #.rstrip('0')
-    if balance > 0 and balance < 100000 :
-        bal = '{:.8f}'.format(balance / niceNumSmall).rstrip('0')
-    return str(bal)
-
-def UpdateConfig(config):
-    with open("config.json", "w") as outfile:
+def updateConfig():
+    global config
+    with open(config_file, "w") as outfile:
         json.dump(config, outfile)
 
-### Activity Short Names
-typeShortNames = {
-    'poc_receipts_v1' : {
-        'beacon' : 'PoC  🌋  Beacon Sent', #beacon plus witness count, plus valid count
-        'valid_witness' : 'PoC  🤘  Valid Witness',
-        'invalid_witness' : 'PoC  💩  Invalid Witness  🙈',
-        'challenge_accepted' : 'PoC  🏓  ...Challenge Accepted'
-    },
-    'poc_request_v1' : 'PoC  🤼  Challenge Created...',
-    'rewards_v2' : ' 🌊  REWARD  🏄‍♀️ ',
-    'state_channel_close_v1' : 'Transferred  🚛  Data Packets'
-}
-invalidReasonShortNames = {
-    'witness_too_close' : 'too close',
-    'witness_rssi_too_high' : 'RSSI too high',
-    'witness_rssi_below_lower_bound' : 'RSSI below lower bound'
-}
+def loadActivityHistory():
+    global activity_history
+    with open('activity_history.json') as json_data_file:
+        activity_history = json.load(json_data_file)
+        activity_history = set(activity_history) #list to set()
+
+def updateActivityHistory():
+    global activity_history
+
+    #truncate to newest 10 activities
+    if len(activity_history) > 25 : 
+        del activity_history[:25]
+
+    #set to list for saving to json file
+    activity_history = list(activity_history)
+
+    #write file
+    with open('activity_history.json', "w") as outfile:
+        json.dump(activity_history, outfile)
+
+def getTime():
+    global hs
+    ###Time functions
+    now = datetime.now()
+    hs['now'] = round(datetime.timestamp(now))
+    hs['time'] = str(now.strftime("%H:%M %D"))
+
+###functions
+def niceDate(time):
+    timestamp = datetime.fromtimestamp(time)
+    return timestamp.strftime("%H:%M %d/%b").upper()
+
+def niceHotspotName(name):
+    return name.replace('-', ' ').upper()
+
+def niceHotspotInitials(name):
+    return "".join(item[0].upper() for item in name.split())
+
+def niceHNTAmount(amt):
+    niceNum = .00000001
+    niceNumSmall = 100000000
+    # up to 3 decimal payments
+    amt_output = '{:.3f}'.format(amt*niceNum)
+    
+    # 8 decimal places for micropayments
+    if amt > 0 and amt < 100000 :
+        amt_output = '{:.8f}'.format(amt / niceNumSmall).rstrip('0')
+        amt_output = f"`{amt_output}`"
+    return str(amt_output)
 
 #invalid reason nice name, or raw reason if not in dict
-def invalidReasonNiceName(ir):
+def niceInvalidReason(ir):
     output = str(ir)
     if ir in invalidReasonShortNames:
         output = invalidReasonShortNames[ir]
     return output
 
-###activity type poc_request_v1 - which is it?
-def whichPocRequestV1(activity_type):
-    print('whichPocRequestV1 activity_type: '+ activity_type)
-    witnesses = {}
-    beacon_valid_witnesses = 0
-    output = 'challenge_accepted'
-    invalid_witness_reason = ''
-    has_witnesses = beacon_show_witnesses = valid_witness = False
-
-    if 'witnesses' in activity_data['path'][0]:
-        witnesses = activity_data['path'][0]['witnesses']
-        hs['witness_count'] = len(witnesses)
-        has_witnesses = True
-        print('has witnesses: '+ str(hs['witness_count']))
-    
-    #is beacon?
-    if activity_data['path'][0]['challengee'] == config['hotspot']:
-        output = 'beacon'   
-        beacon_show_witnesses = True  
-        print('poc_receipt_v1: ' + output)
-        hs['witness_count'] = len(witnesses)
-    else:
-        print('not beacon')
-
-    if bool(has_witnesses):
-        #is witness? valid or invalid?
-        #check for hotspot in witness list. check valid
-        print('***********')
-        print('looping thru witnesses')
-        #x = any( w['owner'] == config['owner'] for w in witnesses )
-        for w in witnesses:
-            #if witness, check if valid or invalid
-            if w['owner'] == config['owner']:
-                print('yes, hotspot is a witness')
-                print('is_valid: '+ str(w['is_valid']))             
-                if 'is_valid' in w and bool(w['is_valid']):
-                    output = 'valid_witness'
-                    valid_witness = True
-                else:
-                    output = 'invalid_witness'
-                    invalid_witness_reason = invalidReasonNiceName(w['invalid_witness_reason'])
-                print(w['owner'] +': '+ output)
-            #if beacon, how many invalid witnesses
-            if output == 'beacon' and 'is_valid' in w and bool(w['is_valid']):
-                beacon_valid_witnesses = beacon_valid_witnesses +1 #add 1 to invalid witness count
-
-    else:
-        print('no witnesses')
-    
-    #print('output type BEFORE: '+ output)
-    #exit()
-    output = typeShortNames[activity_type][output]
-    print('output type: '+ str(output))
-    
-    #if beacon, add witness and pluralize based on count
-    if bool(beacon_show_witnesses):
-        output += ', '+ str(hs['witness_count']) + " Witness"
-        if hs['witness_count'] != 1 : 
-            output += 'es'
-        if bool(hs['witness_count']):
-            output += ', '+ str(beacon_valid_witnesses) +' Valid'
-    
-    #invalid witness reason
-    if bool(invalid_witness_reason):
-        output += ' ('+ str(invalid_witness_reason) +')'
-    
-    #show total number of valid witnesses with
-    if bool(valid_witness):
-        output += ', 1 of '+ str(hs['witness_count'])
-    
-    
-    return output
-#whichPocRequestV1()
-
-
-
-
 ###activity type name to short name    
-def ActivityShortName(activity_type):
-    if activity_type == 'poc_receipts_v1':
-        #which PoC Receipt is it?
-        output = whichPocRequestV1(activity_type)
-    elif activity_type in typeShortNames:
-        output = typeShortNames[activity_type]
-    else:
-        output = activity_type.upper()
+def rewardShortName(reward_type):
+    output = reward_type.upper()
+    if reward_type in rewardShortNames:
+        output = rewardShortNames[reward_type]  
     return output
 
+def loadActivityData():
+    global activities, config, hs, status_lapse, send, status_send
 
+    #try to get json or return error
+    try:
+        #LIVE API data
+        activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
+        activity_request = requests.get(activity_endpoint)
+        data = activity_request.json() 
 
-###hotspot data
-hotspot_request = requests.get(api_endpoint +"hotspots/"+ config['hotspot'])
-hotspot_response = hotspot_request.json()
-hs = {
-    'owner' : hotspot_response['data']['owner'],
-    'name' : NiceName(hotspot_response['data']['name']),
-    'status' : str(hotspot_response['data']['status']['online']).upper(),
-    'height' : hotspot_response['data']['status']['height'],
-    'block' : hotspot_response['data']['block'],
-    'reward_scale' : '{:.2f}'.format(round(hotspot_response['data']['reward_scale'],2)),
-    'witness_count' : ''
-}
-hs['initials'] = NameInitials(hs['name'])
-del hotspot_request, hotspot_response
+        ###LOCAL load data.json
+        #with open("data-short.json") as json_data_file:
+        #   data = json.load(json_data_file)
 
-###check for change in reward_scale
-config_reward_scale = ''
-if 'reward_scale_last' in config:
-    config_reward_scale = config['reward_scale_last']
-if hs['reward_scale'] != config_reward_scale:
-    new_reward_scale = True
-    config['reward_scale_last'] = hs['reward_scale']
-    UpdateConfig(config)
-
-
-### get NOW
-now = datetime.now()
-hs['now'] = round(datetime.timestamp(now))
-hs['time'] = str(now.strftime("%D %H:%M"))
-del now
-
-###block height percentage
-config_height_percentage = ''
-if 'height_percentage_last' in config:
-    config_height_percentage = config['height_percentage_last']
-hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
-if(hs['height_percentage'] >= 100):
-    hs['height_percentage'] = 100
-if hs['height_percentage'] > 98:
-    hs['height_percentage'] = "*NSYNC"
-else:
-    hs['height_percentage'] = str(hs['height_percentage']) +'%'
-
-#check for change in height_percentage
-if hs['height_percentage'] != config_height_percentage:
-    new_height_percentage = True
-    config['height_percentage_last'] = hs['height_percentage']
-    UpdateConfig(config)
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
+        print(f"{hs['time']} Helium API Activity JSON failure")
+        quit()
     
-###wallet data
-wallet_request = requests.get(api_endpoint +"accounts/"+ hs['owner'])
-w = wallet_request.json()
-hs['balance'] = NiceBalance(w['data']['balance'])
-if 'balance_last' not in config:
-    config['balance_last'] = '0'
-###add to config if new
-if hs['balance'] != config['balance_last']:
-    new_balance = True
-    #print('config.balance_last: '+ str(config['balance_last']) +'\nhs.balance: '+ str(hs['balance']) +'\nnew_balance: '+ str(new_balance))
-    config['balance_last'] = hs['balance']
-    UpdateConfig(config)
-del wallet_request, w
+    #set status_lapse if last_activity_time exists
+    if 'last_activity_time' in config:
+        status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
 
-#### New User Welcome
-if 'owner' not in config:
-    print('Adding Welcome msg')
-    send_discord = welcome = True
-    config['owner'] = hs['owner']
-    discord_content += '🤙 **'+ hs['name'] +'   [ '+ hs['initials'] +' ]**  🤘\n'
-
+    #send if time lapse since last status met
+    if hs['now'] >= status_lapse:
+        print(f"{hs['time']} status msg")
+        send = status_send = True
+        
+    #no data or status_send false
+    elif not data['data']: #or not bool(status_send):
+        print(f"{hs['time']} no activities")
+        quit()
     
-###activity data
-activity_endpoint = api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
-#get fresh activity
-activity_request = requests.get(activity_endpoint)
-activity = activity_request.json() 
-###add activity cursor to config
-config['activity_cursor'] = activity['cursor']
-del activity_request
-
-#######################################################
-### Send Status if no new activity, but >60min since last msg sent
-####
-# time since last sent?
-minutes = 0
-if 'status_last_sent' in config:
-    total_seconds = (hs['now'] - config['status_last_sent'])
-    minutes = round(total_seconds/60)
-if minutes >= status_interval_minutes:
-    send_discord = True
-    print('send_discord = True. minutes >= status_interval_minutes')
-    
-print('last status: '+ str(minutes) +'min ago')
-#######################################################
-
-# if activity data, get activity data
-if bool(activity['data']):
-    #if data in first request, use that new data
-    activity_data_all = activity['data']
-
-    #dev - list instead of single
-    activity_data = activity_data_all[0]  #activity_data = activity_data_all
-
-    print('ln250 activity[data] count: ' + str(len(activity_data_all))) #count for future dev
-    send_discord = True
-
-elif send_discord == False and 'status_last_sent' in config: 
-    # quit and done until next check. 
-    # don't get activity if sent activity and no new data
-    print(hs['time'] +' Nothing new. Quietly Quiting. Will try again Later 🤙')
-    print('************')
-    quit()
-else:
-    #get activity using cursor
-    print('getting activity with cursor') 
-    activity_cursor_request = requests.get(activity_endpoint +'?cursor='+ config['activity_cursor'])
-    activity = activity_cursor_request.json()
-    
-    ###get ALL activity data
-    activity_data_all = activity['data']
-    print('ln254 activity[data] via cursor count: ' + str(len(activity_data_all))) #count for future dev
-    ###get last activity only
-    activity_data = activity_data_all.pop(0) #only first element
-    #add activity_cursor and write to config.json
-    print('writing activity cursor to config')
-    UpdateConfig(config)
-    del activity_data_all, activity_cursor_request
-del activity
-
-#######################################################
-### check for new activity 
-#get hs.last_time from activity_data
-hs['activity_last_time'] = activity_data['time']
-#check for config.last_time
-if 'activity_last_time' not in config:
-    config['activity_last_time'] = 0
-#######################################################
-
-#get rewards for activity if exists
-hs_rewards = {}
-if 'rewards' in activity_data:
-    print('YES rewards in activity')
-    amount = activity_data['rewards'][0]['amount']
-    hs['rewards'] = {
-        'amount' : amount,
-        'type' : activity_data['rewards'][0]['type'],
-        'time' : activity_data['time'],
-        'amount_nice' : NiceBalance(amount),
-    }
-else:
-    print('no rewards in activity')
-
-#compare config.last_time to hs.last_time
-if config['activity_last_time'] == hs['activity_last_time']:
-    new_activity = send_discord = False
-    print('last_times are equal. no new activity')
-else:
-    print('New Activity. activity_last_times are NOT equal')
-    new_activity = send_discord = True
-    #set last_time in config
-    config['activity_last_time'] = hs['activity_last_time'] = activity_data['time']
-    config['activity_last_type'] = hs['activity_last_type'] = activity_data['type']
-    #write to config
-    print('writing new activity last_type and last_time to config')
-    UpdateConfig(config)
-
-
-###discord - create content msg
-### bold balance if has changed
-#balance_style = '`'+ hs['balance'] +'`' #add codeblock formatting
-balance_style = hs['balance'] #+' hnt'
-if bool(new_balance):
-    balance_style = '**'+ balance_style +'**'
-### bold reward_scale if has changed
-reward_scale_style = hs['reward_scale']
-if bool(new_reward_scale):
-    reward_scale_style = '**'+ reward_scale_style +'**'
-### bold height_percentage if has changed
-height_percentage_style = hs['height_percentage']
-if bool(new_height_percentage):
-    height_percentage_style = '**'+ height_percentage_style +'**'
-### bold status if not online
-status_style = hs['status']
-if hs['status'] != 'ONLINE':
-    status_style = '**'+ hs['status'] +'**'
-
-#default status msg
-discord_content += '📡 **'+ hs['initials'] +'** 🔥 '+ status_style +' 🥑 '+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓 '+ balance_style
-
-#function and loop all activities
-### compose new activity
-if bool(new_activity):
-    send_discord = True
-    print('adding new activity msg')
-    activity_time = datetime.fromtimestamp(hs['activity_last_time']).strftime("%H:%M %d/%b").upper()
-    #for first status msg
-    discord_content += '\n'
-    if bool(welcome):
-        discord_content += 'Last:'
+    #set activities, set last_activity_time, update config
     else:
-        discord_content += '🚀'
-
-    ###add reward if exists
-    if_reward = ''
-    if 'rewards' in hs:
-        if_reward = '  🥓 `'+ NiceBalance(hs['rewards']['amount']) +'`'
-    ### add reward type
-    shortname = ActivityShortName(config['activity_last_type'])
-
-    discord_content += ' **'+ shortname +'**'+ if_reward +'  '+ activity_time
+        send = True
+        activities = data['data']
     
+    #print( 160 activities:{len(activities)}")
 
-#######################################################
-### Send Status if no new activity, but >60min since last msg sent
-####
-# time since last sent?
-minutes = 0
-if 'status_last_sent' in config:
-    total_seconds = (hs['now'] - config['status_last_sent'])
-    minutes = round(total_seconds/60)
-if minutes >= status_interval_minutes:
-    send_discord = True
-    #print('send_discord = True. minutes >= status_interval_minutes')
+###activity type poc_receipts_v1
+def poc_receipts_v1(activity):
+    witnesses = {}
+    valid_text = '💩  Invalid'
+    time = niceDate(activity['time'])
+
+    #challenge accepted
+    if 'challenger' in activity and activity['challenger'] == config['hotspot']:
+        output_message.append(f"🏓  ...Challenged Beaconer  `{time}`")
+
+    #beacon sent
+    elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
+        wit_count = len(activity['path'][0]['witnesses'])
+        wit_plural = ''
+        valid_wit_count = 0
+        if wit_count != 1:
+            wit_plural = 'es'
+        
+        #beacon sent plus witness count and valid count
+        for wit in activity['path'][0]['witnesses']:
+            if bool(wit['is_valid']):
+                valid_wit_count = valid_wit_count +1
+        msg = f"🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
+        if bool(wit_count):
+            msg += f", {valid_wit_count} Valid"
+        msg += f"  `{time}`"
+        output_message.append(msg)
+          
+
+    #witnessed beacon plus valid or invalid and invalid reason
+    elif 'witnesses' in activity['path'][0]:
+            for w in activity['path'][0]['witnesses']:
+                if w['gateway'] == config['hotspot']:
+                    witness_info = ''
+                    if bool(w['is_valid']):
+                        valid_witness = True
+                        valid_text = '🤘  Valid'
+                        witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
+                    elif 'invalid_reason' in w:
+                        valid_text = '💩  Invalid'
+                        witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
+
+                    output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
     
-print('last status: '+ str(minutes) +'min ago')
-#######################################################
+    #other
+    else:
+        output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
+    #print(f"ln209 activities:{len(activities)}")
 
-###discord send###
-#print('send_discord: '+ str(send_discord))
-#print(discord_content)
-if bool(send_discord):
-    webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_content)
-    ###send
-    webhook_response = webhook.execute()
-    print(webhook_response)
-    del webhook, webhook_response
-    ###update config
-    config['status_last_sent'] = hs['now']
-    UpdateConfig(config)
+def loopActivities():
 
-### clean up
-print(hs['time'])
-print('************')
-del hs,config
+    #load history
+    loadActivityHistory()
+
+    global status_send
+    if not bool(status_send):
+        for activity in activities:
+
+            #skip if activity is in history
+            if (activity['hash'] in activity_history):
+                continue #skip this element, continue for-loop
+
+            #save activity hash if not found
+            else:
+                activity_history.add(activity['hash'])
+                #activity_history.append(activity['hash'])
+
+            #activity time
+            time = niceDate(activity['time'])
+            
+            #reward
+            if activity['type'] == 'rewards_v2':
+                for reward in activity['rewards']:
+                    rew = rewardShortName(reward['type'])
+                    amt = niceHNTAmount(reward['amount'])
+                    output_message.append(f"🍪  REWARD:  {rew}  🥓 {amt}  `{time}`")
+            #transferred data
+            elif activity['type'] == 'state_channel_close_v1':
+                for summary in activity['state_channel']['summaries']:
+                    output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
+            
+            #...challenge accepted
+            elif activity['type'] == 'poc_request_v1':
+                output_message.append(f"🎲  Created Challenge...  `{time}`")
+
+            #beacon sent, valid witness, invalid witness
+            elif activity['type'] == 'poc_receipts_v1':
+                poc_receipts_v1(activity)
+            
+            #other
+            else:
+                output_message.append(f"🏁  Activity: {activity['type']}  `{time}`")
+    #print(f"ln252 activities:{len(activities)}")
+#loopActivities()  
+
+def loadHotspotDataAndStatusMsg():
+    ###hotspot data
+    global hs, config, add_welcome
+    new_balance = new_reward_scale = new_height_percentage = False
+
+    #try to get json or return error
+    try:
+        hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
+        hs_request = requests.get(hs_endpoint)
+        data = hs_request.json()
+        if not data['data']:
+            print(f"no hotspot data {hs['time']}")
+            quit()
+        else:
+            hotspot_data = data['data']
+        del hs_request
+
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
+        print(f"{hs['time']} Helium API Hotspot JSON failure")
+        quit()
+
+    ### hotspot data
+    hs_add = {
+        'owner' : hotspot_data['owner'],
+        'name' : niceHotspotName(hotspot_data['name']),
+        'status' : str(hotspot_data['status']['online']).upper(),
+        'height' : hotspot_data['status']['height'],
+        'block' : hotspot_data['block'],
+        'reward_scale' : '{:.2f}'.format(round(hotspot_data['reward_scale'],2)),
+        'witness_count' : ''
+    }
+    hs.update(hs_add)
+    hs['initials'] = niceHotspotInitials(hs['name'])
+    del data, hotspot_data
+
+    ###block height percentage
+    #config_height_percentage = ''
+    #if 'height_percentage_last' in config:
+    #   config_height_percentage = config['height_percentage_last']
+    hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
+    if(hs['height_percentage'] >= 100):
+        hs['height_percentage'] = 100
+    if hs['height_percentage'] > 98:
+        hs['height_percentage'] = "*NSYNC"
+    else:
+        hs['height_percentage'] = str(hs['height_percentage']) +'%'
+    
+    ###wallet data
+    wallet_request = requests.get(config['api_endpoint'] +"accounts/"+ hs['owner'])
+    w = wallet_request.json()
+    hs['balance'] = niceHNTAmount(w['data']['balance'])
+    #if 'balance_last' not in config:
+    #    config['balance_last'] = '0'
+    ###add to config if new
+    #if hs['balance'] != config['balance_last']:
+    #    new_balance = True
+    #    config['balance_last'] = hs['balance']
+    del wallet_request, w
+    
+    #### STYLE
+    ### bold balance if has changed
+    balance_style = hs['balance'] #+' hnt'
+    #if bool(new_balance):
+    #    balance_style = '**'+ balance_style +'**'
+    ### bold reward_scale if has changed
+    reward_scale_style = hs['reward_scale']
+    if bool(new_reward_scale):
+        reward_scale_style = '**'+ reward_scale_style +'**'
+    ### bold height_percentage if has changed
+    height_percentage_style = hs['height_percentage']
+    if bool(new_height_percentage):
+        height_percentage_style = '**'+ height_percentage_style +'**'
+    ### bold status if not online
+    status_style = hs['status']
+    if hs['status'] != 'ONLINE':
+        status_style = '**'+ hs['status'] +'**'
+
+    #default status msg
+    status_msg = '📡  **'+ hs['initials'] +'**  🔥 '+ status_style +'  🥑 '+ height_percentage_style +'  🍕 '+ reward_scale_style +'  🥓 '+ balance_style
+    
+    #insert to top of output_message
+    output_message.insert(0, status_msg)
+    #print(f"ln330 activities:{len(activities)}")
+
+
+def discordSend():
+    global send, add_welcome
+
+    #send if no last_activity_time in config
+    if not 'last_activity_time' in config:
+        send = add_welcome = True
+
+    #send if more than 1 (default) msg
+    elif len(output_message) > 1:
+        send = True
+    
+    #don't send 
+    elif not bool(status_send):
+        send = False
+        print(f"{hs['time']} repeat activities (history)")
+        quit()
+
+
+    #add welcome msg to output if no config[last_activity_time]
+    if bool(add_welcome):
+        output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
+
+    if bool(send):
+        #update last_activity_time to be last status sent
+        config['last_activity_time'] = hs['now']
+        updateConfig()
+
+        discord_message = '\n'.join(output_message)
+        webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
+        ###send
+        webhook_response = webhook.execute()
+        return webhook_response.reason
+    
+    #print(f"ln365 activities:{len(activities)}")
+
+
+
+#########################
+### main
+def main():
+    loadConfig()
+    getTime()
+    loadActivityData()
+
+    #if activity data...
+    loadHotspotDataAndStatusMsg()  
+    loopActivities()
+    LocalBobcatMinerReport()
+    discord_response_reason = discordSend()
+
+    #update history
+    updateActivityHistory()
+
+    #print(f"ln382 activities:{len(activities)}")
+
+    #status log
+    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
+
+
+### execute main() if main is first module
+if __name__ == '__main__':
+    main()
