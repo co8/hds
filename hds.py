@@ -29,7 +29,7 @@ from datetime import datetime
 from discord_webhook import DiscordWebhook
 
 ### vars
-config_file = config.json"
+config_file = "config.json"
 activities = output_message = activity_history = []
 #activity_history = set() #converted to set
 hs = dict()
