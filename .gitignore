@@ -14,3 +14,5 @@ hdsv2 copy.py
 configv2.json
 activity_history.json
 .vscode/settings.json
+.vscode/settings.json
+activity_history.json
