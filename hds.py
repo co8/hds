@@ -425,7 +425,7 @@ def discordSend():
     if bool(send):
 
         #only send activity, remove status if recently sent
-        if config['last_send_timestamp'] < (hs['now'] + 480): #6min
+        if config['last_send_timestamp'] < (hs['now'] - 480): #6min
             output_message.pop(0)
 
         #update last_send_timestamp to be last status sent
