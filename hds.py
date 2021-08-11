@@ -33,7 +33,7 @@ config_file = "config.json"
 activities = output_message = activity_history = list()
 hs = dict()
 status_lapse = 0
-status_lapse_hours = 6 #status msg every X hours from last send
+status_lapse_hours = 5 #status msg every X hours from last send
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
@@ -79,8 +79,13 @@ def localBobcatMinerReport():
             miner_state = '✅ 🏃‍♂️'
         block_height = str.split(data['height'][0])
         block_height = '🛢'+ "{:,}".format(int(block_height[-1]))
+
+        #helium OTA version
+        helium_ota = data['miner']['Image']
+        helium_ota = helium_ota.split("_")
+        helium_ota = str(helium_ota[1])
         
-        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}\n🎚 **OTA:** Helium: {helium_ota}  Bobcat: {data['ota_version']}"
         output_message.insert(1, report) #insert at position 1 after status_msg
 
         print(f"{hs['time']} bobcat miner report")
@@ -253,7 +258,7 @@ def poc_receipts_v1(activity):
                     #output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
             
             #add valid witness count among witnesses
-            if bool(valid_witness):
+            if bool(valid_witness) and vw > 1:
                 witness_info += f", {vw} Valid"
 
             output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
