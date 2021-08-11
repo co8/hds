@@ -1,4 +1,4 @@
-# HDS, the "Hotspot Bot"
+# hds, hotspot discord status
 
 Hotspot Discord Service for the Helium Network
 
@@ -25,7 +25,7 @@ Crontab
 - Change directory path to match your own 
 
     $ crontab -e
-    */5 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+    */2 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
     @reboot ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 
 Run directly from the directory
