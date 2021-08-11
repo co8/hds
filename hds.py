@@ -11,8 +11,8 @@
 
 ########
 # crontab -e
-# run script every 2 minutes. log to file
-# */2 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# run script every X minutes. log to file
+# */4 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -423,6 +423,11 @@ def discordSend():
         output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
 
     if bool(send):
+
+        #only send activity, remove status if recently sent
+        if config['last_send_timestamp'] < 480: #10min
+            output_message.pop(0)
+
         #update last_send_timestamp to be last status sent
         config['last_send_timestamp'] = hs['now']
         updateConfig()
