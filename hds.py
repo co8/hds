@@ -173,7 +173,7 @@ def loadActivityData():
         data = activity_request.json() 
 
         ###LOCAL load data.json
-        #with open("data-short.json") as json_data_file:
+        #with open("data.json") as json_data_file:
         #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
@@ -232,7 +232,14 @@ def poc_receipts_v1(activity):
 
     #witnessed beacon plus valid or invalid and invalid reason
     elif 'witnesses' in activity['path'][0]:
+            vw = 0 #valid witnesses
+            valid_witness = False
             for w in activity['path'][0]['witnesses']:
+
+                #valid witness count among witnesses
+                if 'is_valid' in w and bool(w['is_valid']):
+                    vw = vw +1
+
                 if w['gateway'] == config['hotspot']:
                     witness_info = ''
                     if bool(w['is_valid']):
@@ -243,8 +250,14 @@ def poc_receipts_v1(activity):
                         valid_text = '💩  Invalid'
                         witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
 
-                    output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
-    
+                    #output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
+            
+            #add valid witness count among witnesses
+            if bool(valid_witness):
+                witness_info += f", {vw} Valid"
+
+            output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
+
     #other
     else:
         output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
