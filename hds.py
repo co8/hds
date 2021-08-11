@@ -11,9 +11,9 @@
 
 ########
 # crontab -e
-# check every 2 minutes. log to file
-# */2 * * * * cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
-# @reboot cd ~/hds; python3 hdsv2.py  >> ~/cronv2.log 2>&1
+# run script every 2 minutes. log to file
+# */2 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
 # install DiscordWebhook module
@@ -30,11 +30,10 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 config_file = "config.json"
-activities = output_message = activity_history = []
-#activity_history = set() #converted to set
+activities = output_message = activity_history = list()
 hs = dict()
 status_lapse = 0
-status_lapse_hours = 6 #status msg every X hours from last msg
+status_lapse_hours = 6 #status msg every X hours from last send
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
@@ -52,7 +51,7 @@ rewardShortNames = {
 
 #### functions
 
-def LocalBobcatMinerReport():
+def localBobcatMinerReport():
     global status_send, output_message
 
     if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
@@ -81,8 +80,8 @@ def LocalBobcatMinerReport():
         block_height = str.split(data['height'][0])
         block_height = '🛢'+ "{:,}".format(int(block_height[-1]))
         
-        MINERity_report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
-        output_message.insert(1, MINERity_report) #insert at position 1 after status_msg
+        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}"
+        output_message.insert(1, report) #insert at position 1 after status_msg
 
         print(f"{hs['time']} bobcat miner report")
 
@@ -106,12 +105,12 @@ def loadActivityHistory():
 def updateActivityHistory():
     global activity_history
 
-    #truncate to newest 10 activities
-    if len(activity_history) > 25 : 
-        del activity_history[:25]
-
-    #set->list for writing to json file
+    #convert set to list
     activity_history = list(activity_history)
+
+    #truncate history
+    if len(activity_history) > 25 : 
+        del activity_history[25:]
 
     #write file
     with open('activity_history.json', "w") as outfile:
@@ -138,11 +137,13 @@ def niceHotspotInitials(name):
 def niceHNTAmount(amt):
     niceNum = .00000001
     niceNumSmall = 100000000
+    
     # up to 3 decimal payments
     amt_output = '{:.3f}'.format(amt*niceNum)
     
     # 8 decimal places for micropayments
-    if amt > 0 and amt < 100000 :
+    #if amt > 0 and amt < 100000 :
+    if amt in range(0, 100000):
         amt_output = '{:.8f}'.format(amt / niceNumSmall).rstrip('0')
         amt_output = f"`{amt_output}`"
     return str(amt_output)
@@ -208,7 +209,7 @@ def poc_receipts_v1(activity):
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏓  ...Challenged Beaconer  `{time}`")
+        output_message.append(f"🏁  ...Challenged Beaconer  `{time}`")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
@@ -236,7 +237,7 @@ def poc_receipts_v1(activity):
                     witness_info = ''
                     if bool(w['is_valid']):
                         valid_witness = True
-                        valid_text = '🤘  Valid'
+                        valid_text = '👻  Valid'
                         witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
                     elif 'invalid_reason' in w:
                         valid_text = '💩  Invalid'
@@ -251,11 +252,12 @@ def poc_receipts_v1(activity):
 
 def loopActivities():
 
-    #load history
-    loadActivityHistory()
-
     global status_send
     if not bool(status_send):
+
+        #load history
+        loadActivityHistory()
+
         for activity in activities:
 
             #skip if activity is in history
@@ -279,7 +281,7 @@ def loopActivities():
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
+                    output_message.append(f"🛵  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
             elif activity['type'] == 'poc_request_v1':
@@ -291,7 +293,7 @@ def loopActivities():
             
             #other
             else:
-                output_message.append(f"🏁  Activity: {activity['type']}  `{time}`")
+                output_message.append(f"🚀  Activity: {activity['type']}  `{time}`")
     #print(f"ln252 activities:{len(activities)}")
 #loopActivities()  
 
@@ -427,7 +429,7 @@ def main():
     #if activity data...
     loadHotspotDataAndStatusMsg()  
     loopActivities()
-    LocalBobcatMinerReport()
+    localBobcatMinerReport()
     discord_response_reason = discordSend()
 
     #update history
