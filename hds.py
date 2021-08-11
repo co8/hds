@@ -110,7 +110,7 @@ def updateActivityHistory():
     if len(activity_history) > 25 : 
         del activity_history[:25]
 
-    #set to list for saving to json file
+    #set->list for writing to json file
     activity_history = list(activity_history)
 
     #write file
@@ -179,9 +179,9 @@ def loadActivityData():
         print(f"{hs['time']} Helium API Activity JSON failure")
         quit()
     
-    #set status_lapse if last_activity_time exists
-    if 'last_activity_time' in config:
-        status_lapse = int(config['last_activity_time'] + status_lapse_seconds)
+    #set status_lapse if last_send_timestamp exists
+    if 'last_send_timestamp' in config:
+        status_lapse = int(config['last_send_timestamp'] + status_lapse_seconds)
 
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
@@ -193,7 +193,7 @@ def loadActivityData():
         print(f"{hs['time']} no activities")
         quit()
     
-    #set activities, set last_activity_time, update config
+    #set activities, set last_send_timestamp, update config
     else:
         send = True
         activities = data['data']
@@ -383,8 +383,8 @@ def loadHotspotDataAndStatusMsg():
 def discordSend():
     global send, add_welcome
 
-    #send if no last_activity_time in config
-    if not 'last_activity_time' in config:
+    #send if no last_send_timestamp in config
+    if not 'last_send_timestamp' in config:
         send = add_welcome = True
 
     #send if more than 1 (default) msg
@@ -398,13 +398,13 @@ def discordSend():
         quit()
 
 
-    #add welcome msg to output if no config[last_activity_time]
+    #add welcome msg to output if no config[last_send_timestamp]
     if bool(add_welcome):
         output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
 
     if bool(send):
-        #update last_activity_time to be last status sent
-        config['last_activity_time'] = hs['now']
+        #update last_send_timestamp to be last status sent
+        config['last_send_timestamp'] = hs['now']
         updateConfig()
 
         discord_message = '\n'.join(output_message)
