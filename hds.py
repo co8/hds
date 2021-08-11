@@ -243,7 +243,7 @@ def poc_receipts_v1(activity):
                         valid_text = '💩  Invalid'
                         witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
 
-                    output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")🍒
+                    output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
     
     #other
     else:
