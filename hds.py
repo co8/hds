@@ -55,7 +55,7 @@ rewardShortNames = {
 def LocalBobcatMinerReport():
     global status_send, output_message
 
-    if 'bobcat_local_endpoint' in config and bool(status_send):
+    if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
 
         #try to get json or return error
         try:
