@@ -78,7 +78,7 @@ def localBobcatMinerReport():
         if miner_state == 'Running':
             miner_state = '✅ 🏃‍♂️'
         block_height = str.split(data['height'][0])
-        block_height = '🛢'+ "{:,}".format(int(block_height[-1]))
+        block_height = '📦'+ "{:,}".format(int(block_height[-1]))
 
         #helium OTA version
         helium_ota = data['miner']['Image']
@@ -425,7 +425,7 @@ def discordSend():
     if bool(send):
 
         #only send activity, remove status if recently sent
-        if hs['now'] < (config['last_send_timestamp'] + 480): #6min
+        if 'last_send_timestamp' in config and hs['now'] < (config['last_send_timestamp'] + 480): #6min
             output_message.pop(0)
 
         #update last_send_timestamp to be last status sent
