@@ -112,9 +112,6 @@ def loadActivityHistory():
 def updateActivityHistory():
     global activity_history
 
-    #print(activity_history)
-    #exit()
-
     #convert set to list
     activity_history = list(activity_history)
 
@@ -208,8 +205,6 @@ def loadActivityData():
     else:
         send = True
         activities = data['data']
-    
-    #print( 160 activities:{len(activities)}")
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -274,11 +269,8 @@ def poc_receipts_v1(activity):
 
 
 def loopActivities():
-    #print(f"ln275 activities:{len(activities)}")
-    #print(f"ln275 activity_history:{len(activity_history)}")
-    #print(activity_history)
-
     global status_send
+
     if bool(activities) and not bool(status_send):
 
         #load history
@@ -319,10 +311,7 @@ def loopActivities():
             #other
             else:
                 output_message.append(f"🚀  Activity: {activity['type']}  `{time}`")
-    
-    #print(f"ln319 activities:{len(activities)}")
-    #print(f"ln319 activity_history:{len(activity_history)}\n")
-    #print(activity_history)
+
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -407,7 +396,6 @@ def loadHotspotDataAndStatusMsg():
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
-    #print(f"ln330 activities:{len(activities)}")
 
 
 def discordSend():
@@ -444,16 +432,11 @@ def discordSend():
 
         discord_message = '\n'.join(output_message)
 
-        #print(discord_message)
-        #exit()
-
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
         webhook_response = webhook.execute()
         return webhook_response.reason
     
-    #print(f"ln365 activities:{len(activities)}")
-
 
 
 #########################
@@ -471,8 +454,6 @@ def main():
 
     #update history
     updateActivityHistory()
-
-    #print(f"ln382 activities:{len(activities)}")
 
     #status log
     print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
