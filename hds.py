@@ -59,13 +59,13 @@ def localBobcatMinerReport():
         #try to get json or return error
         try:
             #LIVE local data
-            bobcat_miner_json = config['bobcat_local_endpoint'] +"miner.json"
-            bobcat_request = requests.get(bobcat_miner_json)
-            data = bobcat_request.json()
+            #bobcat_miner_json = config['bobcat_local_endpoint'] +"miner.json"
+            #bobcat_request = requests.get(bobcat_miner_json)
+            #data = bobcat_request.json()
 
             ###LOCAL load miner.json
-            #with open("miner.json") as json_data_file:
-            #    data = json.load(json_data_file)
+            with open("miner.json") as json_data_file:
+                data = json.load(json_data_file)
 
         except ValueError:  #includes simplejson.decoder.JSONDecodeError
             print(f"{hs['time']} Bobcat Miner Local API failure")
@@ -109,6 +109,9 @@ def loadActivityHistory():
 
 def updateActivityHistory():
     global activity_history
+
+    #print(activity_history)
+    #exit()
 
     #convert set to list
     activity_history = list(activity_history)
@@ -271,7 +274,7 @@ def poc_receipts_v1(activity):
 def loopActivities():
 
     global status_send
-    if not bool(status_send):
+    if not bool(status_send) and bool(activities):
 
         #load history
         loadActivityHistory()
@@ -279,7 +282,7 @@ def loopActivities():
         for activity in activities:
 
             #skip if activity is in history
-            if (activity['hash'] in activity_history):
+            if not bool(status_send) and (activity['hash'] in activity_history):
                 continue #skip this element, continue for-loop
 
             #save activity hash if not found
