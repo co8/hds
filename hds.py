@@ -30,8 +30,10 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 config_file = "config.json"
-activities = output_message = activity_history = list()
-hs = dict()
+activities = []
+output_message = []
+activity_history = []
+hs = {}
 status_lapse = 0
 status_lapse_hours = 5 #status msg every X hours from last send
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
@@ -116,7 +118,7 @@ def updateActivityHistory():
     #convert set to list
     activity_history = list(activity_history)
 
-    #truncate history
+    #truncate history to 25 elements
     if len(activity_history) > 25 : 
         del activity_history[25:]
 
@@ -181,7 +183,7 @@ def loadActivityData():
         data = activity_request.json() 
 
         ###LOCAL load data.json
-        #with open("data.json") as json_data_file:
+        #with open("data-short.json") as json_data_file:
         #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
@@ -269,12 +271,15 @@ def poc_receipts_v1(activity):
     #other
     else:
         output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
-    #print(f"ln209 activities:{len(activities)}")
+
 
 def loopActivities():
+    #print(f"ln275 activities:{len(activities)}")
+    #print(f"ln275 activity_history:{len(activity_history)}")
+    #print(activity_history)
 
     global status_send
-    if not bool(status_send) and bool(activities):
+    if bool(activities) and not bool(status_send):
 
         #load history
         loadActivityHistory()
@@ -288,7 +293,6 @@ def loopActivities():
             #save activity hash if not found
             else:
                 activity_history.add(activity['hash'])
-                #activity_history.append(activity['hash'])
 
             #activity time
             time = niceDate(activity['time'])
@@ -315,7 +319,10 @@ def loopActivities():
             #other
             else:
                 output_message.append(f"🚀  Activity: {activity['type']}  `{time}`")
-    #print(f"ln252 activities:{len(activities)}")
+    
+    #print(f"ln319 activities:{len(activities)}")
+    #print(f"ln319 activity_history:{len(activity_history)}\n")
+    #print(activity_history)
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -436,6 +443,10 @@ def discordSend():
         updateConfig()
 
         discord_message = '\n'.join(output_message)
+
+        #print(discord_message)
+        #exit()
+
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
         webhook_response = webhook.execute()
