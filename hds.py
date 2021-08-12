@@ -87,7 +87,7 @@ def localBobcatMinerReport():
         helium_ota = helium_ota.split("_")
         helium_ota = str(helium_ota[1])
         
-        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}\n🎛 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height:  {block_height}\n🎛 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
         output_message.insert(1, report) #insert at position 1 after status_msg
 
         print(f"{hs['time']} bobcat miner report")
@@ -249,7 +249,7 @@ def poc_receipts_v1(activity):
                     witness_info = ''
                     if bool(w['is_valid']):
                         valid_witness = True
-                        valid_text = '🏆  Valid'
+                        valid_text = '🔭  Valid'
                         witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
                     elif 'invalid_reason' in w:
                         valid_text = '💩  Invalid'
@@ -418,7 +418,7 @@ def discordSend():
 
     #add welcome msg to output if no config[last_send_timestamp]
     if bool(add_welcome):
-        output_message.insert(0, f"🤙 **{hs['name']}   [ {hs['initials']} ]**  🤘")
+        output_message.insert(0, f"🤙 **{hs['name']}   [ 📡  {hs['initials']} ]**")
 
     if bool(send):
 
