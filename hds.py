@@ -12,7 +12,7 @@
 ########
 # crontab -e
 # run script every X minutes. log to file
-# */4 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# */6 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -299,7 +299,7 @@ def loopActivities():
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    output_message.append(f"🛵  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
+                    output_message.append(f"🚚  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
             elif activity['type'] == 'poc_request_v1':
@@ -425,7 +425,7 @@ def discordSend():
     if bool(send):
 
         #only send activity, remove status if recently sent
-        if config['last_send_timestamp'] < (hs['now'] - 480): #6min
+        if hs['now'] < (config['last_send_timestamp'] + 480): #6min
             output_message.pop(0)
 
         #update last_send_timestamp to be last status sent
