@@ -38,6 +38,8 @@ hs = {}
 status_lapse = 0
 status_lapse_hours = 5 #status msg every X hours from last send
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
+report_interval_hours = 24 #how often miner report
+report_interval_seconds = int(60 * 60 * report_interval_hours)
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
@@ -56,6 +58,10 @@ rewardShortNames = {
 
 def localBobcatMinerReport():
     global status_send, output_message
+
+    #send if next.report has been met
+    if 'report' in config['next'] and hs['now'] > config['next']['report']:
+        status_send = True
 
     if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
 
@@ -91,6 +97,9 @@ def localBobcatMinerReport():
         report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height:  {block_height}\n🎛 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
         output_message.insert(1, report) #insert at position 1 after status_msg
 
+        #config values. repeat every X hours
+        config['next']['report'] = hs['now'] + report_interval_seconds
+
         print(f"{hs['time']} bobcat miner report")
 
 ###load config.json vars
@@ -98,6 +107,12 @@ def loadConfig():
     global config
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
+    
+    #add framework for elements
+    if not 'last' in config:
+        config['last'] = {}
+    if not 'next' in config:
+        config['next'] = {}
 
 def updateConfig():
     global config
@@ -188,9 +203,9 @@ def loadActivityData():
         print(f"{hs['time']} Helium API Activity JSON failure")
         quit()
     
-    #set status_lapse if last_send_timestamp exists
-    if 'last_send_timestamp' in config:
-        status_lapse = int(config['last_send_timestamp'] + status_lapse_seconds)
+    #set status_lapse if last.send exists
+    if 'last' in config and 'send' in config['last']:
+        status_lapse = int(config['last']['send'] + status_lapse_seconds)
 
     #add/update cursor to config
     if not 'cursor' in config or config['cursor'] != data['cursor']:
@@ -207,11 +222,10 @@ def loadActivityData():
         print(f"{hs['time']} no activities")
         quit()
     
-    #set activities, set last_send_timestamp, update config
+    #set activities, set last.send, update config
     else:
         send = True
         activities = data['data']
-
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -318,7 +332,6 @@ def loopActivities():
             #other
             else:
                 output_message.append(f"🚀  Activity: {activity['type']}  `{time}`")
-
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -411,8 +424,8 @@ def loadHotspotDataAndStatusMsg():
 def discordSend():
     global send, add_welcome
 
-    #send if no last_send_timestamp in config
-    if not 'last_send_timestamp' in config:
+    #send if no last.send in config
+    if 'last' in config and not 'send' in config['last']:
         send = add_welcome = True
 
     #send if more than 1 (default) msg
@@ -422,25 +435,28 @@ def discordSend():
     #don't send 
     elif not bool(status_send):
         send = False
-        print(f"{hs['time']} repeat activities (history)")
+        print(f"{hs['time']} repeat activities")
         quit()
 
 
-    #add welcome msg to output if no config[last_send_timestamp]
+    #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
         output_message.insert(0, f"🤙 **{hs['name']}   [ 📡  {hs['initials']} ]**")
 
     if bool(send):
 
         #only send activity, remove status if recently sent
-        if 'last_send_timestamp' in config and hs['now'] < (config['last_send_timestamp'] + 480): #6min
+        if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + 480): #6min
             output_message.pop(0)
 
-        #update last_send_timestamp to be last status sent
-        config['last_send_timestamp'] = hs['now']
+        #update last.send to be last status sent
+        config['last']['send'] = hs['now']
         updateConfig()
 
         discord_message = '\n'.join(output_message)
+
+        print(discord_message)
+        exit()
 
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
