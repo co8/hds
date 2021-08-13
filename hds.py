@@ -455,9 +455,6 @@ def discordSend():
 
         discord_message = '\n'.join(output_message)
 
-        print(discord_message)
-        exit()
-
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
         webhook_response = webhook.execute()
