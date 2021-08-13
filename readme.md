@@ -21,11 +21,11 @@ A step by step series of examples that tell you how to get a development
 environment running
 
 Crontab 
-- Run every 5 minutes and at Reboot
+- Run every minute and at Reboot
 - Change directory path to match your own 
 
     $ crontab -e
-    */2 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+    */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
     @reboot ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 
 Run directly from the directory
@@ -39,7 +39,10 @@ for a little demo
 
 ## Deployment
 
-Add additional notes to deploy this on a live system
+#command line arguments
+python3 hds.py report - send a bobcat miner report, if bobcat_local_endpoint is set
+python3 hds.py reset - reset by setting last.send to 0
+
 
 ## Authors
 

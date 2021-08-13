@@ -21,6 +21,7 @@
 ########
 
 ####import libs
+import sys
 from os import stat
 from time import time
 import requests
@@ -29,6 +30,11 @@ from datetime import datetime
 from discord_webhook import DiscordWebhook
 
 ### vars
+### FINE TUNE #####
+status_lapse_hours = 6 #status msg if X hours have lapsed since last send
+report_interval_hours = 72 #scheduled miner report
+interval_pop_status_minutes = 8 #remove status msg if activity is recent to last activity sent
+##############
 helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
 activities = []
@@ -36,10 +42,9 @@ output_message = []
 activity_history = []
 hs = {}
 status_lapse = 0
-status_lapse_hours = 5 #status msg every X hours from last send
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
-report_interval_hours = 24 #how often miner report
 report_interval_seconds = int(60 * 60 * report_interval_hours)
+interval_pop_status_seconds = int(60 * interval_pop_status_minutes) 
 send = status_send = add_welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
@@ -105,7 +110,7 @@ def localBobcatMinerReport():
 
 ###load config.json vars
 def loadConfig():
-    global config
+    global config, status_send
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
     
@@ -114,6 +119,15 @@ def loadConfig():
         config['last'] = {}
     if not 'next' in config:
         config['next'] = {}
+
+    #command line arguments
+    #send report if argument
+    if 'report' in sys.argv:
+        status_send = True
+    if 'reset' in sys.argv:
+        config['last']['send'] = 0 
+
+    
 
 def updateConfig():
     global config
@@ -219,7 +233,7 @@ def loadActivityData():
         send = status_send = True
         
     #no data or status_send false
-    elif not data['data']: #or not bool(status_send):
+    elif not data['data'] and not bool(status_send):
         print(f"{hs['time']} no activities")
         quit()
     
@@ -447,7 +461,7 @@ def discordSend():
     if bool(send):
 
         #only send activity, remove status if recently sent
-        if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + 480): #6min
+        if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
             output_message.pop(0)
 
         #update last.send to be last status sent
