@@ -11,8 +11,8 @@
 
 ########
 # crontab -e
-# run script every X minutes. log to file
-# */6 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# run script every minute. log to file
+# */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -57,11 +57,12 @@ rewardShortNames = {
 #### functions
 
 def localBobcatMinerReport():
-    global status_send, output_message
+    global status_send, output_message, report_interval_hours
 
     #send if next.report has been met
     if 'report' in config['next'] and hs['now'] > config['next']['report']:
         status_send = True
+        print(f"{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
 
     if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
 
