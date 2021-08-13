@@ -191,6 +191,10 @@ def loadActivityData():
     if 'last_send_timestamp' in config:
         status_lapse = int(config['last_send_timestamp'] + status_lapse_seconds)
 
+    #add/update cursor to config
+    if not 'cursor' in config or config['cursor'] != data['cursor']:
+        config['cursor'] = data['cursor']
+
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
         print(f"{hs['time']} status msg")
@@ -205,6 +209,7 @@ def loadActivityData():
     else:
         send = True
         activities = data['data']
+
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
