@@ -29,6 +29,7 @@ from datetime import datetime
 from discord_webhook import DiscordWebhook
 
 ### vars
+helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
 activities = []
 output_message = []
@@ -175,7 +176,7 @@ def loadActivityData():
     #try to get json or return error
     try:
         #LIVE API data
-        activity_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot'] +'/activity/'
+        activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
         activity_request = requests.get(activity_endpoint)
         data = activity_request.json() 
 
@@ -194,6 +195,7 @@ def loadActivityData():
     #add/update cursor to config
     if not 'cursor' in config or config['cursor'] != data['cursor']:
         config['cursor'] = data['cursor']
+
 
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
@@ -326,7 +328,7 @@ def loadHotspotDataAndStatusMsg():
 
     #try to get json or return error
     try:
-        hs_endpoint = config['api_endpoint'] +"hotspots/"+ config['hotspot']
+        hs_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot']
         hs_request = requests.get(hs_endpoint)
         data = hs_request.json()
         if not data['data']:
@@ -347,12 +349,15 @@ def loadHotspotDataAndStatusMsg():
         'status' : str(hotspot_data['status']['online']).upper(),
         'height' : hotspot_data['status']['height'],
         'block' : hotspot_data['block'],
-        'reward_scale' : '{:.2f}'.format(round(hotspot_data['reward_scale'],2)),
-        'witness_count' : ''
+        'reward_scale' : '{:.2f}'.format(round(hotspot_data['reward_scale'],2))
     }
     hs.update(hs_add)
     hs['initials'] = niceHotspotInitials(hs['name'])
     del data, hotspot_data
+
+    #add/update cursor to config
+    if not 'owner' in config or config['owner'] != hs['owner']:
+        config['owner'] = hs['owner']
 
     ###block height percentage
     #config_height_percentage = ''
@@ -367,7 +372,7 @@ def loadHotspotDataAndStatusMsg():
         hs['height_percentage'] = str(hs['height_percentage']) +'%'
     
     ###wallet data
-    wallet_request = requests.get(config['api_endpoint'] +"accounts/"+ hs['owner'])
+    wallet_request = requests.get(helium_api_endpoint +"accounts/"+ hs['owner'])
     w = wallet_request.json()
     hs['balance'] = niceHNTAmount(w['data']['balance'])
     #if 'balance_last' not in config:
