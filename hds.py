@@ -355,7 +355,7 @@ def loadHotspotDataAndStatusMsg():
     hs['initials'] = niceHotspotInitials(hs['name'])
     del data, hotspot_data
 
-    #add/update cursor to config
+    #add/update cursor to config. supports hotspot ownership transfers
     if not 'owner' in config or config['owner'] != hs['owner']:
         config['owner'] = hs['owner']
 
