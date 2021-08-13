@@ -10,6 +10,7 @@
 ############################
 
 ########
+# Set Crontab
 # crontab -e
 # run script every minute. log to file
 # */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
@@ -19,6 +20,14 @@
 # install DiscordWebhook module
 # % pip3 install discord-webhook
 ########
+
+#######
+# Command Line Arguments
+# REPORT
+# python3 hds.py report - send miner report
+# RESET
+# python3 hds.py reset - set last.send to 0
+#######
 
 ####import libs
 import sys
