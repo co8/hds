@@ -44,16 +44,18 @@ python3 hds.py report - send a bobcat miner report, if bobcat_local_endpoint is 
 
 python3 hds.py reset - reset by setting last.send to 0
 
+## Seeking Grants and Bounties to Support this Project
+I'm actively seeking grants and bounties from manufacturers and companies in the Helium space to continue and extend development of this project.
 ### Support this Project Directly
 
 If you find hds this project useful please consider supporting it
 https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH
 
-## Seeking Grants and Bounties to Support this Project
+
 
 If you find hds this project useful please consider supporting it
 
-## Authors
+## Author
 
 - **Enrique R Grullon** - _Developer_ -
   [co8](https://github.com/co8)
