@@ -114,6 +114,7 @@ def localBobcatMinerReport():
 
         #config values. repeat every X hours
         config['next']['report'] = hs['now'] + report_interval_seconds
+        config['next']['report_nice'] = niceDate(config['next']['report'])
 
         print(f"{hs['time']} bobcat miner report")
 
@@ -475,6 +476,7 @@ def discordSend():
 
         #update last.send to be last status sent
         config['last']['send'] = hs['now']
+        config['last']['send_nice'] = niceDate(config['last']['send'])
         updateConfig()
 
         discord_message = '\n'.join(output_message)
