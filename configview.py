@@ -17,7 +17,7 @@ def loadConfig():
 
 loadConfig()
 
-#nice dates
+#nice dates for human reading
 config['last']['send_nice'] = niceDate(config['last']['send'])
 config['next']['report_nice'] = niceDate(config['next']['report'])
 
