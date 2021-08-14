@@ -26,8 +26,10 @@ Crontab
 - Change directory path to match your own
 
   $ crontab -e
-  _/1 _ \* \* \* cd ~/hds; python3 hds.py >> ~/cron.log 2>&1
-  @reboot ~/hds; python3 hds.py >> ~/cron.log 2>&1
+  
+    \*/1 \* \* \* \* cd ~/hds; python3 hds.py >> ~/cron.log 2>&1
+  
+    @reboot ~/hds; python3 hds.py >> ~/cron.log 2>&1
 
 Run directly from the directory
 
@@ -39,10 +41,12 @@ for a little demo
 
 ## Deployment
 
-#command line arguments
-python3 hds.py report - send a bobcat miner report, if bobcat_local_endpoint is set
+### Command line Arguments
+    python3 hds.py report
+- send a bobcat miner report, if bobcat_local_endpoint is set
 
-python3 hds.py reset - reset by setting last.send to 0
+    python3 hds.py reset
+- reset by setting last.send to 0
 
 ## Seeking Grants and Bounties to Support this Project
 I'm actively seeking grants and bounties from manufacturers and companies in the Helium space to continue and extend development of this project.
@@ -57,5 +61,4 @@ If you find hds this project useful please consider supporting it
 
 ## Author
 
-- **Enrique R Grullon** - _Developer_ -
-  [co8](https://github.com/co8)
+- **Enrique R Grullon** - [github:co8](https://github.com/co8) | [co8.com](https://co8.com/)

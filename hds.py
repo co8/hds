@@ -42,7 +42,7 @@ from discord_webhook import DiscordWebhook
 ### FINE TUNE #####
 status_lapse_hours = 6 #HOURS send status msg if X hours have lapsed since last message sent
 report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent
-pop_status_minutes = 8 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
+pop_status_minutes = 6 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
 ##############
 helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
