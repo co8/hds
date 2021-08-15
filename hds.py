@@ -155,9 +155,9 @@ def updateActivityHistory():
 
     # DEV DISABLED
     #trim history. remove first 10 (oldest) elements if over 25 elements
-    if len(activity_history) > 25: 
+    if len(activity_history) > 15: 
         print(f"{hs['time']} trimming activity_history")
-        del activity_history[10:] 
+        del activity_history[:5] 
     
     # save count to config
     config['last']['activity_history']['count'] = len(activity_history)
