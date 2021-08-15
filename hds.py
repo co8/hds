@@ -31,7 +31,6 @@
 
 ####import libs
 import sys
-from os import stat
 from time import time
 import requests
 import json
@@ -215,13 +214,13 @@ def loadActivityData():
     #try to get json or return error
     try:
         #LIVE API data
-        activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
-        activity_request = requests.get(activity_endpoint)
-        data = activity_request.json() 
+        #activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
+        #activity_request = requests.get(activity_endpoint)
+        #data = activity_request.json() 
 
         ###LOCAL load data.json
-        #with open("data.json") as json_data_file:
-        #   data = json.load(json_data_file)
+        with open("data.json") as json_data_file:
+           data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium API Activity JSON failure")
@@ -480,8 +479,8 @@ def discordSend():
 
         discord_message = '\n'.join(output_message)
 
-        print(discord_message)
-        exit()
+        #print(discord_message)
+        #exit()
 
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
