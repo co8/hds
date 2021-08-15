@@ -12,13 +12,13 @@
 ########
 # Set Crontab
 # crontab -e
-# run script every minute. log to file
-# */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# run script every 3 minutes. log to file
+# */3 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
 # install DiscordWebhook module
-# % pip3 install discord-webhook
+# % pip3 install discordwebhook
 ########
 
 #######
@@ -154,15 +154,17 @@ def updateActivityHistory():
     #convert set to list
     activity_history = list(activity_history)
 
-    if not 'activity_history_count' in config['last']:
-        config['last']['activity_history_count'] = len(activity_history)
+    #if not 'activity_history_count' in config['last']:
+    #    config['last']['activity_history_count'] = len(activity_history)
 
     # DEV DISABLED
     #trim history. remove first 10 (oldest) elements if over 25 elements
     if len(activity_history) > 25: 
         print(f"{hs['time']} trimming activity_history")
-        del activity_history[:10] 
-        config['last']['activity_history_count'] = len(activity_history)
+        del activity_history[10:] 
+    
+    # save count to config
+    config['last']['activity_history_count'] = len(activity_history)
 
     #write file
     with open('activity_history.json', "w") as outfile:
