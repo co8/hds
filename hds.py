@@ -156,8 +156,9 @@ def updateActivityHistory():
 
     # DEV DISABLED
     #trim history. remove first 10 (oldest) elements if over 25 elements
-    #if len(activity_history) > 25: 
-    #   del activity_history[:10] 
+    if len(activity_history) > 25: 
+        print(f"{hs['time']} trimming activity_history")
+        del activity_history[:10] 
 
     #write file
     with open('activity_history.json', "w") as outfile:
@@ -215,13 +216,13 @@ def loadActivityData():
     #try to get json or return error
     try:
         #LIVE API data
-        #activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
-        #activity_request = requests.get(activity_endpoint)
-        #data = activity_request.json() 
+        activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
+        activity_request = requests.get(activity_endpoint)
+        data = activity_request.json() 
 
         ###LOCAL load data.json
-        with open("data.json") as json_data_file:
-           data = json.load(json_data_file)
+        #with open("data.json") as json_data_file:
+        #   data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium API Activity JSON failure")
