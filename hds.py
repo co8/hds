@@ -137,8 +137,6 @@ def loadConfig():
     if 'reset' in sys.argv:
         config['last']['send'] = 0 
 
-    
-
 def updateConfig():
     global config
     with open(config_file, "w") as outfile:
@@ -216,13 +214,13 @@ def loadActivityData():
     #try to get json or return error
     try:
         #LIVE API data
-        activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
-        activity_request = requests.get(activity_endpoint)
-        data = activity_request.json() 
+        #activity_endpoint = helium_api_endpoint +"hotspots/"+ config['hotspot'] +'/activity/'
+        #activity_request = requests.get(activity_endpoint)
+        #data = activity_request.json() 
 
         ###LOCAL load data.json
-        #with open("data-short.json") as json_data_file:
-        #   data = json.load(json_data_file)
+        with open("data.json") as json_data_file:
+           data = json.load(json_data_file)
 
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium API Activity JSON failure")
@@ -325,7 +323,7 @@ def loopActivities():
         for activity in activities:
 
             #skip if activity is in history
-            if not bool(status_send) and (activity['hash'] in activity_history):
+            if (activity['hash'] in activity_history): # and not bool(status_send):
                 continue #skip this element, continue for-loop
 
             #save activity hash if not found
@@ -480,6 +478,9 @@ def discordSend():
         updateConfig()
 
         discord_message = '\n'.join(output_message)
+
+        print(discord_message)
+        exit()
 
         webhook = DiscordWebhook(url=config['discord_webhook'], content=discord_message)
         ###send
