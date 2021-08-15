@@ -165,6 +165,7 @@ def updateActivityHistory():
     
     # save count to config
     config['last']['activity_history_count'] = len(activity_history)
+    updateConfig()
 
     #write file
     with open('activity_history.json', "w") as outfile:
