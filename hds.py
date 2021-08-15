@@ -154,9 +154,10 @@ def updateActivityHistory():
     #convert set to list
     activity_history = list(activity_history)
 
+    # DEV DISABLED
     #trim history. remove first 10 (oldest) elements if over 25 elements
-    if len(activity_history) > 25: 
-        del activity_history[:10] 
+    #if len(activity_history) > 25: 
+    #   del activity_history[:10] 
 
     #write file
     with open('activity_history.json', "w") as outfile:
