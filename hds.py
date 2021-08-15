@@ -109,7 +109,7 @@ def localBobcatMinerReport():
         helium_ota = helium_ota.split("_")
         helium_ota = str(helium_ota[1])
         
-        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height:  {block_height}\n🎛 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height:  {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
         output_message.insert(1, report) #insert at position 1 after status_msg
 
         #config values. repeat every X hours
