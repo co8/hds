@@ -50,7 +50,7 @@ activities = []
 output_message = []
 activity_history = []
 hs = {}
-status_lapse = 0
+status_lapse = history_repeats = 0
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 report_interval_seconds = int(60 * 60 * report_interval_hours)
 interval_pop_status_seconds = int(60 * pop_status_minutes) 
@@ -322,7 +322,7 @@ def poc_receipts_v1(activity):
 
 
 def loopActivities():
-    global status_send
+    global status_send, history_repeats
 
     if bool(activities) and not bool(status_send):
 
@@ -333,6 +333,7 @@ def loopActivities():
 
             #skip if activity is in history
             if (activity['hash'] in activity_history): # and not bool(status_send):
+                history_repeats = history_repeats +1 
                 continue #skip this element, continue for-loop
 
             #save activity hash if not found
@@ -515,7 +516,7 @@ def main():
     updateActivityHistory()
 
     #status log
-    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} discord:{discord_response_reason}")
+    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} repeats:{str(history_repeats)} discord:{discord_response_reason}")
 
 
 ### execute main() if main is first module
