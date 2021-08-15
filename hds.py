@@ -146,13 +146,9 @@ def loadActivityHistory():
     global activity_history
     with open('activity_history.json') as json_data_file:
         activity_history = json.load(json_data_file)
-        activity_history = set(activity_history) #list to set()
 
 def updateActivityHistory():
     global activity_history
-
-    #convert set to list
-    activity_history = list(activity_history)
 
     #if not 'activity_history_count' in config['last']:
     #    config['last']['activity_history_count'] = len(activity_history)
@@ -164,7 +160,8 @@ def updateActivityHistory():
         del activity_history[10:] 
     
     # save count to config
-    config['last']['activity_history_count'] = len(activity_history)
+    config['last']['activity_history']['count'] = len(activity_history)
+    config['last']['activity_history']['last'] = hs['now'] 
     updateConfig()
 
     #write file
@@ -338,7 +335,7 @@ def loopActivities():
 
             #save activity hash if not found
             else:
-                activity_history.add(activity['hash'])
+                activity_history.append(activity['hash'])
 
             #activity time
             time = niceDate(activity['time'])
@@ -364,7 +361,8 @@ def loopActivities():
             
             #other
             else:
-                output_message.append(f"🚀  Activity: {activity['type']}  `{time}`")
+                other_type = activity['type']
+                output_message.append(f"🚀  Activity: {other_type.upper()}  `{time}`")
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
