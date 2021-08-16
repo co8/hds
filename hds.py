@@ -110,7 +110,7 @@ def localBobcatMinerReport():
         helium_ota = helium_ota.split("_")
         helium_ota = str(helium_ota[1])
         
-        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height:  {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
         output_message.insert(1, report) #insert at position 1 after status_msg
 
         #config values. repeat every X hours
@@ -277,7 +277,7 @@ def poc_receipts_v1(activity):
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏁  ...Challenged Beaconer  `{time}`")
+        output_message.append(f"🏁 ...Challenged Beaconer  `{time}`")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
@@ -291,7 +291,7 @@ def poc_receipts_v1(activity):
         for wit in activity['path'][0]['witnesses']:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
-        msg = f"🌋  Sent Beacon, {str(wit_count)} Witness{wit_plural}"
+        msg = f"🌋 Sent Beacon, {str(wit_count)} Witness{wit_plural}"
         if bool(wit_count):
             msg += f", {valid_wit_count} Valid"
         msg += f"  `{time}`"
@@ -312,10 +312,10 @@ def poc_receipts_v1(activity):
                     witness_info = ''
                     if bool(w['is_valid']):
                         valid_witness = True
-                        valid_text = '🤙  Valid'
+                        valid_text = '🤙 Valid'
                         witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
                     elif 'invalid_reason' in w:
-                        valid_text = '💩  Invalid'
+                        valid_text = '💩 Invalid'
                         witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
 
                     #output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
@@ -328,7 +328,7 @@ def poc_receipts_v1(activity):
 
     #other
     else:
-        output_message.append(f"🏁  poc_receipts_v1() NO MATCH  `{time}`")
+        output_message.append(f"🏁 poc_receipts_v1() NO MATCH  `{time}`")
 
 
 def loopActivities():
@@ -358,15 +358,15 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪  Reward:  {rew.upper()}  🥓 {amt}  `{time}`")
+                    output_message.append(f"🍪 Reward: {rew.upper()}  🥓{amt}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    output_message.append(f"🚛  Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
+                    output_message.append(f"🚛 Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
             elif activity['type'] == 'poc_request_v1':
-                output_message.append(f"🎲  Created Challenge...  `{time}`")
+                output_message.append(f"🎲 Created Challenge...  `{time}`")
 
             #beacon sent, valid witness, invalid witness
             elif activity['type'] == 'poc_receipts_v1':
@@ -375,7 +375,7 @@ def loopActivities():
             #other
             else:
                 other_type = activity['type']
-                output_message.append(f"🚀  Activity: {other_type.upper()}  `{time}`")
+                output_message.append(f"🚀 Activity: {other_type.upper()}  `{time}`")
 #loopActivities()  
 
 def loadHotspotDataAndStatusMsg():
@@ -459,7 +459,7 @@ def loadHotspotDataAndStatusMsg():
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    status_msg = '📡**'+ hs['initials'] +'** 🔥'+ status_style +' 🥑'+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
+    status_msg = '📡**'+ hs['initials'] +'**  🔥'+ status_style +'  🥑'+ height_percentage_style +'  🍕'+ reward_scale_style +'  🥓'+ balance_style
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
@@ -485,7 +485,7 @@ def discordSend():
 
     #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
-        output_message.insert(0, f"🤙 **{hs['name']}   [ 📡  {hs['initials']} ]**")
+        output_message.insert(0, f"🤙 **{hs['name']}  [ 📡 {hs['initials']} ]**")
 
     if bool(send):
 
