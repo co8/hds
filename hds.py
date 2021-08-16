@@ -30,6 +30,7 @@
 #######
 
 ####import libs
+from io import UnsupportedOperation
 import sys
 #from os import stat
 from time import time
@@ -120,7 +121,7 @@ def localBobcatMinerReport():
 
 ###load config.json vars
 def loadConfig():
-    global config, status_send
+    global config, status_send, activity_history
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
     
@@ -134,8 +135,14 @@ def loadConfig():
     #send report if argument
     if 'report' in sys.argv:
         status_send = True
+    
     if 'reset' in sys.argv:
-        config['last']['send'] = 0 
+        config['last'] = {
+            'send' : 0,
+            'send_nice' : ""
+        } 
+        activity_history = []
+        updateActivityHistory()
 
 def updateConfig():
     global config
@@ -148,7 +155,7 @@ def loadActivityHistory():
         activity_history = json.load(json_data_file)
 
 def updateActivityHistory():
-    global activity_history
+    global activity_history, hs
 
     #if not 'activity_history_count' in config['last']:
     #    config['last']['activity_history_count'] = len(activity_history)
@@ -160,8 +167,11 @@ def updateActivityHistory():
         del activity_history[:5] 
     
     # save count to config
-    config['last']['activity_history']['count'] = len(activity_history)
-    config['last']['activity_history']['last'] = hs['now'] 
+    config['last']['activity_history'] = {
+        'count' : len(activity_history),
+        'last' : hs['now'],
+        'last_nice' : niceDate(hs['now'])
+    }
     updateConfig()
 
     #write file
@@ -500,8 +510,8 @@ def discordSend():
 #########################
 ### main
 def main():
-    loadConfig()
     getTime()
+    loadConfig()
     loadActivityData()
 
     #if activity data...
