@@ -312,7 +312,7 @@ def poc_receipts_v1(activity):
                     witness_info = ''
                     if bool(w['is_valid']):
                         valid_witness = True
-                        valid_text = '🤙 Valid'
+                        valid_text = '🛸 Valid' #🤙
                         witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
                     elif 'invalid_reason' in w:
                         valid_text = '💩 Invalid'
