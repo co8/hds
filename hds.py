@@ -166,7 +166,10 @@ def updateActivityHistory():
         print(f"{hs['time']} trimming activity_history")
         del activity_history[:5] 
     
-    # save count to config
+    # save history details to config
+    if not 'activity_history' in config['last']:
+        config['last']['activity_history'] = {}
+
     config['last']['activity_history'] = {
         'count' : len(activity_history),
         'last' : hs['now'],
@@ -456,7 +459,7 @@ def loadHotspotDataAndStatusMsg():
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    status_msg = '📡  **'+ hs['initials'] +'**  🔥 '+ status_style +'  🥑 '+ height_percentage_style +'  🍕 '+ reward_scale_style +'  🥓 '+ balance_style
+    status_msg = '📡**'+ hs['initials'] +'** 🔥'+ status_style +' 🥑'+ height_percentage_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
