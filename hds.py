@@ -271,24 +271,29 @@ def loadActivityData():
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
-    witnesses = {}
     valid_text = '💩  Invalid'
     time = niceDate(activity['time'])
 
+    witnesses = {}
+    wit_count = 0
+    if 'path' in activity and 'witnesses' in activity['path'][0]:
+        witnesses = activity['path'][0]
+        wit_count = len(witnesses)
+
+
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏁 ...Challenged Beaconer ({len(activity['path'][0]['witnesses'])} Witnesses)  `{time}`")
+        output_message.append(f"🏁 ...Challenged Beaconer ({wit_count} Witnesses)  `{time}`")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
-        wit_count = len(activity['path'][0]['witnesses'])
         wit_plural = ''
         valid_wit_count = 0
         if wit_count != 1:
             wit_plural = 'es'
         
         #beacon sent plus witness count and valid count
-        for wit in activity['path'][0]['witnesses']:
+        for wit in witnesses:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
         msg = f"🌋 Sent Beacon, {str(wit_count)} Witness{wit_plural}"
@@ -299,10 +304,10 @@ def poc_receipts_v1(activity):
           
 
     #witnessed beacon plus valid or invalid and invalid reason
-    elif 'witnesses' in activity['path'][0]:
+    elif bool(witnesses):
             vw = 0 #valid witnesses
             valid_witness = False
-            for w in activity['path'][0]['witnesses']:
+            for w in witnesses:
 
                 #valid witness count among witnesses
                 if 'is_valid' in w and bool(w['is_valid']):
@@ -313,7 +318,7 @@ def poc_receipts_v1(activity):
                     if bool(w['is_valid']):
                         valid_witness = True
                         valid_text = '🛸 Valid' #🤙
-                        witness_info = ', 1 of '+ str(len(activity['path'][0]['witnesses']))
+                        witness_info = f", 1 of {wit_count}"
                     elif 'invalid_reason' in w:
                         valid_text = '💩 Invalid'
                         witness_info = ', '+ niceInvalidReason(w['invalid_reason'])
