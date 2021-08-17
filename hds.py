@@ -381,7 +381,7 @@ def loopActivities():
 def loadHotspotDataAndStatusMsg():
     ###hotspot data
     global hs, config, add_welcome
-    new_balance = new_reward_scale = new_height_percentage = False
+    new_balance = new_reward_scale = new_block_height = new_status = False
 
     #try to get json or return error
     try:
@@ -417,49 +417,68 @@ def loadHotspotDataAndStatusMsg():
         config['owner'] = hs['owner']
 
     ###block height percentage
-    #config_height_percentage = ''
-    #if 'height_percentage_last' in config:
-    #   config_height_percentage = config['height_percentage_last']
-    hs['height_percentage'] = round(hs['height'] / hs['block'] * 100, 2)
-    if(hs['height_percentage'] >= 100):
-        hs['height_percentage'] = 100
-    if hs['height_percentage'] > 98:
-        hs['height_percentage'] = "*NSYNC"
+    hs['block_height'] = round(hs['height'] / hs['block'] * 100, 2)
+    if(hs['block_height'] >= 100):
+        hs['block_height'] = 100
+    if hs['block_height'] > 98:
+        hs['block_height'] = "*NSYNC"
     else:
-        hs['height_percentage'] = str(hs['height_percentage']) +'%'
-    
+        hs['block_height'] = str(hs['block_height']) +'%'
+    if 'block_height' not in config['last']:
+        config['last']['block_height'] = '0'
+    ###add to config if new
+    if hs['block_height'] != config['last']['block_height']:
+        new_block_height = True
+        config['last']['block_height'] = hs['block_height']
+
     ###wallet data
     wallet_request = requests.get(helium_api_endpoint +"accounts/"+ hs['owner'])
     w = wallet_request.json()
     hs['balance'] = niceHNTAmount(w['data']['balance'])
-    #if 'balance_last' not in config:
-    #    config['balance_last'] = '0'
+    if 'balance' not in config['last']:
+        config['last']['balance'] = '0'
     ###add to config if new
-    #if hs['balance'] != config['balance_last']:
-    #    new_balance = True
-    #    config['balance_last'] = hs['balance']
+    if hs['balance'] != config['last']['balance']:
+        new_balance = True
+        config['last']['balance'] = hs['balance']
     del wallet_request, w
+
+    ### reward_scale
+    if 'reward_scale' not in config['last']:
+        config['last']['reward_scale'] = '0'
+    ###add to config if new
+    if hs['reward_scale'] != config['last']['reward_scale']:
+        new_reward_scale = True
+        config['last']['reward_scale'] = hs['reward_scale']
+    
+     ### status
+    if 'status' not in config['last']:
+        config['last']['status'] = ''
+    ###add to config if new
+    if hs['status'] != config['last']['status']:
+        new_status = True
+        config['last']['status'] = hs['status']
     
     #### STYLE
     ### bold balance if has changed
     balance_style = hs['balance'] #+' hnt'
-    #if bool(new_balance):
-    #    balance_style = '**'+ balance_style +'**'
+    if bool(new_balance):
+        balance_style = '**'+ balance_style +'**'
     ### bold reward_scale if has changed
     reward_scale_style = hs['reward_scale']
     if bool(new_reward_scale):
         reward_scale_style = '**'+ reward_scale_style +'**'
-    ### bold height_percentage if has changed
-    height_percentage_style = hs['height_percentage']
-    if bool(new_height_percentage):
-        height_percentage_style = '**'+ height_percentage_style +'**'
-    ### bold status if not online
+    ### bold block_height if has changed
+    block_height_style = hs['block_height']
+    if bool(new_block_height):
+        block_height_style = '**'+ block_height_style +'**'
+    ### bold status if not 'online'
     status_style = hs['status']
-    if hs['status'] != 'ONLINE':
+    if bool(new_status):
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    status_msg = '📡**'+ hs['initials'] +'**  🔥'+ status_style +'  🥑'+ height_percentage_style +'  🍕'+ reward_scale_style +'  🥓'+ balance_style
+    status_msg = '📡** '+ hs['initials'] +'**  🔥'+ status_style +'  🥑'+ block_height_style +'  🍕'+ reward_scale_style +'  🥓'+ balance_style
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
