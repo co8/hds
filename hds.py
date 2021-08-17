@@ -277,7 +277,7 @@ def poc_receipts_v1(activity):
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏁 ...Challenged Beaconer  `{time}`")
+        output_message.append(f"🏁 ...Challenged Beaconer ({len(activity['path'][0]['witnesses'])} Witnesses)  `{time}`")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
