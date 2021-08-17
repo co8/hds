@@ -298,6 +298,8 @@ def poc_receipts_v1(activity):
                 valid_wit_count = valid_wit_count +1
         msg = f"🌋 Sent Beacon, {wit_text}"
         if bool(wit_count):
+            if valid_wit_count == len(witnesses):
+                    valid_wit_count = "All"
             msg += f", {valid_wit_count} Valid"
         msg += f"  `{time}`"
         output_message.append(msg)
@@ -327,6 +329,8 @@ def poc_receipts_v1(activity):
             
             #add valid witness count among witnesses
             if bool(valid_witness) and vw > 1:
+                if vw == len(witnesses):
+                    vw = "All"
                 witness_info += f", {vw} Valid"
 
             output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
