@@ -62,10 +62,10 @@ invalidReasonShortNames = {
     'witness_rssi_below_lower_bound' : 'RSSI BLB'
 }
 rewardShortNames = {
-    'poc_witnesses' : 'Witness',
-    'poc_challengees' : 'Beacon',
-    'poc_challengers' : 'Challenger',
-    'data_credits' : 'Data'
+    'poc_witnesses' : 'WITNESS',
+    'poc_challengees' : 'BEACON',
+    'poc_challengers' : 'CHALLENGER',
+    'data_credits' : 'DATA'
 }
 
 
@@ -367,7 +367,7 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪 **Reward:**  {rew.upper()}  🥓{amt}  `{time}`")
+                    output_message.append(f"🍪 REWARD / {rew}  🥓{amt}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
@@ -487,7 +487,7 @@ def loadHotspotDataAndStatusMsg():
         status_style = '**'+ hs['status'] +'**'
 
     #default status msg
-    status_msg = '📡** '+ hs['initials'] +'**  🔥'+ status_style +'  🥑'+ block_height_style +'  🍕'+ reward_scale_style +'  🥓'+ balance_style
+    status_msg = '📡** '+ hs['initials'] +'** 🔥'+ status_style +' 🥑'+ block_height_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
