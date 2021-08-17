@@ -12,8 +12,8 @@
 ########
 # Set Crontab
 # crontab -e
-# run script every 3 minutes. log to file
-# */3 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# run script every minute. log to file
+# */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -509,7 +509,7 @@ def discordSend():
     if bool(send):
 
         #only send activity, remove status if recently sent. keep is report
-        if not bool(status_send) or 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
+        if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
             output_message.pop(0)
 
         #update last.send to be last status sent
