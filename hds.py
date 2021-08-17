@@ -137,10 +137,8 @@ def loadConfig():
         status_send = True
     
     if 'reset' in sys.argv:
-        config['last'] = {
-            'send' : 0,
-            'send_nice' : ""
-        } 
+        config['last']['send'] = 0
+        config['last']['send_nice'] = ""
         activity_history = []
         updateActivityHistory()
 
@@ -277,26 +275,28 @@ def poc_receipts_v1(activity):
     witnesses = {}
     wit_count = 0
     if 'path' in activity and 'witnesses' in activity['path'][0]:
-        witnesses = activity['path'][0]
+        witnesses = activity['path'][0]['witnesses']
         wit_count = len(witnesses)
+    #pluralize Witness
+    wit_plural = ''
+    if wit_count != 1:
+        wit_plural = 'es'
 
+    wit_text = f"{wit_count} Witness{wit_plural}"
 
     #challenge accepted
     if 'challenger' in activity and activity['challenger'] == config['hotspot']:
-        output_message.append(f"🏁 ...Challenged Beaconer ({wit_count} Witnesses)  `{time}`")
+        output_message.append(f"🏁 ...Challenged Beaconer, {wit_text}  `{time}`")
 
     #beacon sent
     elif 'challengee' in activity['path'][0] and activity['path'][0]['challengee'] == config['hotspot']:
-        wit_plural = ''
         valid_wit_count = 0
-        if wit_count != 1:
-            wit_plural = 'es'
         
         #beacon sent plus witness count and valid count
         for wit in witnesses:
             if bool(wit['is_valid']):
                 valid_wit_count = valid_wit_count +1
-        msg = f"🌋 Sent Beacon, {str(wit_count)} Witness{wit_plural}"
+        msg = f"🌋 Sent Beacon, {wit_text}"
         if bool(wit_count):
             msg += f", {valid_wit_count} Valid"
         msg += f"  `{time}`"
@@ -523,7 +523,8 @@ def discordSend():
         updateConfig()
 
         discord_message = '\n'.join(output_message)
-
+        
+        ### Dev only
         #print(discord_message)
         #exit()
 
