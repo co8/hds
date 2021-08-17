@@ -508,8 +508,8 @@ def discordSend():
 
     if bool(send):
 
-        #only send activity, remove status if recently sent
-        if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
+        #only send activity, remove status if recently sent. keep is report
+        if not bool(status_send) or 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
             output_message.pop(0)
 
         #update last.send to be last status sent
