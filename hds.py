@@ -90,6 +90,7 @@ def localBobcatMinerReport():
             bobcat_request = requests.get(bobcat_miner_json)
             data = bobcat_request.json()
 
+            ### Dev only
             ###LOCAL load miner.json
             #with open("miner.json") as json_data_file:
             #    data = json.load(json_data_file)
@@ -98,12 +99,9 @@ def localBobcatMinerReport():
             print(f"{hs['time']} Bobcat Miner Local API failure")
             quit()
 
-        temp_alert = str.capitalize(data['temp_alert'])
-        if temp_alert == 'Normal':
-            temp_alert = '👍 '
-        miner_state = str.capitalize(data['miner']['State'])
-        if miner_state == 'Running':
-            miner_state = '✅ 🏃‍♂️'
+        temp_alert = '👍 ' if temp_alert == 'Normal' else str.capitalize(data['temp_alert'])
+        miner_state = '✅ 🏃‍♂️' if miner_state == 'Running' else str.capitalize(data['miner']['State'])
+        
         block_height = str.split(data['height'][0])
         block_height = '📦'+ "{:,}".format(int(block_height[-1]))
 
@@ -135,8 +133,7 @@ def loadConfig():
 
     #command line arguments
     #send report if argument
-    if 'report' in sys.argv:
-        status_send = True
+    status_send = True if 'report' in sys.argv else False
     
     if 'reset' in sys.argv:
         config['last']['send'] = 0
@@ -157,10 +154,6 @@ def loadActivityHistory():
 def updateActivityHistory():
     global activity_history, hs
 
-    #if not 'activity_history_count' in config['last']:
-    #    config['last']['activity_history_count'] = len(activity_history)
-
-    # DEV DISABLED
     #trim history. remove first 10 (oldest) elements if over 25 elements
     if len(activity_history) > 15: 
         print(f"{hs['time']} trimming activity_history")
@@ -175,7 +168,7 @@ def updateActivityHistory():
         'last' : hs['now'],
         'last_nice' : niceDate(hs['now'])
     }
-    updateConfig()
+    #updateConfig()
 
     #write file
     with open('activity_history.json', "w") as outfile:
@@ -215,17 +208,19 @@ def niceHNTAmount(amt):
 
 #invalid reason nice name, or raw reason if not in dict
 def niceInvalidReason(ir):
-    output = str(ir)
-    if ir in invalidReasonShortNames:
-        output = invalidReasonShortNames[ir]
-    return output
+    return invalidReasonShortNames[ir] if ir in invalidReasonShortNames else str(ir)
+    #output = str(ir)
+    #if ir in invalidReasonShortNames:
+    #   output = invalidReasonShortNames[ir]
+    #return output
 
 ###activity type name to short name    
 def rewardShortName(reward_type):
-    output = reward_type.upper()
-    if reward_type in rewardShortNames:
-        output = rewardShortNames[reward_type]  
-    return output
+    return rewardShortNames[reward_type] if reward_type in rewardShortNames else reward_type.upper()
+    #output = reward_type.upper()
+    #if reward_type in rewardShortNames:
+    #    output = rewardShortNames[reward_type]  
+    #return output
 
 def loadActivityData():
     global activities, config, hs, status_lapse, send, status_send
@@ -237,9 +232,10 @@ def loadActivityData():
         activity_request = requests.get(activity_endpoint)
         data = activity_request.json() 
 
+        ### DEV Only
         ###LOCAL load data.json
         #with open("data.json") as json_data_file:
-        #   data = json.load(json_data_file)
+        #  data = json.load(json_data_file)
 
     except: #catch all errors
     #except ValueError:  #includes simplejson.decoder.JSONDecodeError
@@ -281,10 +277,7 @@ def poc_receipts_v1(activity):
         witnesses = activity['path'][0]['witnesses']
         wit_count = len(witnesses)
     #pluralize Witness
-    wit_plural = ''
-    if wit_count != 1:
-        wit_plural = 'es'
-
+    wit_plural = 'es' if wit_count != 1 else ''
     wit_text = f"{wit_count} Witness{wit_plural}"
 
     #challenge accepted
@@ -370,13 +363,10 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪 Reward  🥓{amt}, {rew}  `{time}`")
+                    output_message.append(f"🍪 Reward 🥓{amt}, {rew}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    #packet_plural = ''
-                    #if summary['num_packets'] != 1:
-                    #    packet_plural = 's'
                     packet_plural = 's' if summary['num_packets'] != 1 else ''
                     output_message.append(f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}`")
             
@@ -476,26 +466,18 @@ def loadHotspotDataAndStatusMsg():
         new_status = True
         config['last']['status'] = hs['status']
     
-    #### STYLE
+    #### STYLED status text
     ### bold balance if has changed
-    balance_style = hs['balance'] #+' hnt'
-    if bool(new_balance):
-        balance_style = '**'+ balance_style +'**'
+    balance_styled = '**'+ hs['balance'] +'**' if bool(new_balance) else hs['balance']
     ### bold reward_scale if has changed
-    reward_scale_style = hs['reward_scale']
-    if bool(new_reward_scale):
-        reward_scale_style = '**'+ reward_scale_style +'**'
+    reward_scale_styled = '**'+ hs['reward_scale'] +'**' if bool(new_reward_scale) else hs['reward_scale']
     ### bold block_height if has changed
-    block_height_style = hs['block_height']
-    if bool(new_block_height):
-        block_height_style = '**'+ block_height_style +'**'
+    block_height_styled = '**'+ hs['block_height'] +'**' if bool(new_block_height) else hs['block_height']
     ### bold status if not 'online'
-    status_style = hs['status']
-    if bool(new_status):
-        status_style = '**'+ hs['status'] +'**'
+    status_styled = '**'+ hs['status'] +'**' if bool(new_status) else hs['status']
 
     #default status msg
-    status_msg = '📡** '+ hs['initials'] +'** 🔥'+ status_style +' 🥑'+ block_height_style +' 🍕'+ reward_scale_style +' 🥓'+ balance_style
+    status_msg = '📡 **'+ hs['initials'] +'** 🔥'+ status_styled +' 🥑'+ block_height_styled +' 🍕'+ reward_scale_styled +' 🥓'+ balance_styled
     
     #insert to top of output_message
     output_message.insert(0, status_msg)
@@ -532,7 +514,7 @@ def discordSend():
         #update last.send to be last status sent
         config['last']['send'] = hs['now']
         config['last']['send_nice'] = niceDate(config['last']['send'])
-        updateConfig()
+        #updateConfig()
 
         discord_message = '\n'.join(output_message)
         
@@ -562,6 +544,9 @@ def main():
 
     #update history
     updateActivityHistory()
+
+    #update config
+    updateConfig()
 
     #status log
     print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} repeats:{str(history_repeats)} discord:{discord_response_reason}")
