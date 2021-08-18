@@ -376,8 +376,8 @@ def loopActivities():
                 for summary in activity['state_channel']['summaries']:
                     #packet_plural = ''
                     #if summary['num_packets'] != 1:
-                        packet_plural = 's'
-                    #packet_plural = 's' if summary['num_packets'] != 1 else ''
+                    #    packet_plural = 's'
+                    packet_plural = 's' if summary['num_packets'] != 1 else ''
                     output_message.append(f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
