@@ -64,10 +64,10 @@ invalidReasonShortNames = {
     'witness_rssi_below_lower_bound' : 'RSSI BLB'
 }
 rewardShortNames = {
-    'poc_witnesses' : 'WITNESS',
-    'poc_challengees' : 'BEACON',
-    'poc_challengers' : 'CHALLENGER',
-    'data_credits' : 'DATA'
+    'poc_witnesses' : 'Witness',
+    'poc_challengees' : 'Beacon',
+    'poc_challengers' : 'Challenger',
+    'data_credits' : 'Data'
 }
 
 
@@ -369,13 +369,14 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪 Reward 🥓{amt}  {rew}  `{time}`")
+                    output_message.append(f"🍪 Reward  🥓{amt}, {rew}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    packet_plural = ''
-                    if summary['num_packets'] != 1:
+                    #packet_plural = ''
+                    #if summary['num_packets'] != 1:
                         packet_plural = 's'
+                    #packet_plural = 's' if summary['num_packets'] != 1 else ''
                     output_message.append(f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
