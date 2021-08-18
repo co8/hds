@@ -15,6 +15,8 @@
 # run script every minute. log to file
 # */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
+# 0 0 * * 0 rm ~/cron.log
+# clear log file once a week at 0hr Sunday
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
 # install DiscordWebhook module
@@ -367,11 +369,14 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪 Reward 🥓{amt}  {rew} `{time}`")
+                    output_message.append(f"🍪 Reward 🥓{amt}  {rew}  `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
-                    output_message.append(f"🚛 Transferred {summary['num_packets']} Packets ({summary['num_dcs']} DC)  `{time}`")
+                    packet_plural = ''
+                    if summary['num_packets'] != 1:
+                        packet_plural = 's'
+                    output_message.append(f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}`")
             
             #...challenge accepted
             elif activity['type'] == 'poc_request_v1':
