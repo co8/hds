@@ -367,7 +367,7 @@ def loopActivities():
                 for reward in activity['rewards']:
                     rew = rewardShortName(reward['type'])
                     amt = niceHNTAmount(reward['amount'])
-                    output_message.append(f"🍪 REWARD / {rew}  🥓{amt}  `{time}`")
+                    output_message.append(f"🍪 Reward 🥓{amt}  {rew} `{time}`")
             #transferred data
             elif activity['type'] == 'state_channel_close_v1':
                 for summary in activity['state_channel']['summaries']:
