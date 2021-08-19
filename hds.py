@@ -99,8 +99,8 @@ def localBobcatMinerReport():
             print(f"{hs['time']} Bobcat Miner Local API failure")
             quit()
 
-        temp_alert = '👍 ' if temp_alert == 'Normal' else str.capitalize(data['temp_alert'])
-        miner_state = '✅ 🏃‍♂️' if miner_state == 'Running' else str.capitalize(data['miner']['State'])
+        temp_alert = '👍 ' if data['temp_alert'] == 'Normal' else str.capitalize(data['temp_alert'])
+        miner_state = '✅ 🏃‍♂️' if data['miner']['State'] == 'Running' else str.capitalize(data['miner']['State'])
         
         block_height = str.split(data['height'][0])
         block_height = '📦'+ "{:,}".format(int(block_height[-1]))
