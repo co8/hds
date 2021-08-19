@@ -157,9 +157,9 @@ def updateActivityHistory():
     global activity_history, hs
 
     #trim history. remove first 10 (oldest) elements if over 25 elements
-    if len(activity_history) > 15: 
+    if len(activity_history) > 50: 
         print(f"{hs['time']} trimming activity_history")
-        del activity_history[:5] 
+        del activity_history[:15] 
     
     # save history details to config
     if not 'activity_history' in config['last']:
@@ -241,7 +241,7 @@ def loadActivityData():
 
     except: #catch all errors
     #except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium API Activity JSON failure")
+        print(f"{hs['time']} Helium Activity API failure")
         quit()
     
     #set status_lapse if last.send exists
@@ -405,7 +405,7 @@ def loadHotspotDataAndStatusMsg():
 
     except: #catch all errors
     #except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium API Hotspot JSON failure")
+        print(f"{hs['time']} Helium Hotspot API failure")
         quit()
 
     ### hotspot data
