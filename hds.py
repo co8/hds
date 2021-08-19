@@ -135,9 +135,11 @@ def loadConfig():
     #send report if argument
     status_send = True if 'report' in sys.argv else False
     
+    #reset hds. only clear config last/next and activity_history.
     if 'reset' in sys.argv:
-        config['last']['send'] = 0
-        config['last']['send_nice'] = ""
+        config['last'] = config['next'] = {}
+        config['cursor'] = ''
+        updateConfig()
         activity_history = []
         updateActivityHistory()
 
