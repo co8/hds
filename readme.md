@@ -21,37 +21,41 @@ Requirements for the software and other tools to build, test and push
 A step by step series of examples that tell you how to get a development
 environment running
 
-Clone from Github
+Option A: Download from Github
 
-- clone link
-- cd
-- ...
+- Download Latest https://github.com/co8/hds/archive/refs/heads/master.zip
+- rename/copy new-config.json to config.json
+- rename/copy new-activity_history.json to activity_history.json
+- edit config.json
+
+Option B: Clone from Github
+
+- $ git clone https://github.com/co8/hds
+- cd hds
+- cp new-config.json config.json
+- cp new-activity_history.json activity_history.json
+- nano config.json
 
 Crontab
 
 - Run every minute and at Reboot
-- Change directory path to match your own
+- If changed, update directory path to match your own
 - Delete log file every Sunday at 0:00
 
-  $ crontab -e
+  crontab -e
 ```
-  \*/1 \* \* \* \* cd ~/hds; python3 hds.py >> ~/cron.log 2>&1
+  */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 
-  @reboot ~/hds; python3 hds.py >> ~/cron.log 2>&1
+  @reboot ~/hds; python3 hds.py >> cron.log 2>&1
 
-  0 0 * * 0 rm ~/cron.log
+  0 0 * * 0 rm cron.log
 ```
 Run directly from the directory
 
     cd ~/hds/
     python3 hds.py
 
-End with an example of getting some data out of the system or using it
-for a little demo
-
-## Deployment
-
-### Command line Arguments
+Command line Arguments
 
 ```py
 python3 hds.py report
@@ -62,11 +66,12 @@ python3 hds.py report
 ```py
 python3 hds.py reset
 ```
-
 - resets by setting last sent and activity history
 
 
-### Support this Project
+## Support this Project
+
+Fork this project and submit pull requests
 
 If you find this project useful please consider supporting it
 
@@ -74,9 +79,9 @@ HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.heli
 
 ### Seeking Grants and Bounties to Support this Project
 
-I'm seeking grants and bounties to continue and extend development of this project.
+I'm seeking grants and bounties to extend compatibility to more hotspots and continued development of this project. [e@co8.com](mailto:e@co8.com)
 
 ### Optional Hardware
 For convenience, I run this script on a Raspberry Pi Zero W
 
-[**Raspberry Pi Zero W** Vilros Basic Starter Kit (Amazon)](https://amzn.to/3jWaUpF)
+[**Raspberry Pi Zero W** Kit (Amazon US)](https://amzn.to/3jWaUpF)

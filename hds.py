@@ -13,9 +13,9 @@
 # Set Crontab
 # crontab -e
 # run script every minute. log to file
-# */1 * * * * cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
-# @reboot cd ~/hds; python3 hds.py  >> ~/cron.log 2>&1
-# 0 0 * * 0 rm ~/cron.log
+# */1 * * * * cd ~/hds; python3 hds.py  >> cron.log 2>&1
+# @reboot cd ~/hds; python3 hds.py  >> cron.log 2>&1
+# 0 0 * * 0 rm cron.log
 # clear log file once a week at 0hr Sunday
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
@@ -156,7 +156,7 @@ def loadActivityHistory():
 def updateActivityHistory():
     global activity_history, hs
 
-    #trim history. remove first 10 (oldest) elements if over 25 elements
+    #trim history. remove first 15 (oldest) elements if over 50 elements
     if len(activity_history) > 50: 
         print(f"{hs['time']} trimming activity_history")
         del activity_history[:15] 
@@ -427,12 +427,8 @@ def loadHotspotDataAndStatusMsg():
 
     ###block height percentage
     hs['block_height'] = round(hs['height'] / hs['block'] * 100, 2)
-    if(hs['block_height'] >= 100):
-        hs['block_height'] = 100
-    if hs['block_height'] > 98:
-        hs['block_height'] = "*NSYNC"
-    else:
-        hs['block_height'] = str(hs['block_height']) +'%'
+    hs['block_height'] = "*NSYNC" if hs['block_height'] > 98 else str(hs['block_height']) +'%'
+    
     if 'block_height' not in config['last']:
         config['last']['block_height'] = '0'
     ###add to config if new
@@ -508,7 +504,6 @@ def discordSend():
         output_message.insert(0, f"🤙 **{hs['name']}  [ 📡 {hs['initials']} ]**")
 
     if bool(send):
-
         #only send activity, remove status if recently sent. keep is report
         if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
             output_message.pop(0)
