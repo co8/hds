@@ -292,7 +292,7 @@ def loadActivityData():
         
     #no data or status_send false
     elif not data['data'] and not bool(status_send):
-        print(f"{hs['time']} no activities")
+        #print(f"{hs['time']} no activities")
         quit()
     
     #set activities, set last.send, update config
@@ -526,7 +526,7 @@ def discordSend():
     #don't send 
     elif not bool(status_send):
         send = False
-        print(f"{hs['time']} repeat activities")
+        #print(f"{hs['time']} repeat activities")
         quit()
 
 
