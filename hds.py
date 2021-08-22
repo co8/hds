@@ -128,6 +128,10 @@ def loadConfig():
         config = json.load(json_data_file)
     
     #add framework for elements
+    if not 'owner' in config:
+        config['owner'] = ''
+    if not 'cursor' in config:
+        config['cursor'] = ''
     if not 'last' in config:
         config['last'] = {}
     if not 'next' in config:
@@ -338,7 +342,6 @@ def poc_receipts_v1(activity):
     #other
     else:
         output_message.append(f"🏁 poc_receipts_v1 - {activity.upper()}  `{time}`")
-
 
 def loopActivities():
     global status_send, history_repeats
