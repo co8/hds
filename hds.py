@@ -100,17 +100,19 @@ def localBobcatMinerReport():
             quit()
 
         temp_alert = '👍 ' if data['temp_alert'] == 'normal' else str.capitalize(data['temp_alert'])
-        miner_state = '✅ 🏃‍♂️' if data['miner']['State'] == 'running' else str.capitalize(data['miner']['State'])
+        miner_state = '✅ & 🏃‍♂️' if data['miner']['State'] == 'running' else str.capitalize(data['miner']['State'])
         
         block_height = str.split(data['height'][0])
-        block_height = '📦'+ "{:,}".format(int(block_height[-1]))
+        block_height = "{:,}".format(int(block_height[-1]))
 
         #helium OTA version
         helium_ota = data['miner']['Image']
         helium_ota = helium_ota.split("_")
         helium_ota = str(helium_ota[1])
         
-        report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+        report = f"`{hs['time']}`\n🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} 📦: {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+        #report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+
         output_message.insert(1, report) #insert at position 1 after status_msg
 
         #config values. repeat every X hours
@@ -326,7 +328,7 @@ def poc_receipts_v1(activity):
                     #output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
             
             #add valid witness count among witnesses
-            if bool(valid_witness) and vw > 1:
+            if bool(valid_witness) and vw >= 1:
                 if vw == len(witnesses):
                     vw = "All"
                 witness_info += f", {vw} Valid"
@@ -335,7 +337,7 @@ def poc_receipts_v1(activity):
 
     #other
     else:
-        output_message.append(f"🏁 poc_receipts_v1() NO MATCH  `{time}`")
+        output_message.append(f"🏁 poc_receipts_v1 - {activity.upper()}  `{time}`")
 
 
 def loopActivities():
