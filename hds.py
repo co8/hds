@@ -74,52 +74,76 @@ rewardShortNames = {
 #### functions
 
 def localBobcatMinerReport():
-    global status_send, output_message, report_interval_hours
+    #only run if bobcat_local_endpoint is set
+    if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']):
+    
+        global status_send, output_message, report_interval_hours
 
-    #send if next.report has been met
-    if 'report' in config['next'] and hs['now'] > config['next']['report']:
-        status_send = True
-        print(f"{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
+        #send if next.report has been met
+        if 'report' in config['next'] and hs['now'] > config['next']['report']:
+            status_send = True
+            print(f"{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
 
-    if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
+        if bool(status_send):
+        #if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
 
-        #try to get json or return error
-        try:
-            #LIVE local data
-            bobcat_miner_json = config['bobcat_local_endpoint'] +"miner.json"
-            bobcat_request = requests.get(bobcat_miner_json)
-            data = bobcat_request.json()
+            #try to get json or return error
+            try:
+                #LIVE local data
+                bobcat_miner_json = config['bobcat_local_endpoint'] +"miner.json"
+                bobcat_request = requests.get(bobcat_miner_json)
+                data = bobcat_request.json()
 
-            ### Dev only
-            ###LOCAL load miner.json
-            #with open("miner.json") as json_data_file:
-            #    data = json.load(json_data_file)
+                ### Dev only
+                ###LOCAL load miner.json
+                #with open("miner.json") as json_data_file:
+                #    data = json.load(json_data_file)
 
-        except ValueError:  #includes simplejson.decoder.JSONDecodeError
-            print(f"{hs['time']} Bobcat Miner Local API failure")
-            quit()
+            except ValueError:  #includes simplejson.decoder.JSONDecodeError
+                print(f"{hs['time']} Bobcat Miner Local API failure")
+                quit()
 
-        temp_alert = '👍 ' if data['temp_alert'] == 'normal' else str.capitalize(data['temp_alert'])
-        miner_state = '✅ & 🏃‍♂️' if data['miner']['State'] == 'running' else str.capitalize(data['miner']['State'])
+            temp_alert = '👍 ' if data['temp_alert'] == 'normal' else str.capitalize(data['temp_alert'])
+            miner_state = '✅ + 🏃‍♂️' if data['miner']['State'] == 'running' else str.capitalize(data['miner']['State'])
+            
+            block_height = str.split(data['height'][0])
+            block_height = "{:,}".format(int(block_height[-1]))
+
+            if 'block_height' not in config['last']['report']:
+                config['last']['report']['block_height'] = ''
+            ###add to config if new
+            if block_height != config['last']['report']['block_height']:
+                config['last']['report']['block_height'] = block_height
+                block_height = f"**{block_height}**" 
+
+            #helium OTA version
+            ota_helium = data['miner']['Image']
+            ota_helium = ota_helium.split("_")
+            ota_helium = str(ota_helium[1])
+            if 'ota_helium' not in config['last']['report']:
+                config['last']['report']['ota_helium'] = ''
+            if ota_helium != config['last']['report']['ota_helium']:
+                config['last']['report']['ota_helium'] = ota_helium
+                ota_helium = f"**{ota_helium}**" 
+
+            ota_bobcat = data['ota_version']
+            if 'ota_bobcat' not in config['last']['report']:
+                config['last']['report']['ota_bobcat'] = ''
+            if ota_bobcat != config['last']['report']['ota_bobcat']:
+                config['last']['report']['ota_bobcat'] = ota_bobcat
+                ota_bobcat = f"**{ota_bobcat}**" 
         
-        block_height = str.split(data['height'][0])
-        block_height = "{:,}".format(int(block_height[-1]))
+            
+            report = f"🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} Height: 📦{block_height}\n🎚 Firmware HELIUM: {ota_helium} / BOBCAT: {ota_bobcat}\n`{hs['time']}`"
+            #report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
-        #helium OTA version
-        helium_ota = data['miner']['Image']
-        helium_ota = helium_ota.split("_")
-        helium_ota = str(helium_ota[1])
-        
-        report = f"`{hs['time']}`\n🧑‍🚀 **MINERity Report:** {miner_state} Temp: {temp_alert} 📦: {block_height}\n🎚 Firmware HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
-        #report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {helium_ota} / BOBCAT: {data['ota_version']}"
+            output_message.insert(1, report) #insert at position 1 after status_msg
 
-        output_message.insert(1, report) #insert at position 1 after status_msg
+            #config values. repeat every X hours
+            config['next']['report'] = hs['now'] + report_interval_seconds
+            config['next']['report_nice'] = niceDate(config['next']['report'])
 
-        #config values. repeat every X hours
-        config['next']['report'] = hs['now'] + report_interval_seconds
-        config['next']['report_nice'] = niceDate(config['next']['report'])
-
-        print(f"{hs['time']} bobcat miner report")
+            print(f"{hs['time']} bobcat miner report")
 
 ###load config.json vars
 def loadConfig():
@@ -136,6 +160,8 @@ def loadConfig():
         config['last'] = {}
     if not 'next' in config:
         config['next'] = {}
+    if 'report' not in config['last']:
+        config['last']['report'] = {}
 
     #command line arguments
     #send report if argument
