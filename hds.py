@@ -281,7 +281,9 @@ def loadActivityData():
         status_lapse = int(config['last']['send'] + status_lapse_seconds)
 
     #add/update cursor to config
-    if not 'cursor' in config or config['cursor'] != data['cursor']:
+    if not 'cursor' in config:
+        config['cursor'] = ''
+    if config['cursor'] != data['cursor']:
         config['cursor'] = data['cursor']
 
 
