@@ -307,8 +307,7 @@ def loadActivityData():
     else:
         send = True
         activities = data['data']
-        #line break for cron.log
-        print('\n',end='')
+        print('\n',end='') #line break for cron.log
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
@@ -544,9 +543,8 @@ def discordSend():
         #print(f"{hs['time']} repeat activities")
         print(':',end='')
         quit()
-    else:
-        #line break for cron.log
-        print('\n',end='')
+    #else:
+        #print('\n',end='')  #line break for cron.log
 
     #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
