@@ -302,6 +302,9 @@ def loadActivityData():
         #print(f"{hs['time']} no activities")
         print('.',end='')
         quit()
+    else:
+        #line break for cron.log
+        print('\n',end='')
     
     #set activities, set last.send, update config
     else:
@@ -542,7 +545,9 @@ def discordSend():
         #print(f"{hs['time']} repeat activities")
         print('.',end='')
         quit()
-
+    else:
+        #line break for cron.log
+        print('\n',end='')
 
     #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
