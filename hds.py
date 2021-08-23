@@ -307,7 +307,7 @@ def loadActivityData():
     else:
         send = True
         activities = data['data']
-        print('\n',end='') #line break for cron.log
+        #print('\n',end='') #line break for cron.log
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
