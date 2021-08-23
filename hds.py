@@ -277,7 +277,7 @@ def loadActivityData():
         quit()
 
     #quit of no data
-    if not bool(data['data']):
+    if not 'data' in data:
         print(f"{hs['time']} Helium Activity API. No 'data' in Response")
         quit()
     
