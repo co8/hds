@@ -271,8 +271,8 @@ def loadActivityData():
         #with open("data.json") as json_data_file:
         #  data = json.load(json_data_file)
 
-    except: #catch all errors
-    #except ValueError:  #includes simplejson.decoder.JSONDecodeError
+    #except: #catch all errors
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium Activity API failure")
         quit()
     
