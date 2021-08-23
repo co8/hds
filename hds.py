@@ -271,9 +271,14 @@ def loadActivityData():
         #with open("data.json") as json_data_file:
         #  data = json.load(json_data_file)
 
-    except: #catch all errors
-    #except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium Activity API failure")
+    #except: #catch all errors
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
+        print(f"{hs['time']} Helium Activity API. Response Failure")
+        quit()
+
+    #quit of no data
+    if not bool(data['data']):
+        print(f"{hs['time']} Helium Activity API. No 'data' in Response")
         quit()
     
     #set status_lapse if last.send exists
@@ -436,8 +441,8 @@ def loadHotspotDataAndStatusMsg():
             hotspot_data = data['data']
         del hs_request
 
-    except: #catch all errors
-    #except ValueError:  #includes simplejson.decoder.JSONDecodeError
+    #except: #catch all errors
+    except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium Hotspot API failure")
         quit()
 
