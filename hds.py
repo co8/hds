@@ -302,14 +302,13 @@ def loadActivityData():
         #print(f"{hs['time']} no activities")
         print('.',end='')
         quit()
-    else:
-        #line break for cron.log
-        print('\n',end='')
-    
+   
     #set activities, set last.send, update config
     else:
         send = True
         activities = data['data']
+        #line break for cron.log
+        print('\n',end='')
 
 ###activity type poc_receipts_v1
 def poc_receipts_v1(activity):
