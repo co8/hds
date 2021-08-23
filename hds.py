@@ -278,7 +278,7 @@ def loadActivityData():
 
     #quit of no data
     if not 'data' in data:
-        print(f"{hs['time']} Helium Activity API. No 'data' in Response")
+        print(f"{hs['time']} Helium Activity API. No 'data' key in Response")
         quit()
     
     #set status_lapse if last.send exists
