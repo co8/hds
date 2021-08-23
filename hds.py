@@ -82,7 +82,7 @@ def localBobcatMinerReport():
         #send if next.report has been met
         if 'report' in config['next'] and hs['now'] > config['next']['report']:
             status_send = True
-            print(f"{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
+            print(f"\n{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
 
         if bool(status_send):
         #if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
@@ -100,7 +100,7 @@ def localBobcatMinerReport():
                 #    data = json.load(json_data_file)
 
             except ValueError:  #includes simplejson.decoder.JSONDecodeError
-                print(f"{hs['time']} Bobcat Miner Local API failure")
+                print(f"\n{hs['time']} Bobcat Miner Local API failure")
                 quit()
 
             temp_alert = '👍 ' if data['temp_alert'] == 'normal' else str.capitalize(data['temp_alert'])
@@ -143,7 +143,7 @@ def localBobcatMinerReport():
             config['next']['report'] = hs['now'] + report_interval_seconds
             config['next']['report_nice'] = niceDate(config['next']['report'])
 
-            print(f"{hs['time']} bobcat miner report")
+            print(f"\n{hs['time']} bobcat miner report")
 
 ###load config.json vars
 def loadConfig():
@@ -190,7 +190,7 @@ def updateActivityHistory():
 
     #trim history. remove first 15 (oldest) elements if over 50 elements
     if len(activity_history) > 50: 
-        print(f"{hs['time']} trimming activity_history")
+        print(f"\n{hs['time']} trimming activity_history")
         del activity_history[:15] 
     
     # save history details to config
@@ -273,12 +273,12 @@ def loadActivityData():
 
     #except: #catch all errors
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium Activity API. Response Failure")
+        print(f"\n{hs['time']} Helium Activity API. Response Failure")
         quit()
 
     #quit if no data
     if not 'data' in data:
-        print(f"{hs['time']} Helium Activity API. No 'data' key in Response")
+        print(f"\n{hs['time']} Helium Activity API. No 'data' key in Response")
         quit()
     
     #set status_lapse if last.send exists
@@ -294,7 +294,7 @@ def loadActivityData():
 
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
-        print(f"{hs['time']} status msg")
+        print(f"\n{hs['time']} status msg")
         send = status_send = True
         
     #no data or status_send false
@@ -445,12 +445,12 @@ def loadHotspotDataAndStatusMsg():
 
     #except: #catch all errors
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"{hs['time']} Helium Hotspot API failure")
+        print(f"\n{hs['time']} Helium Hotspot API failure")
         quit()
     
     #quit if no data
     if not 'data' in data:
-        print(f"{hs['time']} Helium Hotspot API. No 'data' key in Response")
+        print(f"\n{hs['time']} Helium Hotspot API. No 'data' key in Response")
         quit()
 
     ### hotspot data
@@ -593,7 +593,7 @@ def main():
     updateConfig()
 
     #status log
-    print(f"{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} repeats:{str(history_repeats)} discord:{discord_response_reason}")
+    print(f"\n{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} repeats:{str(history_repeats)} discord:{discord_response_reason}")
 
 
 ### execute main() if main is first module
