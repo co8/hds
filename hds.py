@@ -276,7 +276,7 @@ def loadActivityData():
         print(f"{hs['time']} Helium Activity API. Response Failure")
         quit()
 
-    #quit of no data
+    #quit if no data
     if not 'data' in data:
         print(f"{hs['time']} Helium Activity API. No 'data' key in Response")
         quit()
@@ -300,6 +300,7 @@ def loadActivityData():
     #no data or status_send false
     elif not data['data'] and not bool(status_send):
         #print(f"{hs['time']} no activities")
+        print('.',end='')
         quit()
     
     #set activities, set last.send, update config
@@ -445,6 +446,11 @@ def loadHotspotDataAndStatusMsg():
     except ValueError:  #includes simplejson.decoder.JSONDecodeError
         print(f"{hs['time']} Helium Hotspot API failure")
         quit()
+    
+    #quit if no data
+    if not 'data' in data:
+        print(f"{hs['time']} Helium Hotspot API. No 'data' key in Response")
+        quit()
 
     ### hotspot data
     hs_add = {
@@ -534,6 +540,7 @@ def discordSend():
     elif not bool(status_send):
         send = False
         #print(f"{hs['time']} repeat activities")
+        print('.',end='')
         quit()
 
 
