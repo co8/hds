@@ -542,7 +542,7 @@ def discordSend():
     elif not bool(status_send):
         send = False
         #print(f"{hs['time']} repeat activities")
-        print('.',end='')
+        print(':',end='')
         quit()
     else:
         #line break for cron.log
