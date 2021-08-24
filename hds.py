@@ -48,7 +48,7 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 ### FINE TUNE #####
-status_lapse_hours = 1 #HOURS send status msg if X hours have lapsed since last message sent
+status_lapse_hours = 1 #8 #HOURS send status msg if X hours have lapsed since last message sent
 report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent
 pop_status_minutes = 7 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
 ##############
@@ -533,7 +533,7 @@ def loadHotspotDataAndStatusMsg():
 
     #add in lapse message
     if bool(send_status_lapse):
-        lapse_msg = "`No Activities from API for last {status_lapse_hours}hrs.`"
+        lapse_msg = "`🚧 No Activities from API in the Last {status_lapse_hours} Hours.`"
         output_message.insert(0, lapse_msg)
 
 
