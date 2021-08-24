@@ -142,7 +142,7 @@ def localBobcatMinerReport():
             report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
             #report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
-            output_message.insert(1, report) #insert at position 1 after status_msg
+            output_message.append(report) #insert at position 1 after status_msg
 
             #config values. repeat every X hours
             config['next']['report'] = hs['now'] + report_interval_seconds
@@ -315,7 +315,7 @@ def loadActivityData():
 
     #send if time lapse since last status met. send report too
     if hs['now'] >= wellness_check:
-        print(f"\n{hs['time']} Wellness Check after {wellness_check_hours}hrs, No API Activity", end='')
+        print(f"\n{hs['time']} Wellness Check, {wellness_check_hours}hrs, No New Activities", end='')
         send = send_wellness_check = send_report = True
         
     #no data or send_report false
@@ -449,7 +449,7 @@ def loopActivities():
 
 def loadHotspotDataAndStatusMsg():
     ###hotspot data
-    global hs, config, add_welcome
+    global hs, config, add_welcome, send_wellness_check
     new_balance = new_reward_scale = new_block_height = new_status = False
 
     #try to get json or return error
