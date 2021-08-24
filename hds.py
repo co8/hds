@@ -143,7 +143,7 @@ def localBobcatMinerReport():
             config['next']['report'] = hs['now'] + report_interval_seconds
             config['next']['report_nice'] = niceDate(config['next']['report'])
 
-            print(f"\n{hs['time']} bobcat miner report")
+            print(f"\n{hs['time']} bobcat miner report", end='')
 
 ###load config.json vars
 def loadConfig():
@@ -294,7 +294,7 @@ def loadActivityData():
 
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
-        print(f"\n{hs['time']} status msg")
+        print(f"\n{hs['time']} status msg", end='')
         send = status_send = True
         
     #no data or status_send false
@@ -381,7 +381,7 @@ def poc_receipts_v1(activity):
 def loopActivities():
     global status_send, history_repeats
 
-    if bool(activities) and not bool(status_send):
+    if bool(activities): # and not bool(status_send):
 
         #load history
         loadActivityHistory()
