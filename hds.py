@@ -134,7 +134,7 @@ def localBobcatMinerReport():
                 ota_bobcat = f"**{ota_bobcat}**" 
         
             
-            report = f"**MINERity Report**  {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+            report = f"🔩🔩  **MINERity Report | {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
             #report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
             output_message.insert(1, report) #insert at position 1 after status_msg
