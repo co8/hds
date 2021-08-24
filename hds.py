@@ -548,7 +548,7 @@ def loadHotspotDataAndStatusMsg():
 
     #add in lapse message
     if bool(send_wellness_check):
-        lapse_msg = "`🚧 No Activities from API in the Last {wellness_check_hours} Hours.`"
+        lapse_msg = f"`🚧 No Activities from API in the Last {wellness_check_hours} Hours.`"
         output_message.insert(0, lapse_msg)
 
 
