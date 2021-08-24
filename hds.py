@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
 ############################
-# 08/21 JULY
+# HDS - Hotspot Discord Status
+# https://github.com/co8/hds
+# ------------------
 # co8.com 
 # enrique r grullon
 # e@co8.com
 # discord: co8#1934 
-# HDS v2 - Hotspot Discord Status
 ############################
 
 ########
@@ -57,7 +58,7 @@ status_lapse = history_repeats = 0
 status_lapse_seconds = int(60 * 60 * status_lapse_hours)
 report_interval_seconds = int(60 * 60 * report_interval_hours)
 interval_pop_status_seconds = int(60 * pop_status_minutes) 
-send = status_send = add_welcome = False
+send = send_report = add_welcome = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -77,15 +78,15 @@ def localBobcatMinerReport():
     #only run if bobcat_local_endpoint is set
     if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']):
     
-        global status_send, output_message, report_interval_hours
+        global send_report, output_message, report_interval_hours
 
         #send if next.report has been met
         if 'report' in config['next'] and hs['now'] > config['next']['report']:
-            status_send = True
+            send_report = True
             print(f"\n{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs")
 
-        if bool(status_send):
-        #if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(status_send):
+        if bool(send_report):
+        #if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(send_report):
 
             #try to get json or return error
             try:
@@ -147,7 +148,7 @@ def localBobcatMinerReport():
 
 ###load config.json vars
 def loadConfig():
-    global config, status_send, activity_history
+    global config, send_report, activity_history
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
     
@@ -165,7 +166,7 @@ def loadConfig():
 
     #command line arguments
     #send report if argument
-    status_send = True if 'report' in sys.argv else False
+    send_report = True if 'report' in sys.argv else False
     
     #reset hds. only clear config last/next and activity_history.
     if 'reset' in sys.argv:
@@ -257,7 +258,7 @@ def rewardShortName(reward_type):
     #return output
 
 def loadActivityData():
-    global activities, config, hs, status_lapse, send, status_send
+    global activities, config, hs, status_lapse, send, send_report
 
     #try to get json or return error
     try:
@@ -295,10 +296,10 @@ def loadActivityData():
     #send if time lapse since last status met
     if hs['now'] >= status_lapse:
         print(f"\n{hs['time']} status msg", end='')
-        send = status_send = True
+        send = send_report = True
         
-    #no data or status_send false
-    elif not data['data'] and not bool(status_send):
+    #no data or send_report false
+    elif not data['data'] and not bool(send_report):
         #print(f"{hs['time']} no activities")
         print('.',end='')
         quit()
@@ -379,9 +380,9 @@ def poc_receipts_v1(activity):
         output_message.append(f"🏁 poc_receipts_v1 - {activity.upper()}  `{time}`")
 
 def loopActivities():
-    global status_send, history_repeats
+    global send_report, history_repeats
 
-    if bool(activities): # and not bool(status_send):
+    if bool(activities): # and not bool(send_report):
 
         #load history
         loadActivityHistory()
@@ -389,7 +390,7 @@ def loopActivities():
         for activity in activities:
 
             #skip if activity is in history
-            if (activity['hash'] in activity_history): # and not bool(status_send):
+            if (activity['hash'] in activity_history): # and not bool(send_report):
                 history_repeats = history_repeats +1 
                 continue #skip this element, continue for-loop
 
@@ -527,7 +528,7 @@ def loadHotspotDataAndStatusMsg():
 
 
 def discordSend():
-    global send, add_welcome
+    global send, add_welcome, send_report
 
     #send if no last.send in config
     if 'last' in config and not 'send' in config['last']:
@@ -538,7 +539,7 @@ def discordSend():
         send = True
     
     #don't send 
-    elif not bool(status_send):
+    elif not bool(send_report):
         send = False
         #print(f"{hs['time']} repeat activities")
         print(':',end='')
