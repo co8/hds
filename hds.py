@@ -48,9 +48,11 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 ### FINE TUNE #####
-status_lapse_hours = 8 #Default 8 hours. send status msg if X hours have lapsed since last message sent
-report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent
-pop_status_minutes = 7 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
+## override default values in config.json
+wellness_check_hours = 8 #Default 8 hours. send status msg if X hours have lapsed since last message sent. slows miner, don't abuse
+report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
+####
+pop_status_minutes = 7 #MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 ##############
 helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
@@ -58,11 +60,9 @@ activities = []
 output_message = []
 activity_history = []
 hs = {}
-status_lapse = history_repeats = 0
-status_lapse_seconds = int(60 * 60 * status_lapse_hours)
-report_interval_seconds = int(60 * 60 * report_interval_hours)
+wellness_check = history_repeats = wellness_check_seconds = report_interval_seconds = 0
 interval_pop_status_seconds = int(60 * pop_status_minutes) 
-send = send_report = add_welcome = send_status_lapse = False
+send = send_report = add_welcome = send_wellness_check = False
 invalidReasonShortNames = {
     'witness_too_close' : 'Too Close',
     'witness_rssi_too_high' : 'RSSI Too High',
@@ -152,16 +152,24 @@ def localBobcatMinerReport():
 
 ###load config.json vars
 def loadConfig():
-    global config, send_report, activity_history, status_lapse_hours
+    global config, send_report, activity_history, wellness_check_hours, report_interval_hours, wellness_check_seconds, report_interval_seconds
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
     
- #status_lapse_hours - default sets config, or uses config value
-    if not 'status_lapse_hours' in config:
-        config['status_lapse_hours'] = status_lapse_hours
+    #wellness_check_hours - default sets config, or uses config value
+    if 'wellness_check_hours' in config: 
+        wellness_check_hours = config['wellness_check_hours']
     else:
-        status_lapse_hours = config['status_lapse_hours']
-    
+        config['wellness_check_hours'] = wellness_check_hours
+    wellness_check_seconds = int(60 * 60 * wellness_check_hours)
+
+    #report_interval_hours - default sets config, or uses config value
+    if 'report_interval_hours' in config:
+        report_interval_hours = config['report_interval_hours']  
+    else:
+        config['report_interval_hours'] = report_interval_hours
+    report_interval_seconds = int(60 * 60 * report_interval_hours)
+
     #add structure for elements
     if not 'owner' in config:
         config['owner'] = ''
@@ -174,7 +182,6 @@ def loadConfig():
     if 'report' not in config['last']:
         config['last']['report'] = {}
     
-
 
     #command line arguments
     #send report if argument
@@ -271,7 +278,7 @@ def rewardShortName(reward_type):
     #return output
 
 def loadActivityData():
-    global activities, config, hs, status_lapse, send, send_report, send_status_lapse
+    global activities, config, hs, wellness_check, send, send_report, send_wellness_check
 
     #try to get json or return error
     try:
@@ -295,9 +302,9 @@ def loadActivityData():
         print(f"\n{hs['time']} Helium Activity API. No 'data' key in Response")
         quit()
     
-    #set status_lapse if last.send exists
+    #set wellness_check if last.send exists
     if 'last' in config and 'send' in config['last']:
-        status_lapse = int(config['last']['send'] + status_lapse_seconds)
+        wellness_check = int(config['last']['send'] + wellness_check_seconds)
 
     #add/update cursor to config
     if not 'cursor' in config:
@@ -307,9 +314,9 @@ def loadActivityData():
 
 
     #send if time lapse since last status met. send report too
-    if hs['now'] >= status_lapse:
-        print(f"\n{hs['time']} Activity Lapse Status Msg, {status_lapse_hours}hrs", end='')
-        send = send_status_lapse = send_report = True
+    if hs['now'] >= wellness_check:
+        print(f"\n{hs['time']} Wellness Check after {wellness_check_hours}hrs, No API Activity", end='')
+        send = send_wellness_check = send_report = True
         
     #no data or send_report false
     elif not data['data'] and not bool(send_report):
@@ -540,8 +547,8 @@ def loadHotspotDataAndStatusMsg():
     output_message.insert(0, status_msg)
 
     #add in lapse message
-    if bool(send_status_lapse):
-        lapse_msg = "`🚧 No Activities from API in the Last {status_lapse_hours} Hours.`"
+    if bool(send_wellness_check):
+        lapse_msg = "`🚧 No Activities from API in the Last {wellness_check_hours} Hours.`"
         output_message.insert(0, lapse_msg)
 
 
