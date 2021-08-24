@@ -189,25 +189,26 @@ def loadActivityHistory():
 def updateActivityHistory():
     global activity_history, hs
 
-    #trim history. remove first 15 (oldest) elements if over 50 elements
-    if len(activity_history) > 50: 
-        print(f"\n{hs['time']} trimming activity_history")
-        del activity_history[:15] 
-    
-    # save history details to config
-    if not 'activity_history' in config['last']:
-        config['last']['activity_history'] = {}
+    if bool(activity_history):
 
-    config['last']['activity_history'] = {
-        'count' : len(activity_history),
-        'last' : hs['now'],
-        'last_nice' : niceDate(hs['now'])
-    }
-    #updateConfig()
+        #trim history. remove first 15 (oldest) elements if over 50 elements
+        if len(activity_history) > 50: 
+            print(f"\n{hs['time']} trimming activity_history")
+            del activity_history[:15] 
+        
+        # save history details to config
+        if not 'activity_history' in config['last']:
+            config['last']['activity_history'] = {}
 
-    #write file
-    with open('activity_history.json', "w") as outfile:
-        json.dump(activity_history, outfile)
+        config['last']['activity_history'] = {
+            'count' : len(activity_history),
+            'last' : hs['now'],
+            'last_nice' : niceDate(hs['now'])
+        }
+
+        #write file
+        with open('activity_history.json', "w") as outfile:
+            json.dump(activity_history, outfile)
 
 def getTime():
     global hs
