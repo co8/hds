@@ -16,8 +16,12 @@
 # run script every minute. log to file
 # */1 * * * * cd ~/hds; python3 hds.py  >> cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> cron.log 2>&1
-# 0 0 * * 0 rm cron.log
-# clear log file once a week at 0hr Sunday
+# 0 0 1 * *  rm cron.log
+# clear log file once a month at 0hr day 01
+#
+# 0 0 1 * * cd ~/hds; mv -i cron.log /logs/"cron_$(date '+%Y%m%d').log" 
+# monthly, move and rename cron.log
+#
 # - run at reboot for dedicated device, eg: RasPi Zero W
 ###
 # install DiscordWebhook module
@@ -44,7 +48,7 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 ### FINE TUNE #####
-status_lapse_hours = 6 #HOURS send status msg if X hours have lapsed since last message sent
+status_lapse_hours = 8 #HOURS send status msg if X hours have lapsed since last message sent
 report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent
 pop_status_minutes = 7 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
 ##############
