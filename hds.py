@@ -551,6 +551,7 @@ def discordSend():
     #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
         output_message.insert(0, f"🤙 **{hs['name']}  [ 📡 {hs['initials']} ]**")
+        print(f"\n{hs['time']} Welcome msg added", end='')
 
     if bool(send):
         #only send activity, remove status if recently sent. keep is report
