@@ -48,7 +48,7 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 ### FINE TUNE #####
-status_lapse_hours = 8 #HOURS send status msg if X hours have lapsed since last message sent
+status_lapse_hours = 8 #Default 8 hours. send status msg if X hours have lapsed since last message sent
 report_interval_hours = 72 #HOURS scheduled miner report. time after last report sent
 pop_status_minutes = 7 #MINUTES remove status msg when sending activity if activity is recent to last activity sent
 ##############
@@ -152,11 +152,17 @@ def localBobcatMinerReport():
 
 ###load config.json vars
 def loadConfig():
-    global config, send_report, activity_history
+    global config, send_report, activity_history, status_lapse_hours
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
     
-    #add framework for elements
+ #status_lapse_hours - default sets config, or uses config value
+    if not 'status_lapse_hours' in config:
+        config['status_lapse_hours'] = status_lapse_hours
+    else:
+        status_lapse_hours = config['status_lapse_hours']
+    
+    #add structure for elements
     if not 'owner' in config:
         config['owner'] = ''
     if not 'cursor' in config:
@@ -167,6 +173,8 @@ def loadConfig():
         config['next'] = {}
     if 'report' not in config['last']:
         config['last']['report'] = {}
+    
+
 
     #command line arguments
     #send report if argument
@@ -263,7 +271,7 @@ def rewardShortName(reward_type):
     #return output
 
 def loadActivityData():
-    global activities, config, hs, status_lapse, send, send_report
+    global activities, config, hs, status_lapse, send, send_report, send_status_lapse
 
     #try to get json or return error
     try:
