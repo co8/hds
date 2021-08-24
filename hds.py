@@ -539,14 +539,11 @@ def discordSend():
     elif len(output_message) > 1:
         send = True
     
-    #don't send 
+    #unless send report, don't send, repeats only 
     elif not bool(send_report):
         send = False
-        #print(f"{hs['time']} repeat activities")
-        print(':',end='')
+        print(':',end='') #print(f"{hs['time']} repeat activities")
         quit()
-    #else:
-        #print('\n',end='')  #line break for cron.log
 
     #add welcome msg to output if no config[last][send]
     if bool(add_welcome):
@@ -554,14 +551,13 @@ def discordSend():
         print(f"\n{hs['time']} Welcome msg added", end='')
 
     if bool(send):
-        #only send activity, remove status if recently sent. keep is report
+        #only send activity, remove status if recently sent. keep if report
         if 'last' in config and 'send' in config['last'] and hs['now'] < (config['last']['send'] + interval_pop_status_seconds):
             output_message.pop(0)
 
         #update last.send to be last status sent
         config['last']['send'] = hs['now']
         config['last']['send_nice'] = niceDate(config['last']['send'])
-        #updateConfig()
 
         discord_message = '\n'.join(output_message)
         
@@ -596,7 +592,7 @@ def main():
     updateConfig()
 
     #status log
-    print(f"\n{hs['time']} msgs:{str(len(output_message))} act:{str(len(activities))} repeats:{str(history_repeats)} discord:{discord_response_reason}")
+    print(f"\n{hs['time']} act:{str(len(activities))} repeats:{str(history_repeats)} msgs:{str(len(output_message))} discord:{discord_response_reason}")
 
 
 ### execute main() if main is first module
