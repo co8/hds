@@ -38,9 +38,14 @@ HDS monitors the Helium API for new activities and sends them to your Discord Ch
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
-- :avocado: Synchronization
-- :pizza: Transmission Reward Scale
-- :bacon: Wallet Balance
+- :avocado: Sync Status
+- :pizza: Transmit/Reward Scale
+- :bacon: Wallet Balance (Hotspot Owner)
+
+**HNT Amounts**
+
+- :bacon:0.013
+- :bacon:`0.0000032`
 
 **Proof of Coverage** with Context
 
