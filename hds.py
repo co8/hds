@@ -650,8 +650,8 @@ def discord_send():
         discord_message = "\n".join(output_message)
 
         ### Dev only
-        print(discord_message)
-        exit()
+        # print(discord_message)
+        # exit()
 
         webhook = DiscordWebhook(url=config["discord_webhook"], content=discord_message)
         ###send
