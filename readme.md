@@ -31,14 +31,33 @@ HDS monitors the Helium API for new activities and sends them to your Discord Ch
 Welcome Message
 :call_me: THANKFUL COTTON CROCODILE [ :satellite: TCC ]
 
-Status Message
-:satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+**Status Message** :satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
 - :avocado: Synchronization
 - :pizza: Transmission Reward Scale
 - :bacon: Wallet Balance
+
+**Proof of Coverage** with Context
+
+- :game_die: Created Challenge... 16:57 23/AUG
+- :checkered_flag: ...Challenged Beaconer, 7 Witnesses 04:22 23/AUG
+- :volcano: Sent Beacon, 3 Witnesses, 2 Valid 13:29 23/AUG
+- :flying_saucer: Valid Witness, 1 of 4, All Valid 12:04 23/AUG
+
+**Invalid Witness** with Reason
+
+- :poop: Invalid Witness, Too Close 12:12 23/AUG
+- :poop: Invalid Witness, RSSI BLB 10:55 25/AUG
+- :poop: Invalid Witness, RSSI, Too High 04:55 22/AUG
+
+**Rewards**
+
+- :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
+- :cookie: Reward :bacon:0.008, Challenger `04:31 23/AUG`
+- :cookie: Reward :bacon:`0.0000032`, Data `04:48 24/AUG`
+- :cookie: Reward :bacon:0.059, Beacon `01:42 24/AUG`
 
 ---
 
