@@ -110,12 +110,11 @@ def local_bobcat_mine_report():
                 #    data = json.load(json_data_file)
             except requests.RequestException:
                 status = "Connectivity error"
-            except ValueError:
+            except ValueError:  # includes simplejson.decoder.JSONDecodeError
                 status = "JSON parsing error"
             except (IndexError, KeyError):
                 status = "JSON format error"
-            except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                status = "ValueError"
+
             if bool(status):
                 print(f"\n{hs['time']} Bobcat API Error, {status}")
                 quit()
@@ -332,12 +331,11 @@ def load_activity_data():
         #  data = json.load(json_data_file)
     except requests.RequestException:
         status = "Connectivity error"
-    except ValueError:
+    except ValueError:  # includes simplejson.decoder.JSONDecodeError
         status = "JSON parsing error"
     except (IndexError, KeyError):
         status = "JSON format error"
-    except ValueError:  # includes simplejson.decoder.JSONDecodeError
-        status = "ValueError"
+
     if bool(status):
         print(f"\n{hs['time']} Helium Activity API Error: {status}")
         quit()
@@ -519,12 +517,10 @@ def load_hotspot_data_and_status():
         del hs_request
     except requests.RequestException:
         status = "Connectivity error"
-    except ValueError:
+    except ValueError:  # includes simplejson.decoder.JSONDecodeError
         status = "JSON parsing error"
     except (IndexError, KeyError):
         status = "JSON format error"
-    except ValueError:  # includes simplejson.decoder.JSONDecodeError
-        status = "ValueError"
 
     if bool(status):
         print(f"\n{hs['time']} Helium Hotspot API Error, {status}")
