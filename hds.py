@@ -14,12 +14,13 @@
 # Set Crontab
 # crontab -e
 # - run script every minute. log to file
+# - run at reboot if needed. eg: dedicated device
 # - clear log file once a month at 0hr day 01
-# - run at reboot for dedicated device, eg: RasPi Zero W
-#
-# */1 * * * * cd ~/hds; python3 hds.py  >> cron.log 2>&1
-# @reboot cd ~/hds; python3 hds.py  >> cron.log 2>&1
+# - update from github nightly at 04:20am. write to cron.log
+# */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
+# @reboot cd ~/hds; python3 hds.py >> cron.log 2>&1
 # 0 0 1 * * rm cron.log
+# 20 4 * * * cd ~/hds; git fetch; git pull >> cron.log 2>&1
 ########
 
 ########
@@ -186,6 +187,10 @@ def load_config():
     report_interval_seconds = int(60 * 60 * report_interval_hours)
 
     # add structure for elements
+    if "name" not in config:
+        config["name"] = ""
+    if "initials" not in config:
+        config["initials"] = ""
     if "owner" not in config:
         config["owner"] = ""
     if "cursor" not in config:
@@ -266,24 +271,24 @@ def nice_date(time):
 
 
 def nice_hotspot_name(name):
-    if "name" not in config:
+    if not bool(config["name"]):
         config["name"] = name.replace("-", " ").upper()
     return config["name"]
 
 
 def nice_hotspot_initials(name):
-    if "initials" not in config:
+    if not bool(config["initials"]):
         name = nice_hotspot_name(name)
         config["initials"] = "".join(item[0].upper() for item in name.split())
     return config["initials"]
 
 
-def nice_hnt_amount(amt):
+def nice_hnt_amount_or_seconds(amt):
     niceNum = 0.00000001
     niceNumSmall = 100000000
 
     if isinstance(amt, float):
-        # float. for time float in seconds
+        # float. for time i
         amt_output = "{:.2f}".format(amt)
     else:
         # int. up to 3 decimal payments
@@ -473,7 +478,7 @@ def loop_activities():
             if activity["type"] == "rewards_v2":
                 for reward in activity["rewards"]:
                     rew = reward_short_name(reward["type"])
-                    amt = nice_hnt_amount(reward["amount"])
+                    amt = nice_hnt_amount_or_seconds(reward["amount"])
                     output_message.append(f"🍪 Reward 🥓{amt}, {rew}  `{time}`")
             # transferred data
             elif activity["type"] == "state_channel_close_v1":
@@ -563,7 +568,7 @@ def load_hotspot_data_and_status():
     ###wallet data
     wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"])
     w = wallet_request.json()
-    hs["balance"] = nice_hnt_amount(w["data"]["balance"])
+    hs["balance"] = nice_hnt_amount_or_seconds(w["data"]["balance"])
     if "balance" not in config["last"]:
         config["last"]["balance"] = "0"
     ###add to config if new
@@ -706,7 +711,9 @@ def main():
 
     # time_execution end
     time_execution_t1 = time.time()
-    time_execution_seconds = nice_hnt_amount(time_execution_t1 - time_execution_t0)
+    time_execution_seconds = nice_hnt_amount_or_seconds(
+        time_execution_t1 - time_execution_t0
+    )
 
     # cron log
     print(
