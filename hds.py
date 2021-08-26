@@ -97,6 +97,7 @@ def local_bobcat_mine_report():
             # if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(send_report):
 
             # try to get json or return error
+            status = False
             try:
                 # LIVE local data
                 bobcat_miner_json = config["bobcat_local_endpoint"] + "miner.json"
@@ -107,9 +108,16 @@ def local_bobcat_mine_report():
                 ###LOCAL load miner.json
                 # with open("miner.json") as json_data_file:
                 #    data = json.load(json_data_file)
-
+            except requests.RequestException:
+                status = "Connectivity error"
+            except ValueError:
+                status = "JSON parsing error"
+            except (IndexError, KeyError):
+                status = "JSON format error"
             except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                print(f"\n{hs['time']} Bobcat Miner Local API failure")
+                status = "ValueError"
+            if bool(status):
+                print(f"\n{hs['time']} Bobcat API Error, {status}")
                 quit()
 
             temp_alert = (
@@ -309,6 +317,7 @@ def load_activity_data():
     global activities, config, hs, wellness_check, send, send_report, send_wellness_check
 
     # try to get json or return error
+    status = False
     try:
         # LIVE API data
         activity_endpoint = (
@@ -321,10 +330,16 @@ def load_activity_data():
         ###LOCAL load data.json
         # with open("data.json") as json_data_file:
         #  data = json.load(json_data_file)
-
-    except:  # catch all errors
-        # except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"\n{hs['time']} Helium Activity API. Response Failure")
+    except requests.RequestException:
+        status = "Connectivity error"
+    except ValueError:
+        status = "JSON parsing error"
+    except (IndexError, KeyError):
+        status = "JSON format error"
+    except ValueError:  # includes simplejson.decoder.JSONDecodeError
+        status = "ValueError"
+    if bool(status):
+        print(f"\n{hs['time']} Helium Activity API Error: {status}")
         quit()
 
     # quit if no data
@@ -491,6 +506,7 @@ def load_hotspot_data_and_status():
     new_balance = new_reward_scale = new_block_height = new_status = False
 
     # try to get json or return error
+    status = False
     try:
         hs_endpoint = helium_api_endpoint + "hotspots/" + config["hotspot"]
         hs_request = requests.get(hs_endpoint)
@@ -501,10 +517,17 @@ def load_hotspot_data_and_status():
         else:
             hotspot_data = data["data"]
         del hs_request
+    except requests.RequestException:
+        status = "Connectivity error"
+    except ValueError:
+        status = "JSON parsing error"
+    except (IndexError, KeyError):
+        status = "JSON format error"
+    except ValueError:  # includes simplejson.decoder.JSONDecodeError
+        status = "ValueError"
 
-    except:  # catch all errors
-        # except ValueError:  #includes simplejson.decoder.JSONDecodeError
-        print(f"\n{hs['time']} Helium Hotspot API failure")
+    if bool(status):
+        print(f"\n{hs['time']} Helium Hotspot API Error, {status}")
         quit()
 
     # quit if no data
