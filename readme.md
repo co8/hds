@@ -31,7 +31,7 @@ HDS monitors the Helium API for new activities and sends them to your Discord Ch
 Welcome Message
 :call_me: THANKFUL COTTON CROCODILE [ :satellite: TCC ]
 
-**Status Message** :satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+**Status Bar:** :satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
