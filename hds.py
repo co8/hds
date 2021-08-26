@@ -90,11 +90,11 @@ def local_bobcat_mine_report():
         if "report" in config["next"] and hs["now"] > config["next"]["report"]:
             send_report = True
             print(
-                f"\n{hs["time"]} Bobcat Miner Report, every {report_interval_hours}hrs"
+                f"\n{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs"
             )
 
         if bool(send_report):
-            # if 'bobcat_local_endpoint' in config and bool(config["bobcat_local_endpoint"]) and bool(send_report):
+            # if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(send_report):
 
             # try to get json or return error
             status = ""
@@ -117,7 +117,7 @@ def local_bobcat_mine_report():
             except ValueError:  # includes simplejson.decoder.JSONDecodeError
                 status = "ValueError"
             if bool(status):
-                print(f"\n{hs["time"]} Bobcat API Error, {status}")
+                print(f"\n{hs['time']} Bobcat API Error, {status}")
                 quit()
 
             temp_alert = (
@@ -158,8 +158,8 @@ def local_bobcat_mine_report():
                 config["last"]["report"]["ota_bobcat"] = ota_bobcat
                 ota_bobcat = f"**{ota_bobcat}**"
 
-            report = f"🔩🔩  **MINERity Report : {hs["time"]}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
-            # report = f"**MINERity Report:** {hs["time"]}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data["ota_version"]}"
+            report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+            # report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
             output_message.append(report)  # insert at position 1 after status_msg
 
@@ -167,7 +167,7 @@ def local_bobcat_mine_report():
             config["next"]["report"] = hs["now"] + report_interval_seconds
             config["next"]["report_nice"] = nice_date(config["next"]["report"])
 
-            print(f"\n{hs["time"]} bobcat miner report", end="")
+            print(f"\n{hs['time']} bobcat miner report", end="")
 
 
 ###load config.json vars
@@ -234,7 +234,7 @@ def update_activity_history():
 
         # trim history. remove first 15 (oldest) elements if over 50 elements
         if len(activity_history) > 50:
-            print(f"\n{hs["time"]} trimming activity_history", end="")
+            print(f"\n{hs['time']} trimming activity_history", end="")
             del activity_history[:15]
 
         # save history details to config
@@ -339,12 +339,12 @@ def load_activity_data():
     except ValueError:  # includes simplejson.decoder.JSONDecodeError
         status = "ValueError"
     if bool(status):
-        print(f"\n{hs["time"]} Helium Activity API Error: {status}")
+        print(f"\n{hs['time']} Helium Activity API Error: {status}")
         quit()
 
     # quit if no data
     if "data" not in data:
-        print(f"\n{hs["time"]} Helium Activity API. No 'data' key in Response")
+        print(f"\n{hs['time']} Helium Activity API. No 'data' key in Response")
         quit()
 
     # set wellness_check if last.send exists
@@ -360,14 +360,14 @@ def load_activity_data():
     # send if time lapse since last status met. send report too
     if hs["now"] >= wellness_check:
         print(
-            f"\n{hs["time"]} Wellness Check, {wellness_check_hours}hrs, No New Activities",
+            f"\n{hs['time']} Wellness Check, {wellness_check_hours}hrs, No New Activities",
             end="",
         )
         send = send_wellness_check = send_report = True
 
     # no data or send_report false
     elif not data["data"] and not bool(send_report):
-        # print(f"{hs["time"]} no activities")
+        # print(f"{hs['time']} no activities")
         print(".", end="")
         quit()
 
@@ -483,7 +483,7 @@ def loop_activities():
                 for summary in activity["state_channel"]["summaries"]:
                     packet_plural = "s" if summary["num_packets"] != 1 else ""
                     output_message.append(
-                        f"🚛 Transferred {summary["num_packets"]} Packet{packet_plural} ({summary["num_dcs"]} DC)  `{time}`"
+                        f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}`"
                     )
 
             # ...challenge accepted
@@ -512,7 +512,7 @@ def load_hotspot_data_and_status():
         hs_request = requests.get(hs_endpoint)
         data = hs_request.json()
         if not data["data"]:
-            print(f"no hotspot data {hs["time"]}")
+            print(f"no hotspot data {hs['time']}")
             quit()
         else:
             hotspot_data = data["data"]
@@ -527,12 +527,12 @@ def load_hotspot_data_and_status():
         status = "ValueError"
 
     if bool(status):
-        print(f"\n{hs["time"]} Helium Hotspot API Error, {status}")
+        print(f"\n{hs['time']} Helium Hotspot API Error, {status}")
         quit()
 
     # quit if no data
     if "data" not in data:
-        print(f"\n{hs["time"]} Helium Hotspot API. No 'data' key in Response")
+        print(f"\n{hs['time']} Helium Hotspot API. No 'data' key in Response")
         quit()
 
     ### hotspot data
@@ -649,13 +649,13 @@ def discord_send():
     # unless send report, don't send, repeats only
     elif not bool(send_report):
         send = False
-        print(":", end="")  # print(f"{hs["time"]} repeat activities")
+        print(":", end="")  # print(f"{hs['time']} repeat activities")
         quit()
 
     # add welcome msg to output if no config[last][send]
     if bool(add_welcome):
-        output_message.insert(0, f"🤙 **{hs["name"]}  [ 📡 {hs["initials"]} ]**")
-        print(f"\n{hs["time"]} Welcome msg added", end="")
+        output_message.insert(0, f"🤙 **{hs['name']}  [ 📡 {hs['initials']} ]**")
+        print(f"\n{hs['time']} Welcome msg added", end="")
 
     if bool(send):
         # only send activity, remove status if recently sent. keep if report
@@ -703,7 +703,7 @@ def main():
 
     # status log
     print(
-        f"\n{hs["time"]} act:{str(len(activities))} repeats:{str(history_repeats)} msgs:{str(len(output_message))} discord:{discord_response_reason}"
+        f"\n{hs['time']} act:{str(len(activities))} repeats:{str(history_repeats)} msgs:{str(len(output_message))} discord:{discord_response_reason}"
     )
 
 
