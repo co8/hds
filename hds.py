@@ -155,7 +155,7 @@ def local_bobcat_miner_report():
                 config["last"]["report"]["ota_bobcat"] = ota_bobcat
                 ota_bobcat = f"**{ota_bobcat}**"
 
-            report = f"🔩🔩  MINERity Report : {hs['time']}  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+            report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
             # report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
             output_message.append(report)  # insert at position 1 after status_msg
@@ -680,13 +680,17 @@ def main():
     # if activity data...
     load_hotspot_data_and_status()
     loop_activities()
+
+    # if bobcat set in config
     local_bobcat_miner_report()
+
+    # send
     discord_response_reason = discord_send()
 
-    # update history
+    # write history
     update_activity_history()
 
-    # update config
+    # write config
     update_config()
 
     # cron log
