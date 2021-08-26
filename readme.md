@@ -2,8 +2,6 @@
 
 ## **Hotspot Discord Status** for the Helium Network Hotspots
 
-[Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
-
 |         Discord Channel          |  Discord Mobile Notification   |
 | :------------------------------: | :----------------------------: |
 | ![](imgs/hds-discord-window.jpg) | ![](imgs/hds-notification.jpg) |
@@ -12,7 +10,11 @@
 
 ### Helium Activity and Reward updates sent to your Discord Channel
 
-## HDS monitors the Helium API for new activities and sends them to your Discord Channel. Activities are displayed with Contextual information to understand status, optimization and maintenance.
+## HDS monitors the Helium API for new activities and sends them to your Discord Channel.
+
+Activities are displayed with Contextual information to understand status, optimization and maintenance.
+
+[Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
 
 ### Features
 
