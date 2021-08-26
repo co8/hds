@@ -1,25 +1,58 @@
-# hds
+# HDS - **Hotspot Discord Status** for the Helium Hotspots
 
 ## **Hotspot Discord Status** for the Helium Network Hotspots
 
-## Getting Started
+### Helium Activity and Reward updates sent to your Discord Channel
 
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes. See deployment
-for notes on deploying the project on a live system.
+HDS monitors the Helium API for new activities and sends them to your Discord Channel. Activities are displayed with Contextual information to understand status, optimization and maintenance.
+
+[Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
+
+|         Discord Channel          |  Discord Mobile Notification   |
+| :------------------------------: | :----------------------------: |
+| ![](imgs/hds-discord-window.jpg) | ![](imgs/hds-notification.jpg) |
+
+---
+
+### Features
+
+- a
+- b
+- c
+- d
+- e
+
+---
+
+---
+
+### Notifications and Emojis
+
+Welcome Message
+:call_me: THANKFUL COTTON CROCODILE [ :satellite: TCC ]
+
+Status Message
+:satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+
+- :satellite: Hotspot Initials
+- :fire: Online Status
+- :avocado: Synchronization
+- :pizza: Transmission Reward Scale
+- :bacon: Wallet Balance
+
+---
 
 ### Prerequisites
 
-Requirements for the software and other tools to build, test and push
+- [Python v3.9+](https://www.python.org/downloads/)
+- [How to Use Crontab, or other scheduler](https://www.geeksforgeeks.org/crontab-in-linux-with-examples/)
+- [Install Discord Webhook for Python via pip3](https://pypi.org/project/discordwebhook/)
+- [Have a Discord Account](https://support.discord.com/hc/en-us/articles/360033931551-Getting-Started)
+- [Make a Discord Channel and Webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
-- [Python v3.9+ Installed](https://www.example.com)
-- [How to Use Crontab](https://www.geeksforgeeks.org/crontab-in-linux-with-examples/)
-- [Discord Webhook for Python](https://pypi.org/project/discordwebhook/)
+---
 
 ### Installing
-
-A step by step series of examples that tell you how to get a development
-environment running
 
 Option A: Download from Github
 
@@ -36,40 +69,75 @@ Option B: Clone from Github
 - cp new-activity_history.json activity_history.json
 - nano config.json
 
-Crontab
+---
 
-- Run every minute and at Reboot
-- If changed, update directory path to match your own
-- Delete log file every Sunday at 0:00
+#### Config File. Add your Hotspot, Discord Bot Webhook
 
-  crontab -e
+```json
+default
+{
+  "hotspot": "HOTSPOT_ADDRESS_HERE",
+  "discord_webhook": "DISCORD_WEBHOOK_HERE"
+}
+
+example
+{
+  "hotspot": "112MWdscG3DjHTxdCrtuLk...",
+  "discord_webhook": "https://discord.com/api/webhooks/878693306043871313/C6m7znYe..."
+}
+
+optional config values that can be customized
+{
+  "bobcat_local_endpoint": "http://192.168.1.120/",
+  "wellness_check_hours": 8,
+  "report_interval_hours": 72,
+}
 ```
-  */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 
-  @reboot ~/hds; python3 hds.py >> cron.log 2>&1
+---
 
-  0 0 * * 0 rm cron.log
+####Crontab
+
+- run script every minute. log to file
+- Optional:
+  - run at reboot, if needed. eg: dedicated device
+  - clear log file once a week at Sunday, 04:20am. write to cron.log
+  - update from github nightly at 04:20am. write to cron.log
+
+```BASH
+% crontab -e
+
+required
+*/1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
+
+optional
+@reboot cd ~/hds; python3 hds.py >> cron.log 2>&1
+20 4 * * 0 cd ~/hds; rm cron.log; echo "crontab: cleared cron.log file" >> cron.log
+20 4 * * * cd ~/hds; echo "" >> cron.log; git fetch; git pull >> cron.log 2>&1
 ```
-Run directly from the directory
 
-    cd ~/hds/
-    python3 hds.py
+---
 
-Command line Arguments
+### Run directly from the directory
+
+```BASH
+cd ~/hds/
+python3 hds.py
+```
+
+### Command line Arguments
 
 ```py
 python3 hds.py report
-```
-
-- send a bobcat miner report, if bobcat_local_endpoint is set
-  
-```py
 python3 hds.py reset
 ```
+
+- send a bobcat miner report, if bobcat_local_endpoint is set in config.json
 - resets by setting last sent and activity history
 
+---
 
-## Support this Project
+### Support this Project
 
 Fork this project and submit pull requests
 
@@ -81,7 +149,10 @@ HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.heli
 
 I'm seeking grants and bounties to extend compatibility to more hotspots and continued development of this project. [e@co8.com](mailto:e@co8.com)
 
+---
+
 ### Optional Hardware
+
 For convenience, I run this script on a Raspberry Pi Zero W
 
 [**Raspberry Pi Zero W** Kit (Amazon US)](https://amzn.to/3jWaUpF)
