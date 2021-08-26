@@ -42,7 +42,6 @@ import requests
 import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
-from functools import cache
 
 ### vars
 ### FINE TUNE #####
@@ -680,7 +679,6 @@ def discord_send():
 
 #########################
 ### main
-# @cache
 def main():
 
     # time_execution
