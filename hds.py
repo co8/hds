@@ -3,7 +3,7 @@
 ############################
 # HDS - Hotspot Discord Status
 # https://github.com/co8/hds
-# ------------------
+#
 # co8.com
 # enrique r grullon
 # e@co8.com
@@ -13,17 +13,16 @@
 ########
 # Set Crontab
 # crontab -e
-# run script every minute. log to file
+# - run script every minute. log to file
+# - clear log file once a month at 0hr day 01
+# - run at reboot for dedicated device, eg: RasPi Zero W
+#
 # */1 * * * * cd ~/hds; python3 hds.py  >> cron.log 2>&1
 # @reboot cd ~/hds; python3 hds.py  >> cron.log 2>&1
-# 0 0 1 * *  rm cron.log
-# clear log file once a month at 0hr day 01
-#
-# 0 0 1 * * cd ~/hds; mv -i cron.log /logs/"cron_$(date '+%Y%m%d').log"
-# monthly, move and rename cron.log
-#
-# - run at reboot for dedicated device, eg: RasPi Zero W
-###
+# 0 0 1 * * rm cron.log
+########
+
+########
 # install DiscordWebhook module
 # % pip3 install discordwebhook
 ########
@@ -33,14 +32,11 @@
 # REPORT
 # python3 hds.py report - send miner report
 # RESET
-# python3 hds.py reset - set last.send to 0
+# python3 hds.py reset
 #######
 
 ####import libs
-from io import UnsupportedOperation
 import sys
-
-# from os import stat
 from time import time
 import requests
 import json
@@ -80,7 +76,7 @@ reward_short_names = {
 #### functions
 
 
-def local_bobcat_mine_report():
+def local_bobcat_miner_report():
     # only run if bobcat_local_endpoint is set
     if "bobcat_local_endpoint" in config and bool(config["bobcat_local_endpoint"]):
 
@@ -130,6 +126,7 @@ def local_bobcat_mine_report():
                 else str.capitalize(data["miner"]["State"])
             )
 
+            # block height
             block_height = str.split(data["height"][0])
             block_height = "{:,}".format(int(block_height[-1]))
 
@@ -150,6 +147,7 @@ def local_bobcat_mine_report():
                 config["last"]["report"]["ota_helium"] = ota_helium
                 ota_helium = f"**{ota_helium}**"
 
+            # bobcat OTA version
             ota_bobcat = data["ota_version"]
             if "ota_bobcat" not in config["last"]["report"]:
                 config["last"]["report"]["ota_bobcat"] = ""
@@ -157,7 +155,7 @@ def local_bobcat_mine_report():
                 config["last"]["report"]["ota_bobcat"] = ota_bobcat
                 ota_bobcat = f"**{ota_bobcat}**"
 
-            report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦{block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+            report = f"🔩🔩  MINERity Report : {hs['time']}  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
             # report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
 
             output_message.append(report)  # insert at position 1 after status_msg
@@ -202,7 +200,7 @@ def load_config():
         config["last"]["report"] = {}
 
     # command line arguments
-    # send report if argument
+    # send report if True
     send_report = True if "report" in sys.argv else False
 
     # reset hds. only clear config last/next and activity_history.
@@ -253,24 +251,29 @@ def update_activity_history():
 
 def get_time():
     global hs
-    ###Time functions
+    # time functions
     now = datetime.now()
     hs["now"] = round(datetime.timestamp(now))
     hs["time"] = str(now.strftime("%H:%M %D"))
 
 
-###functions
+# functions
 def nice_date(time):
     timestamp = datetime.fromtimestamp(time)
     return timestamp.strftime("%H:%M %d/%b").upper()
 
 
 def nice_hotspot_name(name):
-    return name.replace("-", " ").upper()
+    if "name" not in config:
+        config["name"] = name.replace("-", " ").upper()
+    return config["name"]
 
 
 def nice_hotspot_initials(name):
-    return "".join(item[0].upper() for item in name.split())
+    if "initials" not in config:
+        name = nice_hotspot_name(name)
+        config["initials"] = "".join(item[0].upper() for item in name.split())
+    return config["initials"]
 
 
 def nice_hnt_amount(amt):
@@ -293,10 +296,6 @@ def nice_invalid_reason(ir):
     return (
         invalid_reason_short_names[ir] if ir in invalid_reason_short_names else str(ir)
     )
-    # output = str(ir)
-    # if ir in invalid_reason_short_names:
-    #   output = invalid_reason_short_names[ir]
-    # return output
 
 
 ###activity type name to short name
@@ -306,10 +305,6 @@ def reward_short_name(reward_type):
         if reward_type in reward_short_names
         else reward_type.upper()
     )
-    # output = reward_type.upper()
-    # if reward_type in reward_short_names:
-    #    output = reward_short_names[reward_type]
-    # return output
 
 
 def load_activity_data():
@@ -329,6 +324,7 @@ def load_activity_data():
         ###LOCAL load data.json
         # with open("data.json") as json_data_file:
         #  data = json.load(json_data_file)
+
     except requests.RequestException:
         status = "Connectivity error"
     except ValueError:  # includes simplejson.decoder.JSONDecodeError
@@ -373,7 +369,6 @@ def load_activity_data():
     else:
         send = True
         activities = data["data"]
-        # print('\n',end='') #line break for cron.log
 
 
 ###activity type poc_receipts_v1
@@ -399,9 +394,9 @@ def poc_receipts_v1(activity):
         "challengee" in activity["path"][0]
         and activity["path"][0]["challengee"] == config["hotspot"]
     ):
-        valid_wit_count = 0
 
         # beacon sent plus witness count and valid count
+        valid_wit_count = 0
         for wit in witnesses:
             if bool(wit["is_valid"]):
                 valid_wit_count = valid_wit_count + 1
@@ -433,12 +428,9 @@ def poc_receipts_v1(activity):
                     valid_text = "💩 Invalid"
                     witness_info = ", " + nice_invalid_reason(w["invalid_reason"])
 
-                # output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
-
         # add valid witness count among witnesses
         if bool(valid_witness) and vw >= 1:
-            if vw == len(witnesses):
-                vw = "All"
+            vw = "All" if vw == len(witnesses) else vw
             witness_info += f", {vw} Valid"
 
         output_message.append(f"{valid_text} Witness{witness_info}  `{time}`")
@@ -535,14 +527,14 @@ def load_hotspot_data_and_status():
     hs_add = {
         "owner": hotspot_data["owner"],
         "name": nice_hotspot_name(hotspot_data["name"]),
+        "initials": nice_hotspot_initials(hotspot_data["name"]),
         "status": str(hotspot_data["status"]["online"]).upper(),
         "height": hotspot_data["status"]["height"],
         "block": hotspot_data["block"],
         "reward_scale": "{:.2f}".format(round(hotspot_data["reward_scale"], 2)),
     }
     hs.update(hs_add)
-    hs["initials"] = nice_hotspot_initials(hs["name"])
-    del data, hotspot_data
+    del data, hotspot_data, hs_add
 
     # add/update cursor to config. supports hotspot ownership transfers
     if "owner" not in config or config["owner"] != hs["owner"]:
@@ -635,7 +627,7 @@ def discord_send():
     global send, add_welcome, send_report
 
     # send if no last.send in config
-    if "last" in config and not "send" in config["last"]:
+    if "last" in config and "send" not in config["last"]:
         send = add_welcome = True
 
     # send if more than 1 (default) msg
@@ -673,7 +665,7 @@ def discord_send():
         # exit()
 
         webhook = DiscordWebhook(url=config["discord_webhook"], content=discord_message)
-        ###send
+        # send
         webhook_response = webhook.execute()
         return webhook_response.reason
 
@@ -688,7 +680,7 @@ def main():
     # if activity data...
     load_hotspot_data_and_status()
     loop_activities()
-    local_bobcat_mine_report()
+    local_bobcat_miner_report()
     discord_response_reason = discord_send()
 
     # update history
@@ -697,7 +689,7 @@ def main():
     # update config
     update_config()
 
-    # status log
+    # cron log
     print(
         f"\n{hs['time']} act:{str(len(activities))} repeats:{str(history_repeats)} msgs:{str(len(output_message))} discord:{discord_response_reason}"
     )
