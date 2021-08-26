@@ -37,11 +37,12 @@
 
 ####import libs
 import sys
-from time import time
+import time
 import requests
 import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
+from functools import cache
 
 ### vars
 ### FINE TUNE #####
@@ -80,7 +81,7 @@ def local_bobcat_miner_report():
     # only run if bobcat_local_endpoint is set
     if "bobcat_local_endpoint" in config and bool(config["bobcat_local_endpoint"]):
 
-        global send_report, output_message, report_interval_hours
+        global send_report, output_message, report_interval_hours, add_welcome
 
         # send if next.report has been met
         if "report" in config["next"] and hs["now"] > config["next"]["report"]:
@@ -89,7 +90,7 @@ def local_bobcat_miner_report():
                 f"\n{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs"
             )
 
-        if bool(send_report):
+        if bool(send_report) or bool(add_welcome):
             # if 'bobcat_local_endpoint' in config and bool(config['bobcat_local_endpoint']) and bool(send_report):
 
             # try to get json or return error
@@ -156,9 +157,7 @@ def local_bobcat_miner_report():
                 ota_bobcat = f"**{ota_bobcat}**"
 
             report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
-            # report = f"**MINERity Report:** {hs['time']}\nStatus: {miner_state} Temp: {temp_alert} 📦: {block_height}\n**Firmware** HELIUM: {ota_helium} / BOBCAT: {data['ota_version']}"
-
-            output_message.append(report)  # insert at position 1 after status_msg
+            output_message.append(report)
 
             # config values. repeat every X hours
             config["next"]["report"] = hs["now"] + report_interval_seconds
@@ -169,7 +168,7 @@ def local_bobcat_miner_report():
 
 ###load config.json vars
 def load_config():
-    global config, send_report, activity_history, wellness_check_hours, report_interval_hours, wellness_check_seconds, report_interval_seconds
+    global config, send_report, activity_history, wellness_check_hours, report_interval_hours, wellness_check_seconds, report_interval_seconds, add_welcome
     with open(config_file) as json_data_file:
         config = json.load(json_data_file)
 
@@ -198,6 +197,10 @@ def load_config():
         config["next"] = {}
     if "report" not in config["last"]:
         config["last"]["report"] = {}
+
+    # send if no last.send in config
+    if "send" not in config["last"]:
+        add_welcome = True
 
     # command line arguments
     # send report if True
@@ -280,14 +283,19 @@ def nice_hnt_amount(amt):
     niceNum = 0.00000001
     niceNumSmall = 100000000
 
-    # up to 3 decimal payments
-    amt_output = "{:.3f}".format(amt * niceNum)
+    if isinstance(amt, float):
+        # float. for time float in seconds
+        amt_output = "{:.2f}".format(amt)
+    else:
+        # int. up to 3 decimal payments
+        amt_output = "{:.3f}".format(amt * niceNum)
 
-    # 8 decimal places for micropayments
+    # int. 8 decimal places for micropayments
     # if amt > 0 and amt < 100000 :
     if amt in range(0, 100000):
         amt_output = "{:.8f}".format(amt / niceNumSmall).rstrip("0")
         amt_output = f"`{amt_output}`"
+
     return str(amt_output)
 
 
@@ -352,7 +360,7 @@ def load_activity_data():
         config["cursor"] = data["cursor"]
 
     # send if time lapse since last status met. send report too
-    if hs["now"] >= wellness_check:
+    if not bool(add_welcome) and hs["now"] >= wellness_check:
         print(
             f"\n{hs['time']} Wellness Check, {wellness_check_hours}hrs, No New Activities",
             end="",
@@ -617,7 +625,7 @@ def load_hotspot_data_and_status():
     output_message.insert(0, status_msg)
 
     # add in lapse message
-    if bool(send_wellness_check):
+    if not bool(add_welcome) and bool(send_wellness_check):
         hour_plural = "s" if wellness_check_hours != 1 else ""
         lapse_msg = f"`🚧 No Activities from API in the Last {wellness_check_hours} Hour{hour_plural} `"
         output_message.insert(0, lapse_msg)
@@ -672,7 +680,12 @@ def discord_send():
 
 #########################
 ### main
+# @cache
 def main():
+
+    # time_execution
+    time_execution_t0 = time.time()
+
     get_time()
     load_config()
     load_activity_data()
@@ -693,9 +706,13 @@ def main():
     # write config
     update_config()
 
+    # time_execution end
+    time_execution_t1 = time.time()
+    time_execution_seconds = nice_hnt_amount(time_execution_t1 - time_execution_t0)
+
     # cron log
     print(
-        f"\n{hs['time']} act:{str(len(activities))} repeats:{str(history_repeats)} msgs:{str(len(output_message))} discord:{discord_response_reason}"
+        f"\n{hs['time']} a:{str(len(activities))} r:{str(history_repeats)} m:{str(len(output_message))} discord:{discord_response_reason} sec:{time_execution_seconds}"
     )
 
 

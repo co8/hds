@@ -4,3 +4,4 @@ data.json
 data-short.json
 miner.json
 git_update.py
+cron.log
