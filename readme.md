@@ -238,4 +238,4 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 [ACM - Antenna Cap Mount for RAK / Helium Hotspot / Dipole / Oukeione](https://www.thingiverse.com/thing:4942377) on Thingiverse
 
-![](imgs/acm-antenna-rak5.8-wide.jpg) ![](imgs/acm-antenna-ouke3.0-tight.jpg) ![](imgs/antenna_cap_mounts.jpg)
+![](/imgs/acm-co8.jpg)
