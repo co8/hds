@@ -61,6 +61,11 @@
 
 - :articulated_lorry: Transferred 4 Packets (8 DC) `04:39 24/AUG`
 
+**:bacon:HNT Amounts**
+
+- :bacon:0.013
+- :bacon:`0.0000032`
+
 **Mining Rewards in :bacon:HNT**
 
 - :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
@@ -72,11 +77,6 @@
 
 `🚧 No Activities from API in the Last 8 Hours`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
-
-**:bacon:HNT Amounts**
-
-- :bacon:0.013
-- :bacon:`0.0000032`
 
 ---
 
