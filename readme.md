@@ -221,7 +221,7 @@ HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.heli
 
 #### Seeking Grants and Bounties
 
-I'm seeking grants and bounties to extend compatibility to more hotspots and continued development of this project. [e@co8.com](mailto:e@co8.com)
+I'm seeking grants and bounties for new projects and to improve and expand this project. [e@co8.com](mailto:e@co8.com)
 
 ---
 
