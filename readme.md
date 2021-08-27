@@ -73,7 +73,7 @@
 `🚧 No Activities from API in the Last 8 Hours`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
-**HNT Amounts**
+**:bacon:HNT Amounts**
 
 - :bacon:0.013
 - :bacon:`0.0000032`
