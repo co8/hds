@@ -181,9 +181,9 @@ required
 optional
 
 ```BASH
-@reboot cd ~/hds; echo "\n$(date "+%H:%M %D") cron reboot" >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
-20 4 * * 0 cd ~/hds; rm cron.log; echo "\n$(date "+%H:%M %D") cron.log cleared" >> cron.log 2>&1
-20 4 * * * cd ~/hds; echo "\n$(date "+%H:%M %D") cron git fetch/pull" >> cron.log; git fetch; git pull >> cron.log 2>&1
+@reboot cd ~/hds; printf "\n$(date "+%H:%M %D") Cron Reboot\n" >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
+20 4 * * 0 cd ~/hds; rm cron.log; printf "\n$(date "+%H:%M %D") cron log cleared\n" >> cron.log 2>&1
+20 4 * * * cd ~/hds; printf "\n$(date "+%H:%M %D") cron git update\n" >> cron.log; git fetch; git pull >> cron.log 2>&1
 ```
 
 ---
