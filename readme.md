@@ -234,8 +234,10 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 ### Check out my other Helium Project...
 
-#### ACM - Antenna Cap Mount for Rak, Oukeione and Dipole Antennas
+#### ACM - Antenna Cap Mount for Rak, Oukeione and Outdoor Fiberglass Dipole Antennas
 
-[ACM - Antenna Cap Mount for RAK / Helium Hotspot / Dipole / Oukeione](https://www.thingiverse.com/thing:4942377) on Thingiverse
+#### Outdoor or Attic
 
-![](/imgs/acm-co8.jpg)
+[ACM on Thingiverse](https://www.thingiverse.com/thing:4942377)
+
+![ACM](/imgs/acm-co8.jpg)
