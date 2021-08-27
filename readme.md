@@ -61,7 +61,7 @@
 
 - :articulated_lorry: Transferred 4 Packets (8 DC) `04:39 24/AUG`
 
-**:bacon:HNT Amounts**
+**HNT Amounts**
 
 - :bacon:0.013
 - :bacon:`0.0000032`
