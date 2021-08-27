@@ -61,7 +61,7 @@
 
 - :articulated_lorry: Transferred 4 Packets (8 DC) `04:39 24/AUG`
 
-**Mining Rewards**
+**Mining Rewards in :bacon:HNT**
 
 - :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
 - :cookie: Reward :bacon:0.008, Challenger `04:31 23/AUG`
@@ -104,7 +104,7 @@ Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
 
 ---
 
-#### Installing
+#### Installation
 
 Option A: Download from Github
 
@@ -145,12 +145,13 @@ example
 }
 ```
 
-```json
 optional config values that can be customized
+
+```json
 {
   "bobcat_local_endpoint": "http://192.168.1.120/",
   "wellness_check_hours": 8,
-  "report_interval_hours": 72,
+  "report_interval_hours": 72
 }
 ```
 
@@ -181,7 +182,7 @@ optional
 
 ```BASH
 @reboot cd ~/hds; python3 hds.py >> cron.log 2>&1
-20 4 * * 0 cd ~/hds; rm cron.log; echo "crontab: cleared cron.log file" >> cron.log
+20 4 * * 0 cd ~/hds; rm cron.log; echo "crontab: cleared cron.log" >> cron.log
 20 4 * * * cd ~/hds; echo "" >> cron.log; git fetch; git pull >> cron.log 2>&1
 ```
 
