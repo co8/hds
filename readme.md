@@ -6,9 +6,9 @@
 
 ---
 
-### Helium Hotspot Activity and Rewards sent to your Discord Channel
+### Helium Hotspot Activity and Reward Notifications sent to your Discord Channel
 
-### HDS monitors the Helium API for new activities and sends them to your Discord Channel.
+**HDS monitors the Helium API for new activities**
 
 [Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
 
