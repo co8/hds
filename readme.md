@@ -114,43 +114,53 @@ Option A: Download from Github
 
 Option B: Clone from Github
 
-- git clone https://github.com/co8/hds
-- cd hds
-- cp new-config.json config.json
-- cp new-activity_history.json activity_history.json
-- nano config.json
+```BASH
+git clone https://github.com/co8/hds
+cd ~/hds
+cp new-config.json config.json
+cp new-activity_history.json activity_history.json
+nano config.json
+```
 
 ---
 
 #### Config File. Add your Hotspot, Discord Bot Webhook
 
+required
+
 ```json
-default
 {
   "hotspot": "HOTSPOT_ADDRESS_HERE",
   "discord_webhook": "DISCORD_WEBHOOK_HERE"
 }
+```
 
 example
+
+```json
 {
   "hotspot": "112MWdscG3DjHTxdCrtuLk...",
   "discord_webhook": "https://discord.com/api/webhooks/878693306043871313/C6m7znYe..."
 }
+```
 
+```json
 optional config values that can be customized
 {
   "bobcat_local_endpoint": "http://192.168.1.120/",
   "wellness_check_hours": 8,
   "report_interval_hours": 72,
 }
-*Bobcat Miner Reports slow down the miner.
 ```
+
+**FYI:** Bobcat Miner Reports slow down the miner. Do not abuse
 
 ---
 
-####Crontab
+#### Crontab
 
-- run script every minute. log to file
+- Required:
+  - run script every minute. log to file
 - Optional:
   - run at reboot, if needed. eg: dedicated device
   - clear log file once a week at Sunday, 04:20am. write to cron.log
@@ -158,11 +168,17 @@ optional config values that can be customized
 
 ```BASH
 % crontab -e
+```
 
 required
+
+```BASH
 */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
+```
 
 optional
+
+```BASH
 @reboot cd ~/hds; python3 hds.py >> cron.log 2>&1
 20 4 * * 0 cd ~/hds; rm cron.log; echo "crontab: cleared cron.log file" >> cron.log
 20 4 * * * cd ~/hds; echo "" >> cron.log; git fetch; git pull >> cron.log 2>&1
@@ -170,23 +186,26 @@ optional
 
 ---
 
-#### Run directly from the directory
+#### Run Directly
 
 ```BASH
-cd ~/hds/
+cd ~/hds
 python3 hds.py
 ```
 
 #### Command line Arguments
 
 ```py
-python3 hds.py report
-
 python3 hds.py reset
 ```
 
-- send a bobcat miner report, if bobcat_local_endpoint is set in config.json
 - resets by removing non-essential config values and clearing activity history
+
+```py
+python3 hds.py report
+```
+
+- sends a bobcat miner report, if bobcat_local_endpoint is set in config.json
 
 ---
 
@@ -194,7 +213,7 @@ python3 hds.py reset
 
 Fork this project and submit pull requests
 
-If you find this project useful please consider supporting it
+`If you find this project useful please consider supporting it`
 
 HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH)
 
