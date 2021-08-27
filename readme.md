@@ -81,9 +81,9 @@
 
 #### Bobcat Miner Report
 
-:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
-:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 08/26/21** :nut_and_bolt::nut_and_bolt:
-Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **982,983**
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534  
+:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 08/26/21** :nut_and_bolt::nut_and_bolt:  
+Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **982,983**  
 Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
 
 - Status: Online and Running
