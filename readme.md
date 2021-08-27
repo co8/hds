@@ -1,6 +1,4 @@
-# HDS - **Hotspot Discord Status** for Helium Hotspots
-
-## **Hotspot Discord Status** for the Helium Network Hotspots
+# HDS - Hotspot Discord Status
 
 |         Discord Channel          |  Discord Mobile Notification   |
 | :------------------------------: | :----------------------------: |
@@ -8,66 +6,83 @@
 
 ---
 
-### Helium Activity and Reward updates sent to your Discord Channel
+### Helium Hotspot Activity and Rewards sent to your Discord Channel
 
-## HDS monitors the Helium API for new activities and sends them to your Discord Channel.
-
-Activities are displayed with Contextual information to understand status, optimization and maintenance.
+### HDS monitors the Helium API for new activities and sends them to your Discord Channel.
 
 [Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
 
 ### Features
 
-- a
-- b
-- c
-- d
-- e
+- Short, Concise messages that mostly fit within a mobile notification
+- Campy and fun emoji's as UX
+- Activities are displayed with Contextual information for insights into performance, optimization and maintenance.
+- Updated values are presented in **bold**
+- **Wellness Check**: HDS will send a Status Message after 8 hours of no activities from the Helium API.
+- **Bobcat Miner Integration**: Receive more detailed stats directly from the miner
 
 ---
 
----
-
-### Notifications and Emojis
+### Status Messages
 
 **Welcome Message**:
 
-:call_me_hand: THANKFUL COTTON CROCODILE [ :satellite: TCC ]
+**:call_me_hand: THANKFUL COTTON CROCODILE [ :satellite: TCC ]**
 
 **Status Bar:**
 
-:satellite: TCC :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
 - :avocado: Sync Status
 - :pizza: Transmit/Reward Scale
-- :bacon: Wallet Balance (Hotspot Owner)
+- :bacon: Wallet Balance (of Hotspot Owner)
+
+**Proof of Coverage**
+
+- :game_die: Created Challenge... `16:57 23/AUG`
+- :checkered_flag: ...Challenged Beaconer, 7 Witnesses `04:22 23/AUG`
+- :volcano: Sent Beacon, 21 Witnesses, 18 Valid `13:29 23/AUG`
+- :flying_saucer: Valid Witness, 1 of 4, All Valid `12:04 23/AUG`
+
+**Invalid Witness**
+
+- :poop: Invalid Witness, Too Close `12:12 23/AUG`
+- :poop: Invalid Witness, RSSI BLB `10:55 25/AUG`
+
+**Data Packet Transfer**
+
+- :articulated_lorry: Transferred 4 Packets (8 DC) `04:39 24/AUG`
+
+**Mining Rewards**
+
+- :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
+- :cookie: Reward :bacon:0.008, Challenger `04:31 23/AUG`
+- :cookie: Reward :bacon:`0.0000032`, Data `04:48 24/AUG`
+- :cookie: Reward :bacon:0.059, Beacon `01:42 24/AUG`
+
+**Wellness Check plus Status Message**
+
+`🚧 No Activities from API in the Last 8 Hours`
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 **HNT Amounts**
 
 - :bacon:0.013
 - :bacon:`0.0000032`
 
-**Proof of Coverage** with Context
+---
 
-- :game_die: Created Challenge... 16:57 23/AUG
-- :checkered_flag: ...Challenged Beaconer, 7 Witnesses 04:22 23/AUG
-- :volcano: Sent Beacon, 3 Witnesses, 2 Valid 13:29 23/AUG
-- :flying_saucer: Valid Witness, 1 of 4, All Valid 12:04 23/AUG
+### Bobcat Miner Report
 
-**Invalid Witness** with Reason
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 08/26/21** :nut_and_bolt::nut_and_bolt:
+Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **982,983**
+Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
 
-- :poop: Invalid Witness, Too Close 12:12 23/AUG
-- :poop: Invalid Witness, RSSI BLB 10:55 25/AUG
-- :poop: Invalid Witness, RSSI, Too High 04:55 22/AUG
-
-**Rewards**
-
-- :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
-- :cookie: Reward :bacon:0.008, Challenger `04:31 23/AUG`
-- :cookie: Reward :bacon:`0.0000032`, Data `04:48 24/AUG`
-- :cookie: Reward :bacon:0.059, Beacon `01:42 24/AUG`
+- Status: Online and Running
+- Temperature: Normal or XX°C
 
 ---
 
@@ -92,7 +107,7 @@ Option A: Download from Github
 
 Option B: Clone from Github
 
-- $ git clone https://github.com/co8/hds
+- git clone https://github.com/co8/hds
 - cd hds
 - cp new-config.json config.json
 - cp new-activity_history.json activity_history.json
