@@ -165,7 +165,7 @@ optional config values that can be customized
 - Edit Cron:
 
 ```BASH
-% crontab -e
+crontab -e
 ```
 
 - Required:
