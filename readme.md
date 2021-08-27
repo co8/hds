@@ -82,14 +82,15 @@
 
 #### Bobcat Miner Report
 
-:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:0.48 :bacon:11.245  
+[//]: # ":satellite: **TCC** :fire:ONLINE :avocado:*NSYNC :pizza:0.48 :bacon:11.245"
+
 :nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 07/12/21** :nut_and_bolt::nut_and_bolt:  
 Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **944,112**  
 Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
 
 - Status: Online and Running
 - Temperature: Normal or XX°C
-- Block Height direct from Miner
+- Block Height: Direct from Miner
 - OTA Firmware Versions: Helium and Bobcat
 
 ---
