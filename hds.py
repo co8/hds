@@ -350,7 +350,7 @@ def load_activity_data():
 
     # quit if no data
     if "data" not in data:
-        print(f"\n{hs['time']} Activity API: No DATA")
+        print(f"\n{hs['time']} Activity API: Bad Data")
         quit()
 
     # set wellness_check if last.send exists
