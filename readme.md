@@ -33,7 +33,7 @@
 
 **Welcome Message**:
 
-**:call_me_hand: THANKFUL COTTON CROCODILE [ :satellite: TCC ]**
+:call_me_hand: THANKFUL COTTON CROCODILE [ :satellite: TCC ]
 
 **Status Bar:**
 
