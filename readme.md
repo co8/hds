@@ -181,11 +181,12 @@ python3 hds.py
 
 ```py
 python3 hds.py report
+
 python3 hds.py reset
 ```
 
 - send a bobcat miner report, if bobcat_local_endpoint is set in config.json
-- resets by setting last sent and activity history
+- resets by removing non-essential config values and clearing activity history
 
 ---
 
@@ -208,3 +209,13 @@ I'm seeking grants and bounties to extend compatibility to more hotspots and con
 For convenience, I run this script on a Raspberry Pi Zero W
 
 [**Raspberry Pi Zero W** Kit (Amazon US)](https://amzn.to/3jWaUpF)
+
+---
+
+### Check out my other Helium Project
+
+### ACM - Antenna Cap Mount
+
+[ACM - Antenna Cap Mount for RAK / Helium Hotspot / Dipole / Oukeione](https://www.thingiverse.com/thing:4942377) on Thingiverse
+
+![](imgs/acm-antenna-rak5.8-wide.jpg) ![](imgs/acm-antenna-ouke3.0-tight.jpg) ![](imgs/antenna_cap_mounts.jpg)
