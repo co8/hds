@@ -24,12 +24,12 @@
 #### Bobcat Miner Integration
 
 - Receive **Miner Reports** with more detailed stats directly from your miner locally via new Dashboard
-- Miner Reports are sent every 72 hours, or by adding adding report as an argument
+- Miner Reports are sent every 72 hours, or by adding **report** as an argument
 - Wellness Checks will also include a Miner Report
 
 ---
 
-#### Status Messages
+## Status Messages
 
 **Welcome Message**:
 
@@ -82,10 +82,10 @@
 
 #### Bobcat Miner Report
 
-:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534  
-:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 08/26/21** :nut_and_bolt::nut_and_bolt:  
-Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **982,983**  
-Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:0.48 :bacon:11.245  
+:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 07/12/21** :nut_and_bolt::nut_and_bolt:  
+Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **944,112**  
+Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
 
 - Status: Online and Running
 - Temperature: Normal or XX°C
