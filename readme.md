@@ -12,11 +12,11 @@
 
 [Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
 
-### Features
+#### Features
 
 - Uses Helium API for latest hotspot activity
-- Short, Concise messages that mostly fit within a mobile notification
-- Campy and fun emoji's as UX
+- Short, Concise Messages that mostly fit within a mobile notification
+- Campy, Fun, and Full of Emojis
 - Activities are displayed with Contextual Information for insights into performance, optimization and maintenance.
 - Updated values are presented in **bold**
 - **Wellness Check**: HDS will send a Status Message after 8 hours of no activities from the Helium API.
@@ -29,7 +29,7 @@
 
 ---
 
-### Status Messages
+#### Status Messages
 
 **Welcome Message**:
 
@@ -79,7 +79,7 @@
 
 ---
 
-### Bobcat Miner Report
+#### Bobcat Miner Report
 
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 :nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 08/26/21** :nut_and_bolt::nut_and_bolt:
@@ -93,7 +93,7 @@ Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
 
 ---
 
-### Prerequisites
+#### Prerequisites
 
 - [Python v3.9+](https://www.python.org/downloads/)
 - [How to Use Crontab, or other scheduler](https://www.geeksforgeeks.org/crontab-in-linux-with-examples/)
@@ -103,7 +103,7 @@ Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
 
 ---
 
-### Installing
+#### Installing
 
 Option A: Download from Github
 
@@ -170,14 +170,14 @@ optional
 
 ---
 
-### Run directly from the directory
+#### Run directly from the directory
 
 ```BASH
 cd ~/hds/
 python3 hds.py
 ```
 
-### Command line Arguments
+#### Command line Arguments
 
 ```py
 python3 hds.py report
@@ -190,7 +190,7 @@ python3 hds.py reset
 
 ---
 
-### Support this Project
+#### Support this Project
 
 Fork this project and submit pull requests
 
@@ -198,13 +198,13 @@ If you find this project useful please consider supporting it
 
 HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH)
 
-### Seeking Grants and Bounties to Support this Project
+#### Seeking Grants and Bounties to Support this Project
 
 I'm seeking grants and bounties to extend compatibility to more hotspots and continued development of this project. [e@co8.com](mailto:e@co8.com)
 
 ---
 
-### Optional Hardware
+#### Optional Hardware
 
 For convenience, I run this script on a Raspberry Pi Zero W
 
@@ -214,7 +214,7 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 ### Check out my other Helium Project
 
-### ACM - Antenna Cap Mount
+#### ACM - Antenna Cap Mount for Rak, Oukeione and Dipole Antennas
 
 [ACM - Antenna Cap Mount for RAK / Helium Hotspot / Dipole / Oukeione](https://www.thingiverse.com/thing:4942377) on Thingiverse
 
