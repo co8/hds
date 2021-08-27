@@ -219,7 +219,7 @@ Fork this project and submit pull requests
 
 HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH)
 
-#### Seeking Grants and Bounties to Support this Project
+#### Seeking Grants and Bounties
 
 I'm seeking grants and bounties to extend compatibility to more hotspots and continued development of this project. [e@co8.com](mailto:e@co8.com)
 
