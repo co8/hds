@@ -14,12 +14,18 @@
 
 ### Features
 
+- Uses Helium API for latest hotspot activity
 - Short, Concise messages that mostly fit within a mobile notification
 - Campy and fun emoji's as UX
-- Activities are displayed with Contextual information for insights into performance, optimization and maintenance.
+- Activities are displayed with Contextual Information for insights into performance, optimization and maintenance.
 - Updated values are presented in **bold**
 - **Wellness Check**: HDS will send a Status Message after 8 hours of no activities from the Helium API.
-- **Bobcat Miner Integration**: Receive more detailed stats directly from the miner
+
+#### Bobcat Miner Integration
+
+- Receive **Miner Reports** with more detailed stats directly from your miner locally via new Dashboard
+- Miner Reports are sent every 72 hours, or by adding adding report as an argument
+- Wellness Checks will also include a Miner Report
 
 ---
 
@@ -64,8 +70,7 @@
 
 **Wellness Check plus Status Message**
 
-`🚧 No Activities from API in the Last 8 Hours`
-:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+`🚧 No Activities from API in the Last 8 Hours`<br />:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 **HNT Amounts**
 
@@ -83,6 +88,8 @@ Firmware: Helium **2021.08.24.4** | Bobcat **1.0.2.18**
 
 - Status: Online and Running
 - Temperature: Normal or XX°C
+- Block Height direct from Miner
+- OTA Firmware Versions: Helium and Bobcat
 
 ---
 
@@ -136,6 +143,7 @@ optional config values that can be customized
   "wellness_check_hours": 8,
   "report_interval_hours": 72,
 }
+*Bobcat Miner Reports slow down the miner.
 ```
 
 ---
