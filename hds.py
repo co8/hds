@@ -106,14 +106,14 @@ def local_bobcat_miner_report():
                 # with open("miner.json") as json_data_file:
                 #    data = json.load(json_data_file)
             except requests.RequestException:
-                status = "Connectivity error"
+                status = "Connectivity"
             except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                status = "JSON parsing error"
+                status = "Parsing JSON"
             except (IndexError, KeyError):
-                status = "JSON format error"
+                status = "JSON format"
 
             if bool(status):
-                print(f"\n{hs['time']} Bobcat API Error, {status}")
+                print(f"\n{hs['time']} Bobcat API Error: {status}")
                 quit()
 
             temp_alert = (
@@ -338,19 +338,19 @@ def load_activity_data():
         #  data = json.load(json_data_file)
 
     except requests.RequestException:
-        status = "Connectivity error"
+        status = "Connectivity"
     except ValueError:  # includes simplejson.decoder.JSONDecodeError
-        status = "JSON parsing error"
+        status = "Parsing JSON"
     except (IndexError, KeyError):
-        status = "JSON format error"
+        status = "JSON format"
 
     if bool(status):
-        print(f"\n{hs['time']} Helium Activity API Error: {status}")
+        print(f"\n{hs['time']} Activity API Error: {status}")
         quit()
 
     # quit if no data
     if "data" not in data:
-        print(f"\n{hs['time']} Helium Activity API. No 'data' key in Response")
+        print(f"\n{hs['time']} Activity API: No DATA")
         quit()
 
     # set wellness_check if last.send exists
@@ -520,14 +520,14 @@ def load_hotspot_data_and_status():
             hotspot_data = data["data"]
         del hs_request
     except requests.RequestException:
-        status = "Connectivity error"
+        status = "Connectivity"
     except ValueError:  # includes simplejson.decoder.JSONDecodeError
-        status = "JSON parsing error"
+        status = "Parsing JSON"
     except (IndexError, KeyError):
-        status = "JSON format error"
+        status = "JSON format"
 
     if bool(status):
-        print(f"\n{hs['time']} Helium Hotspot API Error, {status}")
+        print(f"\n{hs['time']} Hotspot API Error: {status}")
         quit()
 
     # quit if no data
