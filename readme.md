@@ -161,24 +161,23 @@ optional config values that can be customized
 
 #### Crontab
 
-- Required:
-  - run script every minute. log to file
-- Optional:
-  - run at reboot, if needed. eg: dedicated device
-  - clear log file once a week at Sunday, 04:20am. write to cron.log
-  - update from github nightly at 04:20am. write to cron.log
+- Edit Cron:
 
 ```BASH
 % crontab -e
 ```
 
-required
+- Required:
+  - run script every minute. log to file
 
 ```BASH
 */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 ```
 
-optional
+- Optional:
+  - run at reboot, if needed. eg: dedicated device
+  - clear log file once a week at Sunday, 04:20am. write to cron.log
+  - update from github nightly at 04:20am. write to cron.log
 
 ```BASH
 @reboot cd ~/hds; printf "\n$(date "+%H:%M %D") Cron Reboot\n" >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
@@ -188,7 +187,7 @@ optional
 
 ---
 
-#### Run Directly
+#### Run in Command Line
 
 ```BASH
 cd ~/hds
@@ -197,13 +196,13 @@ python3 hds.py
 
 #### Command line Arguments
 
-```py
+```BASH
 python3 hds.py reset
 ```
 
 - resets by removing non-essential config values and clearing activity history
 
-```py
+```BASH
 python3 hds.py report
 ```
 
