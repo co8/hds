@@ -61,6 +61,10 @@
 
 - :articulated_lorry: Transferred 4 Packets (8 DC) `04:39 24/AUG`
 
+**Other Activities**
+
+- :rocket: Activity: ASSERT_LOCATION_V2 `14:39 04/JUL`
+
 **HNT Amounts**
 
 - :bacon:0.013
@@ -208,6 +212,25 @@ python3 hds.py report
 ```
 
 - sends a bobcat miner report, if bobcat_local_endpoint is set in config.json
+
+---
+
+#### Log and Errors
+
+**cron.log** is generated at hds/cron.log
+
+`.` (period) No new activities
+
+`:` (colon) Repeat activities, no new
+
+`10:17 08/22/21 a:5 r:3 m:2 discord:OK sec:2.88`
+
+- `10:17 08/28/21` 24hr time and date
+- `a:` activities count
+- `r:` repeat activities count
+- `m:` message line count sent
+- `discord:` Discord Response Reason
+- `sec:` Execution speed, in seconds
 
 ---
 
