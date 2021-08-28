@@ -241,4 +241,4 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 https://www.thingiverse.com/thing:4942377
 
-[ACM](/imgs/acm-co8.jpg)
+![ACM](/imgs/acm-co8.jpg)
