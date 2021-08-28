@@ -239,8 +239,6 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 #### Outdoor or Attic
 
-[ACM on Thingiverse](https://www.thingiverse.com/thing:4942377)
+[https://www.thingiverse.com/thing:4942377](https://www.thingiverse.com/thing:4942377)
 
-[//]: # "![ACM](/imgs/acm-co8.jpg)"
-
-[![ACM](imgs/acm-co8.jpg)]([anchor link](https://www.thingiverse.com/thing:4942377))
+[ACM](/imgs/acm-co8.jpg)
