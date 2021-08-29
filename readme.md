@@ -256,7 +256,7 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 ---
 
-#### Check out my other Helium Project...
+**Check out my other Helium Project...**
 
 ### ACM - Antenna Cap Mount
 
