@@ -79,7 +79,12 @@
 
 **Wellness Check plus Status Message**
 
-`🚧 No Activities from API in the Last 8 Hours`  
+`🚧 No Activities from API in the Last 8hrs`  
+:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
+
+**Scheduled Miner Report plus Status Message**
+
+`⏰ Scheduled Miner Report, every 72hrs`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 ---

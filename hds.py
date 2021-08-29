@@ -87,7 +87,7 @@ def local_bobcat_miner_report():
         if "report" in config["next"] and hs["now"] > config["next"]["report"]:
             send_report = True
             hour_plural = "s" if report_interval_hours != 1 else ""
-            interval_msg = f"`⏰ Scheduled Miner Report, every {report_interval_hours} Hour{hour_plural} `"
+            interval_msg = f"`⏰ Scheduled Miner Report, every {report_interval_hours}hr{hour_plural} `"
             output_message.insert(0, interval_msg)
             print(
                 f"\n{hs['time']} report interval met, every {report_interval_hours}hrs"
@@ -634,7 +634,7 @@ def load_hotspot_data_and_status():
     # add in lapse message
     if not bool(add_welcome) and bool(send_wellness_check):
         hour_plural = "s" if wellness_check_hours != 1 else ""
-        lapse_msg = f"`🚧 No Activities from API in the Last {wellness_check_hours} Hour{hour_plural} `"
+        lapse_msg = f"`🚧 No Activities from API in the Last {wellness_check_hours}hr{hour_plural} `"
         output_message.insert(0, lapse_msg)
 
 
