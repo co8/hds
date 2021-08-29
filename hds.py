@@ -634,7 +634,9 @@ def load_hotspot_data_and_status():
     # add in lapse message
     if not bool(add_welcome) and bool(send_wellness_check):
         hour_plural = "s" if wellness_check_hours != 1 else ""
-        lapse_msg = f"`🚧 No Activities from API in the Last {wellness_check_hours}hr{hour_plural} `"
+        lapse_msg = (
+            f"`🚧 No API Activities in the Last {wellness_check_hours}hr{hour_plural} `"
+        )
         output_message.insert(0, lapse_msg)
 
 
