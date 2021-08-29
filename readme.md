@@ -68,7 +68,7 @@
 **HNT Amounts**
 
 - :bacon:0.013
-- :bacon:`0.0000032`
+- :bacon:`0.0007548`
 
 **Mining Rewards in :bacon:HNT**
 
