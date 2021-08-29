@@ -146,7 +146,7 @@ example
 ```json
 {
   "hotspot": "112MWdscG3DjHTxdCrtuLk...",
-  "discord_webhook": "https://discord.com/api/webhooks/878693306043871313/C6m7znYe..."
+  "discord_webhook": "https://discord.com/api/webhooks/87869..."
 }
 ```
 
