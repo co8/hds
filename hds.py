@@ -86,8 +86,11 @@ def local_bobcat_miner_report():
         # send if next.report has been met
         if "report" in config["next"] and hs["now"] > config["next"]["report"]:
             send_report = True
+            hour_plural = "s" if report_interval_hours != 1 else ""
+            interval_msg = f"`⏰ Scheduled Miner Report, every {report_interval_hours} Hour{hour_plural} `"
+            output_message.insert(0, interval_msg)
             print(
-                f"\n{hs['time']} Bobcat Miner Report, every {report_interval_hours}hrs"
+                f"\n{hs['time']} report interval met, every {report_interval_hours}hrs"
             )
 
         if bool(send_report) or bool(add_welcome):
