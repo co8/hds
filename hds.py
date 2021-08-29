@@ -58,7 +58,8 @@ activities = []
 output_message = []
 activity_history = []
 hs = {}
-wellness_check = history_repeats = wellness_check_seconds = report_interval_seconds = 0
+wellness_check = history_repeats = wellness_check_seconds = 0
+report_interval_seconds = output_message_length = 0
 interval_pop_status_seconds = int(60 * pop_status_minutes)
 send = send_report = add_welcome = send_wellness_check = False
 invalid_reason_short_names = {
@@ -90,7 +91,8 @@ def local_bobcat_miner_report():
             interval_msg = f"`⏰ Scheduled Miner Report, every {report_interval_hours}hr{hour_plural} `"
             output_message.insert(0, interval_msg)
             print(
-                f"\n{hs['time']} report interval met, every {report_interval_hours}hrs"
+                f"\n{hs['time']} report interval met, every {report_interval_hours}hrs",
+                end="",
             )
 
         if bool(send_report) or bool(add_welcome):
@@ -641,7 +643,7 @@ def load_hotspot_data_and_status():
 
 
 def discord_send():
-    global send, add_welcome, send_report
+    global send, add_welcome, send_report, output_message_length
 
     # send if no last.send in config
     if "last" in config and "send" not in config["last"]:
@@ -674,6 +676,8 @@ def discord_send():
         # update last.send to be last status sent
         config["last"]["send"] = hs["now"]
         config["last"]["send_nice"] = nice_date(config["last"]["send"])
+
+        output_message_length = len(output_message)
 
         discord_message = "\n".join(output_message)
 
@@ -722,7 +726,7 @@ def main():
 
     # cron log
     print(
-        f"\n{hs['time']} a:{str(len(activities))} r:{str(history_repeats)} m:{str(len(output_message))} discord:{discord_response_reason} sec:{time_execution_seconds}"
+        f"\n{hs['time']} a:{str(len(activities))} r:{str(history_repeats)} m:{str(output_message_length)} discord:{discord_response_reason} sec:{time_execution_seconds}"
     )
 
 
