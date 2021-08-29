@@ -128,7 +128,9 @@ nano config.json
 
 ---
 
-#### Config File. Add your Hotspot, Discord Bot Webhook
+#### Config File
+
+Add your Hotspot and Discord Bot Webhook
 
 required
 
