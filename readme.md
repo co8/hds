@@ -82,15 +82,11 @@
 `🚧 No Activities from API in the Last 8hrs`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
-**Scheduled Miner Report plus Status Message**
-
-`⏰ Scheduled Miner Report, every 72hrs`  
-:satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
-
 ---
 
 #### Bobcat Miner Report
 
+`⏰ Scheduled Miner Report, every 72hrs`
 :nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 07/12/21** :nut_and_bolt::nut_and_bolt:  
 Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **944,112**  
 Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
