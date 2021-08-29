@@ -75,7 +75,7 @@
 - :cookie: Reward :bacon:0.013, Witness `04:31 23/AUG`
 - :cookie: Reward :bacon:0.008, Challenger `04:31 23/AUG`
 - :cookie: Reward :bacon:`0.0000032`, Data `04:48 24/AUG`
-- :cookie: Reward :bacon:0.059, Beacon `01:42 24/AUG`
+- :cookie: Reward :bacon:0.590, Beacon `01:42 24/AUG`
 
 **Wellness Check plus Status Message**
 
