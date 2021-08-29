@@ -10,7 +10,7 @@
 
 **HDS monitors the Helium API for new activities**
 
-[Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports including status, temperature and OTA firmware versions.
+[Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports via the **Bobcat Diagnoser** including status, temperature and OTA firmware versions.
 
 #### Features
 
