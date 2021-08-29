@@ -79,7 +79,7 @@
 
 **Wellness Check plus Status Message**
 
-`🚧 No Activities from API in the Last 8hrs`  
+`🚧 No API Activities in the Last 8hrs`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 ---
