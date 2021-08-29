@@ -499,7 +499,7 @@ def loop_activities():
             # other
             else:
                 other_type = activity["type"]
-                output_message.append(f"🚀 Activity: {other_type.upper()}  `{time}`")
+                output_message.append(f"🚀 {other_type.upper()}  `{time}`")
 
 
 def load_hotspot_data_and_status():

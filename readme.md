@@ -63,7 +63,7 @@
 
 **Other Activities**
 
-- :rocket: Activity: ASSERT_LOCATION_V2 `14:39 04/JUL`
+- :rocket: ASSERT_LOCATION_V2 `14:39 04/JUL`
 
 **HNT Amounts**
 
@@ -85,8 +85,6 @@
 ---
 
 #### Bobcat Miner Report
-
-[//]: # ":satellite: **TCC** :fire:ONLINE :avocado:*NSYNC :pizza:0.48 :bacon:11.245"
 
 :nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 07/12/21** :nut_and_bolt::nut_and_bolt:  
 Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **944,112**  
