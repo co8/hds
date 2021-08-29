@@ -258,10 +258,9 @@ For convenience, I run this script on a Raspberry Pi Zero W
 
 ### ACM - Antenna Cap Mount
 
-#### for Rak, Oukeione and Outdoor Fiberglass Dipole Antennas
-
-#### Outdoor or Attic
+**for Rak, Oukeione and Outdoor Fiberglass Dipole Antennas**
+**Outdoor or Attic**
 
 https://www.thingiverse.com/thing:4942377
 
-![ACM](/imgs/acm-co8.jpg)
+![ACM](imgs/acm-co8.jpg)
