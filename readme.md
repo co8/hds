@@ -15,6 +15,7 @@
 #### Features
 
 - Uses [Helium Blockchain API](https://docs.helium.com/api/blockchain/introduction/)
+- Python + Crontab
 - Short, Concise Messages that mostly fit within a mobile notification
 - Campy, Fun, and Full of Emojis
 - Activities are displayed with Contextual Information for insights into performance, optimization and maintenance.
