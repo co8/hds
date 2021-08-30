@@ -1,6 +1,6 @@
 # HDS - Hotspot Discord Status
 
-|         Discord Channel          |   Discord Mobile Notification   |
+|         Discord Channel          |  Discord Mobile Notifications   |
 | :------------------------------: | :-----------------------------: |
 | ![](imgs/hds-discord-window.jpg) | ![](imgs/hds-notifications.jpg) |
 
@@ -242,7 +242,8 @@ Fork this project and submit pull requests
 
 `If you find this project useful please consider supporting it`
 
-HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH)
+| ![](imgs/co8_wallet_qrcode.jpg) | HNT: [14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH](https://explorer.helium.com/accounts/14hriz8pmxm51FGmk1nuijHz6ng9z9McfJZgsg4yxzF2H7No3mH) |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 #### Seeking Grants and Bounties
 
