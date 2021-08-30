@@ -1,8 +1,8 @@
 # HDS - Hotspot Discord Status
 
-|         Discord Channel          |  Discord Mobile Notification   |
-| :------------------------------: | :----------------------------: |
-| ![](imgs/hds-discord-window.jpg) | ![](imgs/hds-notification.jpg) |
+|         Discord Channel          |   Discord Mobile Notification   |
+| :------------------------------: | :-----------------------------: |
+| ![](imgs/hds-discord-window.jpg) | ![](imgs/hds-notifications.jpg) |
 
 ---
 
