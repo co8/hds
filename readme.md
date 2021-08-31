@@ -189,9 +189,10 @@ crontab -e
   - update from github nightly at 04:20am. write to cron.log
 
 ````BASH
-@reboot cd ~/hds; printf '\ndate '+%H:%M %D' Cron Reboot\n' >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
-20 4 * * 0 cd ~/hds; rm cron.log; printf 'date '+%H:%M %D' Cron Log Cleared\n' >> cron.log 2>&1
-20 4 * * * cd ~/hds; printf '\ndate '+%H:%M %D' Cron Git Fetch/Pull\n' >> cron.log; git fetch; git pull >> cron.log 2>&1
+@reboot cd ~/hds; python3 hds.py >> cron.log 2>&1
+@reboot cd ~/hds; printf '\ndate +%H:%M %D' Cron Reboot\n' >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
+20 4 * * 0 cd ~/hds; rm cron.log; printf 'date +%H:%M %D' Cron Log Cleared\n' >> cron.log 2>&1
+20 4 * * * cd ~/hds; printf '\ndate +%H:%M %D' Cron Git Fetch/Pull\n' >> cron.log; git fetch; git pull >> cron.log 2>&1
 ```
 -->
 
@@ -260,6 +261,30 @@ I'm seeking grants and bounties for new projects and to improve and expand this 
 For convenience, I run this script on a Raspberry Pi Zero W
 
 [**Raspberry Pi Zero W** Kit (Amazon US)](https://amzn.to/3jWaUpF)
+
+<!--
+**Enable default CRON logging in Pi***
+print in cron may require postfix
+
+```BASH
+sudo apt-get install postfix
+```
+
+```BASH
+sudo nano /etc/rsyslog.conf
+```
+uncomment cron
+```BASH
+# cron.*                          /var/log/cron.log
+```
+
+view system cron.log
+```BASH
+cat /var/log/cron.log
+or
+tail -f /var/log/cron.log
+```
+-->
 
 ---
 
