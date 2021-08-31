@@ -166,7 +166,7 @@ optional config values that can be customized
 
 ---
 
-#### Crontac
+#### Crontab
 
 - Edit Cron:
 
@@ -181,16 +181,19 @@ crontab -e
 */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 ```
 
+<!--
+
 - Optional:
   - run at reboot, if needed. eg: dedicated device
   - clear log file once a week at Sunday, 04:20am. write to cron.log
   - update from github nightly at 04:20am. write to cron.log
 
-```BASH
-@reboot cd ~/hds; printf '\n$(date '+%H:%M %D') Cron Reboot\n' >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
-20 4 * * 0 cd ~/hds; rm cron.log; printf '$(date '+%H:%M %D') Cron Log Cleared\n' >> cron.log 2>&1
-20 4 * * * cd ~/hds; printf '\n$(date '+%H:%M %D') Cron Git Fetch/Pull\n' >> cron.log; git fetch; git pull >> cron.log 2>&1
+````BASH
+@reboot cd ~/hds; printf '\ndate '+%H:%M %D' Cron Reboot\n' >> cron.log 2>&1; python3 hds.py >> cron.log 2>&1
+20 4 * * 0 cd ~/hds; rm cron.log; printf 'date '+%H:%M %D' Cron Log Cleared\n' >> cron.log 2>&1
+20 4 * * * cd ~/hds; printf '\ndate '+%H:%M %D' Cron Git Fetch/Pull\n' >> cron.log; git fetch; git pull >> cron.log 2>&1
 ```
+-->
 
 ---
 
