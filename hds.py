@@ -32,12 +32,12 @@
 #######
 # Command Line Arguments
 # REPORT
-# python3 hds.py report - send miner report
+# python3 hds.py report - send miner report (if set Bobcat_local_endpoint)
 # RESET
 # python3 hds.py reset
 #######
 
-####import libs
+# modules/libraries
 import sys
 import time
 import requests
@@ -455,7 +455,8 @@ def poc_receipts_v1(activity):
 
     # other
     else:
-        output_message.append(f"🏁 poc_receipts_v1 - {activity.upper()}  `{time}`")
+        ac_type = activity["type"]
+        output_message.append(f"🏁 poc_receipts_v1 - {ac_type.upper()}  `{time}`")
 
 
 def loop_activities():
