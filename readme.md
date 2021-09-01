@@ -290,7 +290,7 @@ tail -f /var/log/cron.log
 
 **Check out my other Helium Projects...**
 
-### HAPpy - Hotspot Discord Status
+### HAPpy - Helium API Parser, Python
 
 **Easily Access Helium Blockchain API Data with just your Hotspot Address**
 
