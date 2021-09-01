@@ -288,7 +288,17 @@ tail -f /var/log/cron.log
 
 ---
 
-**Check out my other Helium Project...**
+**Check out my other Helium Projects...**
+
+### HAPpy - Hotspot Discord Status
+
+**Easily Access Helium Blockchain API Data with just your Hotspot Address**
+
+https://github.com/co8/happy
+
+<!-- **Listed as a Helium Community Tool** [https://explorer.helium.com/tools](https://explorer.helium.com/tools) -->
+
+---
 
 ### ACM - Antenna Cap Mount
 

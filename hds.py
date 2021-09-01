@@ -45,7 +45,7 @@ from discord_webhook import DiscordWebhook
 wellness_check_hours = 8  # Default 8 hours. send status msg if X hours have lapsed since last message sent. slows miner, don't abuse
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 ####
-pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
+pop_status_minutes = 8  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 ##############
 helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
