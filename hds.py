@@ -19,8 +19,8 @@
 
 
 ########
-# install DiscordWebhook module
-# % pip3 install discordwebhook
+# install Discord-Webhook module
+# % pip3 install discord-webhook
 ########
 
 #######

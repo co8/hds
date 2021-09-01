@@ -128,10 +128,10 @@ cp new-activity_history.json activity_history.json
 nano config.json
 ```
 
-[Install Discord Webhook for Python via pip3](https://pypi.org/project/discordwebhook/)
+[Install Discord Webhook for Python via pip3](https://pypi.org/project/discord-webhook/)
 
 ```BASH
-pip3 install discordwebhook
+pip3 install discord-webhook
 ```
 
 ---
