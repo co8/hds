@@ -128,6 +128,12 @@ cp new-activity_history.json activity_history.json
 nano config.json
 ```
 
+[Install Discord Webhook for Python via pip3](https://pypi.org/project/discordwebhook/)
+
+```BASH
+pip3 install discordwebhook
+```
+
 ---
 
 #### Config File
@@ -174,6 +180,7 @@ optional config values that can be customized
 crontab -e
 ```
 
+- Copy to bottom of crontab file
 - Required:
   - run script every minute. log to file
 
@@ -181,7 +188,10 @@ crontab -e
 */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 ```
 
-<!--
+- After paste use **CONTROL-X** to close and then press **Y** to confirm changes and save
+
+  - Crontab will Reload Automatically
+  <!--
 
 - Optional:
   - run at reboot, if needed. eg: dedicated device
@@ -308,3 +318,4 @@ https://github.com/co8/happy
 https://www.thingiverse.com/thing:4942377
 
 ![ACM](imgs/acm-co8.jpg)
+````
