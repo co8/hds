@@ -131,10 +131,16 @@ def local_bobcat_miner_report():
             block_height = str.split(data["height"][0])
             block_height = "{:,}".format(int(block_height[-1]))
 
-            if "block_height" not in config["last"]["report"]:
+            if (
+                "report" in config["last"]
+                and "block_height" not in config["last"]["report"]
+            ):
                 config["last"]["report"]["block_height"] = ""
             ###add to config if new
-            if block_height != config["last"]["report"]["block_height"]:
+            if (
+                "report" in config["last"]
+                and block_height != config["last"]["report"]["block_height"]
+            ):
                 config["last"]["report"]["block_height"] = block_height
                 block_height = f"**{block_height}**"
 
@@ -175,15 +181,15 @@ def load_config():
     # wellness_check_hours - default sets config, or uses config value
     if "wellness_check_hours" in config:
         wellness_check_hours = config["wellness_check_hours"]
-    else:
-        config["wellness_check_hours"] = wellness_check_hours
+    # else:
+    #    config["wellness_check_hours"] = wellness_check_hours
     wellness_check_seconds = int(60 * 60 * wellness_check_hours)
 
     # report_interval_hours - default sets config, or uses config value
     if "report_interval_hours" in config:
         report_interval_hours = config["report_interval_hours"]
-    else:
-        config["report_interval_hours"] = report_interval_hours
+    # else:
+    #    config["report_interval_hours"] = report_interval_hours
     report_interval_seconds = int(60 * 60 * report_interval_hours)
 
     # add structure for elements
@@ -363,8 +369,8 @@ def load_activity_data():
     if config["cursor"] != data["cursor"]:
         config["cursor"] = data["cursor"]
 
-    # send if time lapse since last status met. send report too
-    if not bool(add_welcome) and hs["now"] >= wellness_check:
+    # only send if send history. not for new users
+    if "send" in config["last"] and hs["now"] >= wellness_check:
         print(
             f"\n{hs['time']} Wellness Check, {wellness_check_hours}hrs, No New Activities",
             end="",
@@ -630,6 +636,7 @@ def load_hotspot_data_and_status():
     output_message.insert(0, status_msg)
 
     # add in wellness check message. not if new
+    # if not bool(add_welcome) and bool(send_wellness_check):
     if (
         not bool(add_welcome)
         and bool(send_wellness_check)

@@ -8,6 +8,9 @@ miner.json
 git_update.py
 readme-work.md
 
+#Mac
+.DS_Store
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -160,7 +160,7 @@ example
 
 optional config values that can be customized
 
-```python
+```json
 {
   "bobcat_local_endpoint": "http://192.168.1.120/",
   "wellness_check_hours": 8, # default value, only needed if changing
