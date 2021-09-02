@@ -113,7 +113,7 @@ Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
 
 Option A: Download from Github
 
-- Download Latest https://github.com/co8/hds/archive/refs/heads/master.zip
+- Download Latest https://github.com/co8/hds/archive/refs/heads/latest.zip
 - rename/copy new-config.json to config.json
 - rename/copy new-activity_history.json to activity_history.json
 - edit config.json
