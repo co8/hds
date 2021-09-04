@@ -39,14 +39,20 @@ import json
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
+####
+# Notes:
+# To Add: Private methods, functions and data members
+# _ : you shouldn’t access this method because it’s not part of the API
+# __ : mangle the attribute names of a class to avoid conflicts of attribute names between classes
+####
+
 ### vars
-### FINE TUNE #####
-## override default values in config.json
+# override default values in config.json
 wellness_check_hours = 8  # Default 8 hours. send status msg if X hours have lapsed since last message sent. slows miner, don't abuse
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
-####
+#
+#
 pop_status_minutes = 8  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
-##############
 helium_api_endpoint = "https://api.helium.io/v1/"
 config_file = "config.json"
 activities = []
@@ -114,62 +120,63 @@ def local_bobcat_miner_report():
 
             if bool(status):
                 print(f"\n{hs['time']} Bobcat API Error: {status}")
-                quit()
 
-            temp_alert = (
-                "👍 "
-                if data["temp_alert"] == "normal"
-                else str.capitalize(data["temp_alert"])
-            )
-            miner_state = (
-                "✅ + 🏃‍♂️"
-                if data["miner"]["State"] == "running"
-                else str.capitalize(data["miner"]["State"])
-            )
+            else:
 
-            # block height
-            block_height = str.split(data["height"][0])
-            block_height = "{:,}".format(int(block_height[-1]))
+                temp_alert = (
+                    "👍 "
+                    if data["temp_alert"] == "normal"
+                    else str.capitalize(data["temp_alert"])
+                )
+                miner_state = (
+                    "✅ + 🏃‍♂️"
+                    if data["miner"]["State"] == "running"
+                    else str.capitalize(data["miner"]["State"])
+                )
 
-            if (
-                "report" in config["last"]
-                and "block_height" not in config["last"]["report"]
-            ):
-                config["last"]["report"]["block_height"] = ""
-            ###add to config if new
-            if (
-                "report" in config["last"]
-                and block_height != config["last"]["report"]["block_height"]
-            ):
-                config["last"]["report"]["block_height"] = block_height
-                block_height = f"**{block_height}**"
+                # block height
+                block_height = str.split(data["height"][0])
+                block_height = "{:,}".format(int(block_height[-1]))
 
-            # helium OTA version
-            ota_helium = data["miner"]["Image"]
-            ota_helium = ota_helium.split("_")
-            ota_helium = str(ota_helium[1])
-            if "ota_helium" not in config["last"]["report"]:
-                config["last"]["report"]["ota_helium"] = ""
-            if ota_helium != config["last"]["report"]["ota_helium"]:
-                config["last"]["report"]["ota_helium"] = ota_helium
-                ota_helium = f"**{ota_helium}**"
+                if (
+                    "report" in config["last"]
+                    and "block_height" not in config["last"]["report"]
+                ):
+                    config["last"]["report"]["block_height"] = ""
+                ###add to config if new
+                if (
+                    "report" in config["last"]
+                    and block_height != config["last"]["report"]["block_height"]
+                ):
+                    config["last"]["report"]["block_height"] = block_height
+                    block_height = f"**{block_height}**"
 
-            # bobcat OTA version
-            ota_bobcat = data["ota_version"]
-            if "ota_bobcat" not in config["last"]["report"]:
-                config["last"]["report"]["ota_bobcat"] = ""
-            if ota_bobcat != config["last"]["report"]["ota_bobcat"]:
-                config["last"]["report"]["ota_bobcat"] = ota_bobcat
-                ota_bobcat = f"**{ota_bobcat}**"
+                # helium OTA version
+                ota_helium = data["miner"]["Image"]
+                ota_helium = ota_helium.split("_")
+                ota_helium = str(ota_helium[1])
+                if "ota_helium" not in config["last"]["report"]:
+                    config["last"]["report"]["ota_helium"] = ""
+                if ota_helium != config["last"]["report"]["ota_helium"]:
+                    config["last"]["report"]["ota_helium"] = ota_helium
+                    ota_helium = f"**{ota_helium}**"
 
-            report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
-            output_message.append(report)
+                # bobcat OTA version
+                ota_bobcat = data["ota_version"]
+                if "ota_bobcat" not in config["last"]["report"]:
+                    config["last"]["report"]["ota_bobcat"] = ""
+                if ota_bobcat != config["last"]["report"]["ota_bobcat"]:
+                    config["last"]["report"]["ota_bobcat"] = ota_bobcat
+                    ota_bobcat = f"**{ota_bobcat}**"
 
-            # config values. repeat every X hours
-            config["next"]["report"] = hs["now"] + report_interval_seconds
-            config["next"]["report_nice"] = nice_date(config["next"]["report"])
+                report = f"🔩🔩  **MINERity Report : {hs['time']}**  🔩🔩\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {block_height}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+                output_message.append(report)
 
-            print(f"\n{hs['time']} bobcat miner report", end="")
+                # config values. repeat every X hours
+                config["next"]["report"] = hs["now"] + report_interval_seconds
+                config["next"]["report_nice"] = nice_date(config["next"]["report"])
+
+                print(f"\n{hs['time']} bobcat miner report", end="")
 
 
 ###load config.json vars

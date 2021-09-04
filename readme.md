@@ -101,7 +101,7 @@ Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
 
 #### Prerequisites
 
-- [Python v3.9+](https://www.python.org/downloads/)
+- [Python v3.7+](https://www.python.org/downloads/)
 - [How to Use Crontab, or other scheduler](https://www.geeksforgeeks.org/crontab-in-linux-with-examples/)
 - [Install Discord Webhook for Python via pip3](https://pypi.org/project/discordwebhook/)
 - [Have a Discord Account](https://support.discord.com/hc/en-us/articles/360033931551-Getting-Started)
