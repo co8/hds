@@ -498,6 +498,8 @@ def loop_activities():
             # activity time
             time = nice_date(activity["time"])
 
+            txn_link = helium_explorer_tx + activity["hash"]
+
             # reward
             if activity["type"] == "rewards_v2":
                 for reward in activity["rewards"]:
