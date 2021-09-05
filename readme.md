@@ -158,13 +158,20 @@ example
 }
 ```
 
-optional config values that can be customized
+optional, config values that can be customized
 
 ```json
 {
-  "bobcat_local_endpoint": "http://192.168.1.120/",
-  "wellness_check_hours": 8, # default value, only needed if changing
-  "report_interval_hours": 72 # default value, only needed if changing
+  "bobcat_local_endpoint": "http://192.168.1.120/"
+}
+```
+
+optional, change default values
+
+```json
+{
+  "wellness_check_hours": 8,
+  "report_interval_hours": 72
 }
 ```
 
