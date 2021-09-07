@@ -120,7 +120,7 @@ def local_bobcat_sync_status():
             if "sync_gap" not in config["last"]["report"]:
                 config["last"]["report"]["sync_gap"] = ""
             if sync_gap != config["last"]["report"]["sync_gap"]:
-                config["last"]["report"]["sync_gap"] = f"(-{sync_gap})"
+                config["last"]["report"]["sync_gap"] = f"{sync_gap}"
                 sync_gap = f"**{sync_gap}**"
 
             ## sync_miner_height
