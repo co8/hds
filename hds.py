@@ -244,7 +244,9 @@ def local_bobcat_miner_report():
                 miner_epoch = f"**{miner_epoch}**"
 
                 # miner_gap
-                miner_gap_int = int(data["blockchain_height"] - data["miner_height"])
+                miner_gap_int = int(data["blockchain_height"]) - int(
+                    data["miner_height"]
+                )
                 miner_gap = "{:,}".format(miner_gap_int)
                 if "miner_gap" not in config["last"]["report"]:
                     config["last"]["report"]["miner_gap"] = ""
