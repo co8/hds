@@ -7,6 +7,7 @@ data-short.json
 miner.json
 git_update.py
 readme-work.md
+hds \copy*.py
 
 #Mac
 .DS_Store
