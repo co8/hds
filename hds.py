@@ -266,7 +266,7 @@ def local_bobcat_miner_report():
 
                 # Sync Status. Not Synced if more than 100 block behind miner_blockchain_height
                 miner_sync_status = (
-                    "Synced" if miner_gap_int >= sync_blocks_behind else "Syncing"
+                    "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
                 if "miner_sync_status" not in config["last"]["report"]:
                     config["last"]["report"]["miner_sync_status"] = ""
@@ -717,10 +717,8 @@ def load_hotspot_data_and_status():
     ###block height percentage
     hs["height_miner_api"] = "*NSYNC"
     block_gap_num = int(hs["block"] - hs["height"])
-    block_gap = "{:,}".format(block_gap_num)
-    if block_gap_num >= sync_blocks_behind:
+    if block_gap_num <= sync_blocks_behind:
         hs["height_miner_api"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
-        # hs["height_miner_api"] += f" (-{block_gap})"
 
     if "height_miner_api" not in config["last"]:
         config["last"]["height_miner_api"] = "0"
