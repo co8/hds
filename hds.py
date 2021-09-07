@@ -108,7 +108,7 @@ def local_bobcat_sync_status():
         # create local status
         else:
             # sync_status
-            sync_status = sync_data["status"].title()
+            sync_status = sync_data["status"].upper()
             if "sync_status" not in config["last"]["report"]:
                 config["last"]["report"]["sync_status"] = ""
             if sync_status != config["last"]["report"]["sync_status"]:
