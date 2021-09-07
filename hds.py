@@ -52,6 +52,7 @@ wellness_check_hours = 8  # Default 8 hours. send status msg if X hours have lap
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 #
 #
+sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
@@ -216,23 +217,60 @@ def local_bobcat_miner_report():
                     else str.capitalize(data["miner"]["State"])
                 )
 
-                # height_miner, height of miner (height)
-                miner_height = str.split(data["height"][0])
-                miner_height = "{:,}".format(int(miner_height[-1]))
+                # miner_height
+                miner_height = "{:,}".format(int(data["miner_height"]))
                 if "miner_height" not in config["last"]["report"]:
                     config["last"]["report"]["miner_height"] = ""
                 if miner_height != config["last"]["report"]["miner_height"]:
                     config["last"]["report"]["miner_height"] = miner_height
                     miner_height = f"**{miner_height}**"
 
-                # block_miner, height of block
-                miner_block = str.split(data["block"][0])
-                miner_block = "{:,}".format(int(miner_block[-1]))
-                if "miner_block" not in config["last"]["report"]:
-                    config["last"]["report"]["miner_block"] = ""
-                if miner_height != config["last"]["report"]["miner_block"]:
-                    config["last"]["report"]["miner_block"] = miner_block
-                    miner_block = f"**{miner_block}**"
+                # miner_blockchain_height
+                miner_blockchain_height = "{:,}".format(int(data["blockchain_height"]))
+                if "miner_blockchain_height" not in config["last"]["report"]:
+                    config["last"]["report"]["miner_blockchain_height"] = ""
+                if miner_height != config["last"]["report"]["miner_blockchain_height"]:
+                    config["last"]["report"][
+                        "miner_blockchain_height"
+                    ] = miner_blockchain_height
+                    miner_blockchain_height = f"**{miner_blockchain_height}**"
+
+                # miner_epoch
+                miner_epoch = "{:,}".format(int(data["epoch"]))
+                if "miner_epoch" not in config["last"]["report"]:
+                    config["last"]["report"]["miner_epoch"] = ""
+                if miner_epoch != config["last"]["report"]["miner_epoch"]:
+                    config["last"]["report"]["miner_epoch"] = miner_epoch
+                miner_epoch = f"**{miner_epoch}**"
+
+                # miner_gap
+                miner_gap_int = int(data["blockchain_height"] - data["miner_height"])
+                miner_gap = "{:,}".format(miner_gap_int)
+                if "miner_gap" not in config["last"]["report"]:
+                    config["last"]["report"]["miner_gap"] = ""
+                if miner_gap != config["last"]["report"]["miner_gap"]:
+                    config["last"]["report"]["miner_gap"] = miner_gap
+                miner_gap = f"**{miner_gap}**"
+
+                # miner_port_44158
+                miner_port_44158 = data["ports"]["44158"].title()
+                if "miner_port_44158" not in config["last"]["report"]:
+                    config["last"]["report"]["miner_port_44158"] = ""
+                if miner_port_44158 != config["last"]["report"]["miner_port_44158"]:
+                    config["last"]["report"]["miner_port_44158"] = miner_port_44158
+                if miner_port_44158 != "Open":
+                    miner_port_44158 += " (RELAYED)"
+                miner_port_44158 = f"**{miner_port_44158}**"
+
+                # Sync Status. Not Synced if more than 100 block behind miner_blockchain_height
+                miner_sync_status = (
+                    "Synced" if miner_gap_int >= sync_blocks_behind else "Syncing"
+                )
+                if "miner_sync_status" not in config["last"]["report"]:
+                    config["last"]["report"]["miner_sync_status"] = ""
+                if miner_sync_status != config["last"]["report"]["miner_sync_status"]:
+                    config["last"]["report"]["miner_sync_status"] = miner_sync_status
+                miner_sync_status = f"**{miner_sync_status}**"
 
                 # helium OTA version
                 ota_helium = data["miner"]["Image"]
@@ -252,7 +290,15 @@ def local_bobcat_miner_report():
                     config["last"]["report"]["ota_bobcat"] = ota_bobcat
                     ota_bobcat = f"**{ota_bobcat}**"
 
-                report = f"🔩  **MINERity Report : {hs['time']}**\nStatus: {miner_state} Temp: {temp_alert} Height: 📦 {miner_block}\nFirmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+                report = (
+                    f"🔩 **MINERity Report : {hs['time']}**"
+                    + "\n"
+                    + f"Sync: {miner_sync_status} Status: {miner_state} Temp: {temp_alert}"
+                    + "\n"
+                    + f"Height: 📦 {miner_height} Gap: (-{miner_gap}) Epoch: {miner_epoch}"
+                    + "\n"
+                    + f"Firmware: Helium {ota_helium} | Bobcat {ota_bobcat}"
+                )
                 output_message.append(report)
 
                 # config values. repeat every X hours
@@ -670,7 +716,7 @@ def load_hotspot_data_and_status():
     hs["height_miner_api"] = "*NSYNC"
     block_gap_num = int(hs["block"] - hs["height"])
     block_gap = "{:,}".format(block_gap_num)
-    if block_gap_num >= 100:  # 100 block gap
+    if block_gap_num >= sync_blocks_behind:
         hs["height_miner_api"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
         # hs["height_miner_api"] += f" (-{block_gap})"
 
@@ -825,7 +871,7 @@ def main():
 
     # if bobcat set in config
     local_bobcat_miner_report()
-    local_bobcat_sync_status()
+    # local_bobcat_sync_status()
 
     # send
     discord_response_reason = discord_send()

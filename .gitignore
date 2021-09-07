@@ -8,6 +8,7 @@ miner.json
 git_update.py
 readme-work.md
 hds \copy*.py
+bobcat-fast-sync.txt
 
 #Mac
 .DS_Store
