@@ -229,7 +229,7 @@ def local_bobcat_miner_report():
                     miner_ota_bobcat = f"**{miner_ota_bobcat}**"
 
                 report = (
-                    f"🔩 **MINERity Report  `{nice_date(hs["now"])}`**"
+                    f"🔩 **MINERity Report  `{nice_date(hs['now'])}`**"
                     + "\n"
                     + f"Sync: {miner_sync_status}  Status: {miner_state}  Temp: {miner_temp}"
                     + "\n"
