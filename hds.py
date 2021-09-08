@@ -178,16 +178,16 @@ def local_bobcat_miner_report():
                     config["last"]["report"]["miner_gap"] = ""
                 if miner_gap != config["last"]["report"]["miner_gap"]:
                     config["last"]["report"]["miner_gap"] = miner_gap_int
-                    miner_gap = f"**(-{miner_gap})**"
+                    miner_gap = f"**({miner_gap})**"
                     miner_gap = (
                         "**0**"
-                        if miner_gap == "**(-0)**" or miner_gap_int <= 0
+                        if miner_gap == "**(0)**" or miner_gap_int <= 0
                         else miner_gap
                     )
                 else:
                     miner_gap = f"(-{miner_gap})"
                     miner_gap = (
-                        "0" if miner_gap == "(-0)" or miner_gap_int <= 0 else miner_gap
+                        "0" if miner_gap == "(0)" or miner_gap_int <= 0 else miner_gap
                     )
 
                 # miner_port_44158
