@@ -228,11 +228,8 @@ def local_bobcat_miner_report():
                     config["last"]["report"]["miner_ota_bobcat"] = miner_ota_bobcat
                     miner_ota_bobcat = f"**{miner_ota_bobcat}**"
 
-                now = datetime.now()
-                now = round(datetime.timestamp(now))
-                time = nice_date(now)
                 report = (
-                    f"🔩 **MINERity Report  `{time}`**"
+                    f"🔩 **MINERity Report  `{nice_date(hs["now"])}`**"
                     + "\n"
                     + f"Sync: {miner_sync_status}  Status: {miner_state}  Temp: {miner_temp}"
                     + "\n"
@@ -246,6 +243,8 @@ def local_bobcat_miner_report():
                 )
                 output_message.append(report)
 
+                # last report send timestamp
+                config["last"]["report"]["send"] = hs["now"]
                 # config values. repeat every X hours
                 config["next"]["report"] = hs["now"] + report_interval_seconds
                 config["next"]["report_nice"] = nice_date(config["next"]["report"])
