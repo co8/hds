@@ -658,17 +658,17 @@ def load_hotspot_data_and_status():
         config["owner"] = hs["owner"]
 
     ###block height percentage
-    hs["height_miner_api"] = "*NSYNC"
+    hs["miner_height_api"] = "*NSYNC"
     block_gap_num = int(hs["block"] - hs["height"])
     if block_gap_num >= sync_blocks_behind:
-        hs["height_miner_api"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
+        hs["miner_height_api"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
 
-    if "height_miner_api" not in config["last"]:
-        config["last"]["height_miner_api"] = "0"
+    if "miner_height_api" not in config["last"]:
+        config["last"]["miner_height_api"] = "0"
     ###add to config if new
-    if hs["height_miner_api"] != config["last"]["height_miner_api"]:
+    if hs["miner_height_api"] != config["last"]["miner_height_api"]:
         new_block_height_api = True
-        config["last"]["height_miner_api"] = hs["height_miner_api"]
+        config["last"]["miner_height_api"] = hs["miner_height_api"]
 
     ###wallet data
     wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"])
@@ -709,9 +709,9 @@ def load_hotspot_data_and_status():
     )
     ### bold block_height if has changed
     block_height_styled = (
-        "**" + hs["height_miner_api"] + "**"
+        "**" + hs["miner_height_api"] + "**"
         if bool(new_block_height_api)
-        else hs["height_miner_api"]
+        else hs["miner_height_api"]
     )
     ### bold status if not 'online'
     status_styled = "**" + hs["status"] + "**" if bool(new_status) else hs["status"]
