@@ -179,10 +179,16 @@ def local_bobcat_miner_report():
                 if miner_gap != config["last"]["report"]["miner_gap"]:
                     config["last"]["report"]["miner_gap"] = miner_gap_int
                     miner_gap = f"**(-{miner_gap})**"
-                    miner_gap = "**0**" if miner_gap == "**(-0)**" else miner_gap
+                    miner_gap = (
+                        "**0**"
+                        if miner_gap == "**(-0)**" or miner_gap_int <= 0
+                        else miner_gap
+                    )
                 else:
                     miner_gap = f"(-{miner_gap})"
-                    miner_gap = "0" if miner_gap == "(-0)" else miner_gap
+                    miner_gap = (
+                        "0" if miner_gap == "(-0)" or miner_gap_int <= 0 else miner_gap
+                    )
 
                 # miner_port_44158
                 new_miner_port_44158 = False
@@ -195,7 +201,7 @@ def local_bobcat_miner_report():
 
                 if miner_port_44158 == "Open":
                     miner_port_44158 = (
-                        "✅ **Open**" if bool(new_miner_port_44158) else "✅ Open"
+                        "✅ **Open**" if bool(new_miner_port_44158) else "✅  Open"
                     )
                 else:
                     miner_port_44158 = f"💩 **{miner_port_44158}, (RELAYED)**"
@@ -229,15 +235,15 @@ def local_bobcat_miner_report():
                     miner_ota_bobcat = f"**{miner_ota_bobcat}**"
 
                 report = (
-                    f"🔩 **MINERity Report  `{nice_date(hs['now'])}`**"
+                    f"🔩 **MINERity Report**  `{nice_date(hs['now'])}`"
                     + "\n"
-                    + f"Sync: {miner_sync_status}  Status: {miner_state}  Temp: {miner_temp}"
+                    + f"Sync: {miner_sync_status}  Height: 📦 {miner_height}  Gap: {miner_gap}"
                     + "\n"
-                    + f"Height: 📦 {miner_height}  Gap: {miner_gap}  Epoch: {miner_epoch}"
+                    + f"Status: {miner_state}  Temp: {miner_temp}  Epoch: {miner_epoch}"
                     + "\n"
                     + f"Firmware: Helium {miner_ota_helium} | Bobcat {miner_ota_bobcat}"
                     + "\n"
-                    + f"Inbound Traffic (44158): {miner_port_44158}"
+                    + f"Inbound Traffic (44158):  {miner_port_44158}"
                     # + "\n"
                     # + "Outbound:"
                 )
