@@ -200,7 +200,7 @@ def local_bobcat_miner_report():
                 else:
                     miner_port_44158 = f"💩 **{miner_port_44158}, (RELAYED)**"
 
-                # Sync Status. Not Synced if more than 100 block behind miner_blockchain_height
+                # miner_sync_status . Not Synced if more than 100 block behind miner_blockchain_height
                 miner_sync_status = (
                     "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
@@ -228,12 +228,15 @@ def local_bobcat_miner_report():
                     config["last"]["report"]["miner_ota_bobcat"] = miner_ota_bobcat
                     miner_ota_bobcat = f"**{miner_ota_bobcat}**"
 
+                now = datetime.now()
+                now = round(datetime.timestamp(now))
+                time = nice_date(now)
                 report = (
-                    f"🔩 **MINERity Report  {hs['time']}**"
+                    f"🔩 **MINERity Report  `{time}`**"
                     + "\n"
-                    + f"Sync: {miner_sync_status} Status: {miner_state} Temp: {miner_temp}"
+                    + f"Sync: {miner_sync_status}  Status: {miner_state}  Temp: {miner_temp}"
                     + "\n"
-                    + f"Height: 📦 {miner_height}  Gap: {miner_gap} Epoch: {miner_epoch}"
+                    + f"Height: 📦 {miner_height}  Gap: {miner_gap}  Epoch: {miner_epoch}"
                     + "\n"
                     + f"Firmware: Helium {miner_ota_helium} | Bobcat {miner_ota_bobcat}"
                     + "\n"
@@ -657,7 +660,7 @@ def load_hotspot_data_and_status():
     ###block height percentage
     hs["height_miner_api"] = "*NSYNC"
     block_gap_num = int(hs["block"] - hs["height"])
-    if block_gap_num <= sync_blocks_behind:
+    if block_gap_num >= sync_blocks_behind:
         hs["height_miner_api"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
 
     if "height_miner_api" not in config["last"]:
