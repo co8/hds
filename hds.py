@@ -53,7 +53,7 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
-sync_blocks_api_factor = 6  # Multiply sync_blocks_behind * sync_blocks_api_factor to balance with Helium API "Sync Status"
+api_sync_lag_multiple = 6  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
@@ -661,32 +661,38 @@ def load_hotspot_data_and_status():
 
     ### API Sync
     block_gap_num = int(hs["block"] - hs["height"])
+    block_gap_num = 0 if block_gap_num <= 0 else block_gap_num  # 0 or Negative
 
+    if "api_sync" not in hs:
+        hs["api_sync"] = ""
     if "api_sync" not in config["last"]:
-        config["last"]["api_sync"] = "0"
-
-    # Sync'd display
-    # hs["api_sync"] = "*NSYNC"
-    hs["api_sync"] = "**" + f"*NSYNC**" if bool(new_api_sync) else f"*NSYNC"
-    hs["api_sync"] += f" (-{block_gap_num})"
+        config["last"]["api_sync"] = ""
 
     # add to config if new
-    if hs["api_sync"] != config["last"]["api_sync"]:
+    if "api_sync" in hs or hs["api_sync"] != config["last"]["api_sync"]:
         new_api_sync = True
         config["last"]["api_sync"] = hs["api_sync"]
 
-    ## style for sync_gap display
-    # 0 or Negative
-    if block_gap_num <= 0:
-        hs["api_sync"] = "**0**" if bool(new_api_sync) else "0"
+    # Sync'd display
+    api_block_gap_exceeded = False
+    if (
+        block_gap_num is None
+        or block_gap_num <= sync_blocks_behind * api_sync_lag_multiple
+    ):
+        hs["api_sync"] = "**" + f"*NSYNC**" if bool(new_api_sync) else f"*NSYNC"
 
     # Greater than 0 and more than API sync factor
     # API - Multiply sync_blocks_behind for API balance
-    elif block_gap_num >= sync_blocks_behind * sync_blocks_api_factor:
+    elif block_gap_num >= sync_blocks_behind * api_sync_lag_multiple:
+        api_block_gap_exceeded = True
         hs["api_sync"] = (
             f"**({block_gap_num})**" if bool(new_api_sync) else f"({block_gap_num})"
         )
         # hs["api_sync"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
+
+    # dev
+    if not bool(api_block_gap_exceeded):
+        hs["api_sync"] += f" (-{block_gap_num})"
 
     config["last"]["api_height"] = hs["height"]
     config["last"]["api_block"] = hs["block"]
