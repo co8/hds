@@ -695,6 +695,11 @@ def load_hotspot_data_and_status():
     ###wallet data
     wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"])
     w = wallet_request.json()
+
+    if "data" not in w:
+        print(f"\n{hs['time']} Wallet API Error", end="")
+        # quit()
+
     hs["balance"] = nice_hnt_amount_or_seconds(w["data"]["balance"])
     if "balance" not in config["last"]:
         config["last"]["balance"] = "0"
