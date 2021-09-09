@@ -9,6 +9,7 @@ git_update.py
 readme-work.md
 hds \copy*.py
 bobcat-fast-sync.txt
+notes.txt
 
 #Mac
 .DS_Store

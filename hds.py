@@ -667,11 +667,8 @@ def load_hotspot_data_and_status():
 
     # Sync'd display
     # hs["api_sync"] = "*NSYNC"
-    hs["api_sync"] = (
-        "**" + f"*NSYNC** ({block_gap_num})"
-        if bool(new_api_sync)
-        else f"*NSYNC ({block_gap_num})"
-    )
+    hs["api_sync"] = "**" + f"*NSYNC**" if bool(new_api_sync) else f"*NSYNC"
+    hs["api_sync"] += f" ({block_gap_num})"
 
     # add to config if new
     if hs["api_sync"] != config["last"]["api_sync"]:
