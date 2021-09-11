@@ -89,9 +89,9 @@
 
 `⏰ Scheduled Miner Report, every 72hrs`  
 :nut_and_bolt: MINERity Report `12:27 11/SEP`  
-Sync: Synced Height: :package: 1,006,679 Gap: (2)  
+Sync: **Synced** Height: :package: **1,006,679** Gap: **(2)**  
 Status: Running Temp: Normal Epoch: 26,000  
-Firmware: Helium 2021.09.03.0 | Bobcat 1.0.2.23S  
+Firmware: Helium 2021.09.03.0 | Bobcat **1.0.2.23S**  
 Inbound (44158): :white_check_mark: Open
 
 - Also sent with Wellness Check
