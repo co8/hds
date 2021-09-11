@@ -194,6 +194,13 @@ crontab -e
 
 ```BASH
 */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
+
+```
+
+Optional, Clear cron.log weekly on Sunday
+
+```BASH
+20 4 * * 0 cd ~/hds; rm cron.log; echo "cron.log cleared (weekly)" >> cron.log 2>&1
 ```
 
 - After paste use **CONTROL-X** to close and then press **Y** to confirm changes and save

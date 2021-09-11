@@ -15,8 +15,11 @@
 # crontab -e
 # - run script every minute. log to file
 # */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
+#
+## Optional
+# clear cron.log weekly on Sunday at 4:20am
+# 20 4 * * 0 cd ~/hds; rm cron.log;  echo 'Cron Log Cleared\n'  >> cron.log 2>&1
 ########
-
 
 ########
 # install Discord-Webhook module
@@ -612,7 +615,7 @@ def loop_activities():
 def load_hotspot_data_and_status():
     ###hotspot data
     global hs, config, add_welcome, send_wellness_check
-    new_balance = new_reward_scale = new_api_sync = new_status = ""
+    new_balance = new_reward_scale = new_api_sync = new_status = False
 
     # try to get json or return error
     status = ""
@@ -662,42 +665,33 @@ def load_hotspot_data_and_status():
     ########################################################
     # dev
     ### API Sync
-    hs["api_sync"] = ""
+    hs["api_sync"] = "*NSYNC"
     block_gap_num = int(hs["block"] - hs["height"])
     block_gap_num = 0 if block_gap_num <= 0 else block_gap_num
+    api_block_gap_exceeded = (
+        True if block_gap_num >= sync_blocks_behind * api_sync_lag_multiple else False
+    )
 
+    # config.last
     if "api_sync" not in config["last"]:
-        config["last"]["api_sync"] = ""
-
-    # Sync'd display
-    api_block_gap_exceeded = False
-    if (
-        block_gap_num is None
-        or block_gap_num <= sync_blocks_behind * api_sync_lag_multiple
-    ):
-        hs["api_sync"] = "**" + f"*NSYNC**" if bool(new_api_sync) else f"*NSYNC"
-
-    # Greater than 0 and more than API sync factor
-    # API - Multiply sync_blocks_behind for API balance
-    elif block_gap_num >= sync_blocks_behind * api_sync_lag_multiple:
-        api_block_gap_exceeded = True
-        hs["api_sync"] = (
-            f"**({block_gap_num})**" if bool(new_api_sync) else f"({block_gap_num})"
-        )
-        # hs["api_sync"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
-
-    # add to config
-    if hs["api_sync"] != config["last"]["api_sync"]:
         new_api_sync = True
-        config["last"]["api_sync"] = hs["api_sync"]
+        config["last"]["api_sync"] = ""
+    elif config["last"]["api_sync"] != hs["api_sync"]:
+        new_api_sync = True
 
-    # dev
-    if not bool(api_block_gap_exceeded):
-        hs["api_sync"] += f" (-{block_gap_num})"
+    # Show block gap number instead of *NSYNC if api_sync_lag_multiple is exceeded.
+    if bool(api_block_gap_exceeded):
+        hs["api_sync"] = f"API GAP: ({block_gap_num})"
+        ## in_dev
+        # if exceed by add in a local bobcat Sync report using bobcat's status.json
 
+    config["last"]["api_sync"] = hs["api_sync"]
     config["last"]["api_height"] = hs["height"]
     config["last"]["api_block"] = hs["block"]
     config["last"]["api_gap"] = block_gap_num
+
+    # Sync Display
+    hs["api_sync"] = f"**{hs['api_sync']}**" if bool(new_api_sync) else hs["api_sync"]
 
     ########################################################
 
