@@ -53,7 +53,7 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
-api_sync_lag_multiple = 6  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
+api_sync_lag_multiple = 7  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
@@ -659,19 +659,15 @@ def load_hotspot_data_and_status():
     if "owner" not in config or config["owner"] != hs["owner"]:
         config["owner"] = hs["owner"]
 
+    ########################################################
+    # dev
     ### API Sync
+    hs["api_sync"] = ""
     block_gap_num = int(hs["block"] - hs["height"])
-    block_gap_num = 0 if block_gap_num <= 0 else block_gap_num  # 0 or Negative
+    block_gap_num = 0 if block_gap_num <= 0 else block_gap_num
 
-    if "api_sync" not in hs:
-        hs["api_sync"] = ""
     if "api_sync" not in config["last"]:
         config["last"]["api_sync"] = ""
-
-    # add to config if new
-    if "api_sync" in hs or hs["api_sync"] != config["last"]["api_sync"]:
-        new_api_sync = True
-        config["last"]["api_sync"] = hs["api_sync"]
 
     # Sync'd display
     api_block_gap_exceeded = False
@@ -690,6 +686,11 @@ def load_hotspot_data_and_status():
         )
         # hs["api_sync"] = f"{round(hs['height'] / hs['block'] * 100, 3)}%"
 
+    # add to config
+    if hs["api_sync"] != config["last"]["api_sync"]:
+        new_api_sync = True
+        config["last"]["api_sync"] = hs["api_sync"]
+
     # dev
     if not bool(api_block_gap_exceeded):
         hs["api_sync"] += f" (-{block_gap_num})"
@@ -697,6 +698,8 @@ def load_hotspot_data_and_status():
     config["last"]["api_height"] = hs["height"]
     config["last"]["api_block"] = hs["block"]
     config["last"]["api_gap"] = block_gap_num
+
+    ########################################################
 
     ###wallet data
     wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"])
@@ -749,7 +752,7 @@ def load_hotspot_data_and_status():
     status_msg = (
         "📡 **"
         + hs["initials"]
-        + "** 🔥"
+        + "** 🔥 "
         + status_styled
         + " 🥑 "
         + api_sync_styled
