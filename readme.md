@@ -87,15 +87,19 @@
 
 #### Bobcat Miner Report
 
-`⏰ Scheduled Miner Report, every 72hrs`  
-:nut_and_bolt::nut_and_bolt: **MINERity Report : 11:05 07/12/21** :nut_and_bolt::nut_and_bolt:  
-Status: :white_check_mark: + :runner: Temp: :thumbsup: Height: :package: **944,112**  
-Firmware: Helium **2021.08.16.0** | Bobcat **1.0.1.5**
+`⏰ Scheduled Miner Report, every 72hrs`
+:nut_and_bolt: MINERity Report `12:27 11/SEP`
+Sync: Synced Height: :package: 1,006,679 Gap: (2)
+Status: Running Temp: Normal Epoch: 26,000
+Firmware: Helium 2021.09.03.0 | Bobcat 1.0.2.23S
+Inbound (44158): :white_check_mark: Open
 
+- Also sent with Wellness Check
 - Status: Online and Running
 - Temperature: Normal or XX°C
-- Block Height: Direct from Miner
+- Block Height and Gap Directly from Miner
 - OTA Firmware Versions: Helium and Bobcat
+- Inbound Traffic Port Status (44158)
 
 ---
 
