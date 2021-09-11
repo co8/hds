@@ -42,7 +42,7 @@
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
-- :avocado: Sync Status
+- :avocado: API Sync Status or Block Gap. Are you [\*NSYNC](https://en.wikipedia.org/wiki/NSYNC) or Not?
 - :pizza: Transmit/Reward Scale
 - :bacon: Wallet Balance (of Hotspot Owner)
 
@@ -97,7 +97,7 @@ Inbound (44158): :white_check_mark: Open
 - Also sent with Wellness Check
 - Status: Online and Running
 - Temperature: Normal or XX°C
-- Block Height and Gap Directly from Miner
+- **Sync Status, Block Height and Gap Directly from Miner**
 - OTA Firmware Versions: Helium and Bobcat
 - Inbound Traffic Port Status (44158)
 
