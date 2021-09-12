@@ -56,7 +56,7 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
-api_sync_lag_multiple = 7  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
+api_sync_lag_multiple = 12  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
@@ -681,7 +681,7 @@ def load_hotspot_data_and_status():
 
     # Show block gap number instead of *NSYNC if api_sync_lag_multiple is exceeded.
     if bool(api_block_gap_exceeded):
-        hs["api_sync"] = f"API GAP: ({block_gap_num})"
+        hs["api_sync"] = f"API Gap: ({block_gap_num})"
         ## in_dev
         # if exceed by add in a local bobcat Sync report using bobcat's status.json
 
@@ -748,9 +748,9 @@ def load_hotspot_data_and_status():
     status_msg = (
         "📡 **"
         + hs["initials"]
-        + "** 🔥 "
+        + "** 🔥"
         + status_styled
-        + " 🥑 "
+        + " 🥑"
         + api_sync_styled
         + " 🍕"
         + reward_scale_styled
