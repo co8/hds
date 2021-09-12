@@ -692,7 +692,7 @@ def load_hotspot_data_and_status():
 
     # Sync Display
     hs["api_sync"] = (
-        "**" + f"{hs['api_sync']}**" if bool(new_api_sync) else hs["api_sync"]
+        "**" + hs["api_sync"] + "**" if bool(new_api_sync) else hs["api_sync"]
     )
 
     ########################################################
