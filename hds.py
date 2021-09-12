@@ -681,7 +681,7 @@ def load_hotspot_data_and_status():
 
     # Show block gap number instead of *NSYNC if api_sync_lag_multiple is exceeded.
     if bool(api_block_gap_exceeded):
-        hs["api_sync"] = f"API GAP: ({block_gap_num})"
+        hs["api_sync"] = f"API Gap: ({block_gap_num})"
         ## in_dev
         # if exceed by add in a local bobcat Sync report using bobcat's status.json
 
@@ -748,9 +748,9 @@ def load_hotspot_data_and_status():
     status_msg = (
         "📡 **"
         + hs["initials"]
-        + "** 🔥 "
+        + "** 🔥"
         + status_styled
-        + " 🥑 "
+        + " 🥑"
         + api_sync_styled
         + " 🍕"
         + reward_scale_styled
