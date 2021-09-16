@@ -51,7 +51,7 @@ from discord_webhook import DiscordWebhook
 
 ### vars
 # override default values in config.json
-wellness_check_hours = 8  # Default 8 hours. send status msg if X hours have lapsed since last message sent. slows miner, don't abuse
+wellness_check_hours = 12  # Default 8 hours. send status msg if X hours have lapsed since last message sent. slows miner, don't abuse
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 #
 #
@@ -184,9 +184,11 @@ def local_bobcat_miner_report():
                         else miner_gap
                     )
                 else:
-                    miner_gap = f"(-{miner_gap})"
+                    miner_gap = f"({miner_gap})"
                     miner_gap = (
-                        "0" if miner_gap == "(0)" or miner_gap_int <= 0 else miner_gap
+                        "Synced"
+                        if miner_gap == "(0)" or miner_gap_int <= 0
+                        else miner_gap
                     )
 
                 # miner_port_44158
@@ -207,7 +209,10 @@ def local_bobcat_miner_report():
 
                 # miner_sync . Not Synced if more than 100 block behind miner_block
                 miner_sync = (
-                    "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
+                    "Syncing"
+                    if bool(miner_gap_int)
+                    else "Synced"
+                    # "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
                 if "miner_sync" not in config["last"]["report"]:
                     config["last"]["report"]["miner_sync"] = ""
