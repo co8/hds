@@ -184,9 +184,11 @@ def local_bobcat_miner_report():
                         else miner_gap
                     )
                 else:
-                    miner_gap = f"(-{miner_gap})"
+                    miner_gap = f"({miner_gap})"
                     miner_gap = (
-                        "0" if miner_gap == "(0)" or miner_gap_int <= 0 else miner_gap
+                        "Synced"
+                        if miner_gap == "(0)" or miner_gap_int <= 0
+                        else miner_gap
                     )
 
                 # miner_port_44158
@@ -207,7 +209,10 @@ def local_bobcat_miner_report():
 
                 # miner_sync . Not Synced if more than 100 block behind miner_block
                 miner_sync = (
-                    "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
+                    "Syncing"
+                    if bool(miner_gap_int)
+                    else "Synced"
+                    # "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
                 if "miner_sync" not in config["last"]["report"]:
                     config["last"]["report"]["miner_sync"] = ""
