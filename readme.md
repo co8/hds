@@ -20,7 +20,7 @@
 - Campy, Fun, and Full of Emojis
 - Activities are displayed with Contextual Information for insights into performance, optimization and maintenance.
 - Updated values are presented in **bold**
-- **Wellness Check**: HDS will send a Status Message after 8 hours of no activities from the Helium API.
+- **Wellness Check**: HDS will send a Status Message after 12 hours of no activities from the Helium API.
 
 #### Bobcat Miner Integration
 
@@ -80,7 +80,7 @@
 
 **Wellness Check plus Status Message**
 
-`🚧 No API Activities in the Last 8hrs`  
+`🚧 No API Activities in the Last 12hrs`  
 :satellite: **TCC** :fire:ONLINE :avocado:\*NSYNC :pizza:1.00 :bacon:23.534
 
 ---
@@ -175,7 +175,7 @@ optional, change default values
 
 ```json
 {
-  "wellness_check_hours": 8,
+  "wellness_check_hours": 12,
   "report_interval_hours": 72
 }
 ```
