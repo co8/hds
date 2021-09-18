@@ -42,7 +42,7 @@
 
 - :satellite: Hotspot Initials
 - :fire: Online Status
-- :avocado: API Sync Status or Block Gap. Are you [\*NSYNC](https://en.wikipedia.org/wiki/NSYNC) or Not?
+- :avocado: API Sync Status or Block Gap. Are you [\*NSYNC](https://en.wikipedia.org/wiki/NSYNC)?
 - :pizza: Transmit/Reward Scale
 - :bacon: Wallet Balance (of Hotspot Owner)
 
