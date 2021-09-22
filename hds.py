@@ -686,7 +686,7 @@ def load_hotspot_data_and_status():
 
     # Show block gap number instead of *NSYNC if api_sync_lag_multiple is exceeded.
     if bool(api_block_gap_exceeded):
-        hs["api_sync"] = f"API Gap: ({block_gap_num})"
+        hs["api_sync"] = f"({block_gap_num})"
         ## in_dev
         # if exceed by add in a local bobcat Sync report using bobcat's status.json
 
@@ -699,7 +699,10 @@ def load_hotspot_data_and_status():
     hs["api_sync"] = (
         "** " + hs["api_sync"] + "**" if bool(new_api_sync) else hs["api_sync"]
     )
-
+    # Add 'API Gap: ' Text if gap
+    hs["api_sync"] = (
+        f"API Gap:{hs['api_sync']}" if bool(api_block_gap_exceeded) else hs["api_sync"]
+    )
     ########################################################
 
     ###wallet data
@@ -745,7 +748,8 @@ def load_hotspot_data_and_status():
         else hs["reward_scale"]
     )
     ### bold block_height if has changed
-    api_sync_styled = f"**{hs['api_sync']}**" if bool(new_api_sync) else hs["api_sync"]
+    api_sync_styled = hs["api_sync"]
+    # api_sync_styled = f"**{hs['api_sync']}**" if bool(new_api_sync) else hs["api_sync"]
     ### bold status if not 'online'
     status_styled = "**" + hs["status"] + "**" if bool(new_status) else hs["status"]
 
