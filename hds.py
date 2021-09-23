@@ -56,7 +56,7 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
-api_sync_lag_multiple = 12  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
+api_sync_lag_multiple = 30  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 6  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
