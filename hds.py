@@ -172,6 +172,7 @@ def local_bobcat_miner_report():
                 miner_gap_int = int(data["blockchain_height"]) - int(
                     data["miner_height"]
                 )
+                miner_gap_int = 0 if miner_gap_int < 0 else miner_gap_int
                 miner_gap = "{:,}".format(miner_gap_int)
                 if "miner_gap" not in config["last"]["report"]:
                     config["last"]["report"]["miner_gap"] = ""
@@ -210,7 +211,7 @@ def local_bobcat_miner_report():
                 # miner_sync . Not Synced if more than 100 block behind miner_block
                 miner_sync = (
                     "Syncing"
-                    if bool(miner_gap_int)
+                    if miner_gap_int > 0
                     else "Synced"
                     # "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
