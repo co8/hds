@@ -211,7 +211,7 @@ def local_bobcat_miner_report():
                 # miner_sync . Not Synced if more than 100 block behind miner_block
                 miner_sync = (
                     "Syncing"
-                    if miner_gap_int > 0
+                    if miner_gap_int > sync_blocks_behind  # 0
                     else "Synced"
                     # "Synced" if miner_gap_int <= sync_blocks_behind else "Syncing"
                 )
