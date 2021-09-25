@@ -311,7 +311,7 @@ def load_config():
     # reset hds. only clear config last/next and activity_history.
     if "reset" in sys.argv:
         config["last"] = config["next"] = {}
-        config["cursor"] = ""
+        config["cursor"] = config["name"] = config["initials"] = config["owner"] = ""
         update_config()
         activity_history = []
         update_activity_history()
