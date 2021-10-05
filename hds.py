@@ -17,8 +17,8 @@
 # */1 * * * * cd ~/hds; python3 hds.py >> cron.log 2>&1
 #
 ## Optional
-# clear cron.log weekly on Sunday at 4:20am
-# 20 4 * * 0 cd ~/hds; rm cron.log;  echo 'Cron Log Cleared\n'  >> cron.log 2>&1
+# clear cron.log weekly on Monday at 4:20am
+# 20 4 * * 1 cd ~/hds; rm cron.log;  echo 'Cron Log Cleared\n'  >> cron.log 2>&1
 ########
 
 ########
