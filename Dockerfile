@@ -13,7 +13,7 @@ WORKDIR hds
 RUN pip3 install -r requirements.txt; \
     cp new-config.json config.json; \
     cp new-activity_history.json activity_history.json; \
-    cp hds-cron.txt /etc/cron.d/crontab; \
+    cp crontab /etc/cron.d/crontab; \
     chmod 0644 /etc/cron.d/crontab; \
     /usr/bin/crontab /etc/cron.d/crontab
 
