@@ -1,8 +1,10 @@
 # syntax=docker/dockerfile:1
 FROM python:3.9-slim-buster
 
-
-ENV VIRTUAL_ENV=hds_env \
+ENV HOTSPOT="" \
+    DISCORD_WEBHOOK="" \  
+    BOBCAT_LOCAL_ENDPOINT="" \
+    VIRTUAL_ENV=hds_env \
     PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN apt-get update; \
     apt-get install -y git cron; \
@@ -17,9 +19,6 @@ RUN pip3 install -r requirements.txt; \
     chmod 0644 /etc/cron.d/crontab; \
     /usr/bin/crontab /etc/cron.d/crontab
 
-#ENV HOTSPOT=
-#ENV DISCORD_WEBHOOK=
-#ENV BOBCAT_LOCAL_ENDPOINT=
 
 
 # Save ENV - HOTSPOT, DISCORD_WEBHOOK, BOBCAT_LOCAL_ENDPOINT into config
