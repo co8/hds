@@ -1,16 +1,25 @@
 # syntax=docker/dockerfile:1
+
+# install python
 FROM python:3.9-slim-buster
 
+# set empty config vars and virtual env name
 ENV HOTSPOT="" \
     DISCORD_WEBHOOK="" \  
     BOBCAT_LOCAL_ENDPOINT="" \
+    WELLNESS_CHECK_HOURS="8" \
     VIRTUAL_ENV=hds_env \
     PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# APT, clone HDS, start virtual env
 RUN apt-get update; \
     apt-get install -y git cron; \
     git clone -b v.04 https://github.com/co8/hds.git; \
+    cd hds; \
     python3 -m venv $VIRTUAL_ENV; \
     . "$VIRTUAL_ENV"/bin/activate;
+
+# Copy Files and Crontab, Load Crontab
 WORKDIR hds
 RUN pip3 install -r requirements.txt; \
     cp new-config.json config.json; \
@@ -19,9 +28,8 @@ RUN pip3 install -r requirements.txt; \
     chmod 0644 /etc/cron.d/crontab; \
     /usr/bin/crontab /etc/cron.d/crontab
 
-
-
 # Save ENV - HOTSPOT, DISCORD_WEBHOOK, BOBCAT_LOCAL_ENDPOINT into config
-
 CMD python3 docker/env_to_config.py HOTSPOT=${HOTSPOT} DISCORD_WEBHOOK=${DISCORD_WEBHOOK} BOBCAT_LOCAL_ENDPOINT=${BOBCAT_LOCAL_ENDPOINT}
+
+# Run HDS
 CMD python3 hds.py

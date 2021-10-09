@@ -33,7 +33,7 @@ def load_config():
 
 
 # Load ENVs as arguments passed to this script
-# Add ENV variables to json
+# Add all ENV variables to json
 def add_env_to_config():
     global config
     args = sys.argv[1:]
@@ -50,6 +50,12 @@ def update_config():
         json.dump(config, outfile)
 
 
-load_config()
-add_env_to_config()
-update_config()
+def main():
+    load_config()
+    add_env_to_config()
+    update_config()
+
+
+# Run Script
+if __name__ == "__main__":
+    main()
