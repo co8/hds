@@ -29,7 +29,7 @@ RUN pip3 install -r requirements.txt; \
     /usr/bin/crontab /etc/cron.d/crontab
 
 # Save ENV - HOTSPOT, DISCORD_WEBHOOK, BOBCAT_LOCAL_ENDPOINT into config
-CMD python3 docker/env_to_config.py HOTSPOT=${HOTSPOT} DISCORD_WEBHOOK=${DISCORD_WEBHOOK} BOBCAT_LOCAL_ENDPOINT=${BOBCAT_LOCAL_ENDPOINT}
+CMD python3 docker/env_to_config.py HOTSPOT=$HOTSPOT DISCORD_WEBHOOK=$DISCORD_WEBHOOK BOBCAT_LOCAL_ENDPOINT=$BOBCAT_LOCAL_ENDPOINT
 
 # Run HDS
 CMD python3 hds.py

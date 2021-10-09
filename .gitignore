@@ -1,5 +1,6 @@
 # HDS
 config.json
+config copy.json
 activity_history.json
 cron.log
 data.json
