@@ -16,7 +16,7 @@ RUN apt-get update; \
     apt-get install -y git cron; \
     mkdir /app/hds; \      
     cd /app/hds; \ 
-    git clone -b v.04 https://github.com/co8/hds.git
+    git clone -b v.04 https://github.com/co8/hds.git;
 
 WORKDIR /app/hds/hds
 
