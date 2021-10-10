@@ -458,7 +458,7 @@ def load_activity_data():
     # add/update cursor to config
     if "cursor" not in config:
         config["cursor"] = ""
-    if config["cursor"] != data["cursor"]:
+    if "cursor" in data and config["cursor"] != data["cursor"]:
         config["cursor"] = data["cursor"]
 
     # only send if send history. not for new users
