@@ -17,7 +17,8 @@ RUN apt-get update; \
     mkdir /app/hds; \      
     cd /app/hds; \ 
     git clone -b v.04 https://github.com/co8/hds.git
-WORKDIR /app/hds
+
+WORKDIR /app/hds/hds
 
 # Start V-Env, Copy Files and Crontab, Load Crontab
 RUN python3 -m venv $VIRTUAL_ENV; \
