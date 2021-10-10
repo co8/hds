@@ -12,18 +12,17 @@ ENV HOTSPOT="" \
     PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # APT, git clone HDS
-RUN apt-get update; \
+RUN python3 -m venv $VIRTUAL_ENV; \
+    . "$VIRTUAL_ENV"/bin/activate; \
+    apt-get update; \
     apt-get install -y git cron; \
     mkdir /app/hds; \      
     cd /app/hds; \ 
     git clone -b v.04 https://github.com/co8/hds.git;
 
-WORKDIR /app/hds/hds
-
+WORKDIR /app/hds
 # Start V-Env, Copy Files and Crontab, Load Crontab
-RUN python3 -m venv $VIRTUAL_ENV; \
-    . "$VIRTUAL_ENV"/bin/activate;
-    pip3 install -r requirements.txt; \
+RUN pip3 install -r requirements.txt; \
     cp new-config.json config.json; \
     cp new-activity_history.json activity_history.json; \
     cp crontab /etc/cron.d/crontab; \
