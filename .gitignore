@@ -11,6 +11,7 @@ readme-work.md
 hds \copy*.py
 bobcat-fast-sync.txt
 notes.txt
+hds-co8.env
 
 #Mac
 .DS_Store

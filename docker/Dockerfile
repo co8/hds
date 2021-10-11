@@ -2,6 +2,7 @@
 
 # install python
 FROM python:3.9-slim-buster
+USER root
 
 # set empty config vars and virtual env name
 ENV HOTSPOT="" \
@@ -16,7 +17,7 @@ RUN python3 -m venv $VIRTUAL_ENV; \
     . "$VIRTUAL_ENV"/bin/activate; \
     apt-get update; \
     apt-get install -y git cron; \
-    mkdir /app/hds; \      
+    mkdir -p /app/hds; \      
     cd /app/hds; \ 
     git clone -b v.04 https://github.com/co8/hds.git;
 
