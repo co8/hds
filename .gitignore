@@ -6,6 +6,7 @@ cron.log
 data.json
 data-short.json
 miner.json
+hotspot.json
 git_update.py
 readme-work.md
 hds \copy*.py

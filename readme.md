@@ -108,7 +108,7 @@ Inbound (44158): :white_check_mark: Open
 - [Python v3.7+](https://www.python.org/downloads/)
 - [How to Use Crontab, or other scheduler](https://www.geeksforgeeks.org/crontab-in-linux-with-examples/)
 - [Windows - Scheduled Tasks and Cron Jobs](https://active-directory-wp.com/docs/Usage/How_to_add_a_cron_job_on_Windows/Scheduled_tasks_and_cron_jobs_on_Windows/index.html)
-- [Install Discord Webhook for Python via pip3](https://pypi.org/project/discordwebhook/)
+- [Install Discord Webhook for Python via pip3](https://pypi.org/project/discord-webhook/)
 - [Have a Discord Account](https://support.discord.com/hc/en-us/articles/360033931551-Getting-Started)
 - [Make a Discord Channel and Webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
