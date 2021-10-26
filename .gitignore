@@ -1,15 +1,18 @@
 # HDS
 config.json
+config copy.json
 activity_history.json
 cron.log
 data.json
 data-short.json
 miner.json
+hotspot.json
 git_update.py
 readme-work.md
 hds \copy*.py
 bobcat-fast-sync.txt
 notes.txt
+hds-co8.env
 
 #Mac
 .DS_Store
