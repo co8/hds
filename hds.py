@@ -652,6 +652,9 @@ def load_hotspot_data_and_status():
         quit()
 
     ### hotspot data
+    reward_scale = (
+        hotspot_data["reward_scale"] if hotspot_data["reward_scale"] == NULL else 0
+    )
     hs_add = {
         "owner": hotspot_data["owner"],
         "name": nice_hotspot_name(hotspot_data["name"]),
@@ -659,7 +662,8 @@ def load_hotspot_data_and_status():
         "status": str(hotspot_data["status"]["online"]).upper(),
         "height": hotspot_data["status"]["height"],
         "block": hotspot_data["block"],
-        "reward_scale": "{:.2f}".format(round(hotspot_data["reward_scale"], 2)),
+        # "reward_scale": "{:.2f}".format(round(hotspot_data["reward_scale"], 2)),
+        "reward_scale": "{:.2f}".format(round(reward_scale, 2)),
     }
     hs.update(hs_add)
     del data, hotspot_data, hs_add
