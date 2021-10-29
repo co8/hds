@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 ############################
+#
 # co8/HDS - Hotspot Discord Status
 # https://github.com/co8/hds
 #
