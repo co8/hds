@@ -711,7 +711,7 @@ def load_hotspot_data_and_status():
     )
     # Add 'API Gap: ' Text if gap
     hs["api_sync"] = (
-        f"*NYSNC {hs['api_sync']}"
+        f"*NYSNC{hs['api_sync']}"
         if bool(api_block_gap_exceeded)
         else hs["api_sync"]
         # f"API Gap:{hs['api_sync']}" if bool(api_block_gap_exceeded) else hs["api_sync"]
