@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 ############################
+#
 # co8/HDS - Hotspot Discord Status
 # https://github.com/co8/hds
 #
@@ -687,7 +688,14 @@ def load_hotspot_data_and_status():
 
     # Show block gap number instead of *NSYNC if api_sync_lag_multiple is exceeded.
     if bool(api_block_gap_exceeded):
-        hs["api_sync"] = f"({block_gap_num})"
+        last_sync = block_gap_num / 60
+        if last_sync > 24:
+            last_sync = round(last_sync / 24, 0)
+            last_sync = f"{last_sync}d"
+        else:
+            last_sync = f"{last_sync}h"
+        hs["api_sync"] = f"({last_sync})"
+        # hs["api_sync"] = f"({block_gap_num})"
         ## in_dev
         # if exceed by add in a local bobcat Sync report using bobcat's status.json
 
@@ -702,7 +710,10 @@ def load_hotspot_data_and_status():
     )
     # Add 'API Gap: ' Text if gap
     hs["api_sync"] = (
-        f"API Gap:{hs['api_sync']}" if bool(api_block_gap_exceeded) else hs["api_sync"]
+        f"*NYSNC {hs['api_sync']}"
+        if bool(api_block_gap_exceeded)
+        else hs["api_sync"]
+        # f"API Gap:{hs['api_sync']}" if bool(api_block_gap_exceeded) else hs["api_sync"]
     )
     ########################################################
 
