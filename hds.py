@@ -690,7 +690,7 @@ def load_hotspot_data_and_status():
     if bool(api_block_gap_exceeded):
         last_sync = block_gap_num / 60
         if last_sync > 24:
-            last_sync = round(last_sync / 24, 1)
+            last_sync = round(last_sync / 24, 0)
             last_sync = f"{last_sync}d"
         else:
             last_sync = f"{last_sync}h"
