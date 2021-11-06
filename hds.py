@@ -129,7 +129,8 @@ def local_bobcat_miner_report():
 
             else:
 
-                miner_temp = data["temp_alert"].title()
+                # miner_temp = data["temp_alert"].title()
+                miner_temp = data["temp0"]
                 if "miner_temp" not in config["last"]["report"]:
                     config["last"]["report"]["miner_temp"] = ""
                 if miner_temp != config["last"]["report"]["miner_temp"]:
