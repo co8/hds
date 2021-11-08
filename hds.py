@@ -253,8 +253,8 @@ def local_bobcat_miner_report():
                     + f"Status: {miner_state}  Temp: {miner_temp}  Epoch: {miner_epoch}"
                     + "\n"
                     + f"Firmware: Helium {miner_ota_helium} | Bobcat {miner_ota_bobcat}"
-                    + "\n"
-                    + f"Inbound (44158):  {miner_port_44158}"
+                    # + "\n"
+                    # + f"Inbound (44158):  {miner_port_44158}"
                     # + "\n"
                     # + "Outbound:"
                 )
