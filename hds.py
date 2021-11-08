@@ -196,6 +196,9 @@ def local_bobcat_miner_report():
                     )
 
                 # miner_port_44158
+
+                # UPDATE - check peerbook for p2p(open) or ip4(relayed)
+
                 new_miner_port_44158 = False
                 miner_port_44158 = data["ports"]["44158"].title()
                 if "miner_port_44158" not in config["last"]["report"]:
@@ -695,7 +698,7 @@ def load_hotspot_data_and_status():
             last_sync = math.floor(last_sync / 24)
             last_sync = f"{last_sync}d"
         else:
-            last_sync = math.floor(last_sync)
+            last_sync = math.trunc(math.floor(last_sync))
             last_sync = f"{last_sync}h"
         hs["api_sync"] = f"({last_sync})"
         # hs["api_sync"] = f"({block_gap_num})"
