@@ -695,6 +695,7 @@ def load_hotspot_data_and_status():
             last_sync = math.floor(last_sync / 24)
             last_sync = f"{last_sync}d"
         else:
+            last_sync = math.floor(last_sync)
             last_sync = f"{last_sync}h"
         hs["api_sync"] = f"({last_sync})"
         # hs["api_sync"] = f"({block_gap_num})"
