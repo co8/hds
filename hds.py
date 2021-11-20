@@ -41,6 +41,7 @@ import time
 import math
 import requests
 import json
+import uuid
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
@@ -82,7 +83,8 @@ reward_short_names = {
     "poc_challengers": "Challenger",
     "data_credits": "Data",
 }
-
+# Generate a UUID from a host ID, sequence number, and the current time
+headers = {'User-Agent': str(uuid.uuid1())}
 
 #### functions
 def local_bobcat_miner_report():
@@ -110,7 +112,7 @@ def local_bobcat_miner_report():
             try:
                 # LIVE local data
                 bobcat_miner_json = config["bobcat_local_endpoint"] + "miner.json"
-                bobcat_request = requests.get(bobcat_miner_json)
+                bobcat_request = requests.get(bobcat_miner_json, headers=headers)
                 data = bobcat_request.json()
 
                 ### Dev only
@@ -433,7 +435,7 @@ def load_activity_data():
         activity_endpoint = (
             helium_api_endpoint + "hotspots/" + config["hotspot"] + "/activity/"
         )
-        activity_request = requests.get(activity_endpoint)
+        activity_request = requests.get(activity_endpoint, headers=headers)
         data = activity_request.json()
 
         ### DEV Only
@@ -633,7 +635,7 @@ def load_hotspot_data_and_status():
     status = ""
     try:
         hs_endpoint = helium_api_endpoint + "hotspots/" + config["hotspot"]
-        hs_request = requests.get(hs_endpoint)
+        hs_request = requests.get(hs_endpoint, headers=headers)
         data = hs_request.json()
         if not data["data"]:
             print(f"no hotspot data {hs['time']}")
@@ -724,7 +726,7 @@ def load_hotspot_data_and_status():
     ########################################################
 
     ###wallet data
-    wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"])
+    wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"], headers=headers)
     w = wallet_request.json()
 
     if "data" not in w:
