@@ -18,20 +18,19 @@ RUN python3 -m venv $VIRTUAL_ENV
 RUN apt-get update; \
     apt-get install -y git cron;
 
-RUN git clone -b v.04 https://github.com/ryanho87/hds.git
+RUN git clone -b latest https://github.com/ryanho87/hds.git
 
 WORKDIR /hds
-
-RUN pip3 install -r requirements.txt
 
 RUN cp new-activity_history.json activity_history.json; \
     cp new-config.json config.json
 
-RUN cp crontab-docker /etc/cron.d/hds-crontab; \
-    chmod 0644 /etc/cron.d/hds-crontab; \
-    crontab-docker /etc/cron.d/hds-crontab
+###
+#COPY crontab-docker /etc/cron.d/hds-crontab
 
-ADD start.sh /hds
-ADD env_to_config.py /hds
+#RUN chmod 0644 /etc/cron.d/hds-crontab; \
+#    crontab-docker /etc/cron.d/hds-crontab
+
+RUN pip3 install -r requirements.txt
 
 CMD ./start.sh
