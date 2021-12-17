@@ -27,9 +27,9 @@ RUN pip3 install -r requirements.txt
 RUN cp new-activity_history.json activity_history.json; \
     cp new-config.json config.json
 
-RUN cp crontab /etc/cron.d/hds-crontab; \
+RUN cp crontab-docker /etc/cron.d/hds-crontab; \
     chmod 0644 /etc/cron.d/hds-crontab; \
-    crontab /etc/cron.d/hds-crontab
+    crontab-docker /etc/cron.d/hds-crontab
 
 ADD start.sh /hds
 ADD env_to_config.py /hds
