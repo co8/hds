@@ -22,7 +22,7 @@ import json
 
 
 # define config file
-config_file = "../config.json"
+config_file = "config.json"
 config = {}
 
 

@@ -18,11 +18,9 @@ RUN python3 -m venv $VIRTUAL_ENV
 RUN apt-get update; \
     apt-get install -y git cron;
 
-RUN mkdir -p /app; \
-    cd /app; \
-    git clone -b v.04 https://github.com/ryanho87/hds.git
+RUN git clone -b v.04 https://github.com/ryanho87/hds.git
 
-WORKDIR /app/hds
+WORKDIR /hds
 
 RUN pip3 install -r requirements.txt
 
@@ -32,5 +30,8 @@ RUN cp new-activity_history.json activity_history.json; \
 RUN cp crontab /etc/cron.d/hds-crontab; \
     chmod 0644 /etc/cron.d/hds-crontab; \
     crontab /etc/cron.d/hds-crontab
+
+ADD start.sh /hds
+ADD env_to_config.py /hds
 
 CMD ./start.sh
