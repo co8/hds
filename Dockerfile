@@ -20,7 +20,7 @@ RUN apt-get update; \
 
 RUN mkdir -p /app; \
     cd /app; \
-    git clone -b https://github.com/ryanho87/hds.git
+    git clone -b v.04 https://github.com/ryanho87/hds.git
 
 WORKDIR /app/hds
 
