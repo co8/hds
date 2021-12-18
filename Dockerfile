@@ -25,12 +25,6 @@ WORKDIR /hds
 RUN cp new-activity_history.json activity_history.json; \
     cp new-config.json config.json
 
-###
-#COPY crontab-docker /etc/cron.d/hds-crontab
-
-#RUN chmod 0644 /etc/cron.d/hds-crontab; \
-#    crontab-docker /etc/cron.d/hds-crontab
-
 RUN pip3 install -r requirements.txt
 
-CMD ./start.sh
+CMD ./entrypoint.sh
