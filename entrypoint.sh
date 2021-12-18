@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install crons
-crontab -l > cron_bkp
+touch cron_bkp
 echo "*/1 * * * * cd /hds; /usr/local/bin/python3 hds.py >> cron.log 2>&1" > cron_bkp
 echo "20 4 * * 1 cd /hds; rm cron.log;  echo 'Cron Log Cleared\n'  >> cron.log 2>&1" > cron_bkp
 crontab cron_bkp
