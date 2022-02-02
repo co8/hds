@@ -18,7 +18,7 @@ RUN python3 -m venv $VIRTUAL_ENV
 RUN apt-get update; \
     apt-get install -y git cron;
 
-RUN git clone -b latest https://github.com/ryanho87/hds.git
+RUN git clone -b latest https://github.com/co8/hds.git
 
 WORKDIR /hds
 
