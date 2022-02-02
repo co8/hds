@@ -42,8 +42,11 @@ import math
 import requests
 import json
 import uuid
+import logging
 from datetime import datetime
 from discord_webhook import DiscordWebhook
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 ####
 # Notes:
@@ -437,6 +440,14 @@ def load_activity_data():
         )
         activity_request = requests.get(activity_endpoint, headers=headers)
         data = activity_request.json()
+        if data["data"]:
+            logging.debug("Got some data, will not continue with cursor.")
+        else:
+            if "cursor" in data:
+                logging.debug(f"Got cursor, fetching data again...")
+                activity_endpoint += "?cursor=" + data["cursor"]
+                activity_request = requests.get(activity_endpoint, headers=headers)
+                data = activity_request.json()
 
         ### DEV Only
         ###LOCAL load data.json
