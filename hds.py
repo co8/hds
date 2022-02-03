@@ -61,10 +61,8 @@ wellness_check_hours = 12  # Default 8 hours. send status msg if X hours have la
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 #
 #
-history_length = {
-   "max": 200, # Trim activity history when reaches this length
-   "min": 125,
-{
+history_length_max = 200 # Trim activity history when reaches this length
+history_length_min = 125 # when trim activity history, leave newest
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 api_sync_lag_multiple = 5  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
@@ -350,9 +348,9 @@ def update_activity_history():
     if bool(activity_history):
 
         # trim history. remove first 15 (oldest) elements if over 50 elements
-        if len(activity_history) > history_length['max']:
+        if len(activity_history) > history_length_max:
             print(f"\n{hs['time']} trimming activity_history", end="")
-            del activity_history[:125] #history_length['min']
+            del activity_history[:history_length_min]
 
         # save history details to config
         if "activity_history" not in config["last"]:
