@@ -62,9 +62,9 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 history_length = {
-        "max" : 200, # Trim activity history when reaches this length
-        "min" : 125,
-    {
+   "max": 200, # Trim activity history when reaches this length
+   "min": 125,
+{
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 api_sync_lag_multiple = 5  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
