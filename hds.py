@@ -62,7 +62,7 @@ report_interval_hours = 72  # HOURS scheduled miner report. time after last repo
 #
 #
 history_length = {
-        "max" : 500, # Trim activity history when reaches this length
+        "max" : 200, # Trim activity history when reaches this length
         "min" : 125,
     {
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
