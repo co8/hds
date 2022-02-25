@@ -136,8 +136,18 @@ nano config.json
 [Install Discord Webhook for Python via pip3](https://pypi.org/project/discord-webhook/)
 
 ```BASH
+cd /path/to/hds/
+(optional, activate your virtualenv)
+pip install -r requirements.txt
+```
+
+or
+
+```BASH
 pip3 install discord-webhook
 ```
+
+Option C: Docker Container (instructions to come)
 
 ---
 
@@ -291,8 +301,7 @@ https://github.com/co8/happy
 
 ### ACM - Antenna Cap Mount
 
-**for Rak, Oukeione and Outdoor Fiberglass Dipole Antennas**
-**Outdoor or Attic**
+**for Rak, Oukeione and Outdoor Fiberglass Dipole Antennas** **Outdoor or Attic**
 
 https://www.thingiverse.com/thing:4942377
 
