@@ -251,6 +251,20 @@ python3 hds.py report
 
 ---
 
+#### HDS for multiple hotspots
+
+A) Docker - Run multiple containers
+
+b) Duplicate the HDS folder for each hotspot and duplicate the crontabs for each instance
+
+**directories**<br> hds/<br> hds-b/<br> hds-c/
+
+**crontab file**<br> _/1 _ \* \* _ cd ~/hds; ...<br> _/1 \* \* \* _ cd ~/hds-b; ...<br> _/1 \* \* \* \* cd ~/hds-c; ...
+
+---
+
+---
+
 #### Log and Errors
 
 **cron.log** is generated at hds/cron.log
