@@ -150,6 +150,7 @@ pip3 install discord-webhook
 Option C: Docker Container
 
 ```BASH
+[Dockerfile](https://github.com/co8/hds/blob/latest/Dockerfile)
 (instructions to come)
 ```
 
