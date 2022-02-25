@@ -259,7 +259,13 @@ b) Duplicate the HDS folder for each hotspot and duplicate the crontabs for each
 
 **directories**<br> hds/<br> hds-b/<br> hds-c/
 
-**crontab file**<br> _/1 _ \* \* _ cd ~/hds; ...<br> _/1 \* \* \* _ cd ~/hds-b; ...<br> _/1 \* \* \* \* cd ~/hds-c; ...
+**crontab file**<br>
+
+```BASH
+ /1 * * * * cd ~/hds;
+ /1 * * * * cd ~/hds-b;
+ /1 * * * * cd ~/hds-c;
+```
 
 ---
 
