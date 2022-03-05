@@ -507,7 +507,7 @@ def poc_receipts_v1(activity):
 
     # challenge accepted
     if "challenger" in activity and activity["challenger"] == config["hotspot"]:
-        output_message.append(
+        output_message.insert(0, 
             f"🏁 ...Challenged Beaconer, {wit_text}  `{time}` [🔎]({txn_link})"
         )
 
@@ -529,7 +529,7 @@ def poc_receipts_v1(activity):
             msg += f", {valid_wit_count} Valid"
         msg += f"  `{time}` [🔎]({txn_link})"
 
-        output_message.append(msg)
+        output_message.insert(0, msg)
 
     # witnessed beacon plus valid or invalid and invalid reason
     elif bool(witnesses):
@@ -556,14 +556,14 @@ def poc_receipts_v1(activity):
             vw = "All" if vw == len(witnesses) else vw
             witness_info += f", {vw} Valid"
 
-        output_message.append(
+        output_message.insert(0, 
             f"{valid_text} Witness{witness_info}  `{time}` [🔎]({txn_link})"
         )
 
     # other
     else:
         ac_type = activity["type"]
-        output_message.append(
+        output_message.insert(0, 
             f"🏁 poc_receipts_v1 - {ac_type.upper()}  `{time}` [🔎]({txn_link})"
         )
 
@@ -597,20 +597,20 @@ def loop_activities():
                 for reward in activity["rewards"]:
                     rew = reward_short_name(reward["type"])
                     amt = nice_hnt_amount_or_seconds(reward["amount"])
-                    output_message.append(
+                    output_message.insert(0, 
                         f"🍪 Reward 🥓{amt}, {rew}  `{time}` [🔎]({txn_link})"
                     )
             # transferred data
             elif activity["type"] == "state_channel_close_v1":
                 for summary in activity["state_channel"]["summaries"]:
                     packet_plural = "s" if summary["num_packets"] != 1 else ""
-                    output_message.append(
+                    output_message.insert(0, 
                         f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}` [🔎]({txn_link})"
                     )
 
             # ...challenge accepted
             elif activity["type"] == "poc_request_v1":
-                output_message.append(
+                output_message.insert(0, 
                     f"🎲 Created Challenge...  `{time}` [🔎]({txn_link})"
                 )
 
@@ -621,7 +621,7 @@ def loop_activities():
             # other
             else:
                 other_type = activity["type"]
-                output_message.append(
+                output_message.insert(0, 
                     f"🚀 {other_type.upper()}  `{time}` [🔎]({txn_link})"
                 )
 
