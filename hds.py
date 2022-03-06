@@ -42,8 +42,11 @@ import math
 import requests
 import json
 import uuid
+import logging
 from datetime import datetime
 from discord_webhook import DiscordWebhook
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 ####
 # Notes:
@@ -58,6 +61,8 @@ wellness_check_hours = 12  # Default 8 hours. send status msg if X hours have la
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 #
 #
+history_length_max = 200 # Trim activity history when reaches this length
+history_length_min = 125 # when trim activity history, leave newest
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 api_sync_lag_multiple = 5  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
@@ -343,9 +348,9 @@ def update_activity_history():
     if bool(activity_history):
 
         # trim history. remove first 15 (oldest) elements if over 50 elements
-        if len(activity_history) > 50:
+        if len(activity_history) > history_length_max:
             print(f"\n{hs['time']} trimming activity_history", end="")
-            del activity_history[:15]
+            del activity_history[:history_length_min]
 
         # save history details to config
         if "activity_history" not in config["last"]:
@@ -437,6 +442,14 @@ def load_activity_data():
         )
         activity_request = requests.get(activity_endpoint, headers=headers)
         data = activity_request.json()
+        if data["data"]:
+            logging.debug("Got some data, will not continue with cursor.")
+        else:
+            if "cursor" in data:
+                logging.debug(f"Got cursor, fetching data again...")
+                activity_endpoint += "?cursor=" + data["cursor"]
+                activity_request = requests.get(activity_endpoint, headers=headers)
+                data = activity_request.json()
 
         ### DEV Only
         ###LOCAL load data.json
@@ -494,7 +507,7 @@ def poc_receipts_v1(activity):
     valid_text = "💩  Invalid"
     time = nice_date(activity["time"])
 
-    txn_link = helium_explorer_tx + activity["hash"]
+    txn_link = f'[🔎](<{helium_explorer_tx}{activity["hash"]}>)'
 
     witnesses = {}
     wit_count = 0
@@ -508,7 +521,7 @@ def poc_receipts_v1(activity):
     # challenge accepted
     if "challenger" in activity and activity["challenger"] == config["hotspot"]:
         output_message.insert(0, 
-            f"🏁 ...Challenged Beaconer, {wit_text}  `{time}` [🔎]({txn_link})"
+            f"🏁 ...Challenged Beaconer, {wit_text}  `{time}` {txn_link}"
         )
 
     # beacon sent
@@ -527,7 +540,7 @@ def poc_receipts_v1(activity):
             if valid_wit_count == len(witnesses):
                 valid_wit_count = "All"
             msg += f", {valid_wit_count} Valid"
-        msg += f"  `{time}` [🔎]({txn_link})"
+        msg += f"  `{time}` {txn_link}"
 
         output_message.insert(0, msg)
 
@@ -557,14 +570,14 @@ def poc_receipts_v1(activity):
             witness_info += f", {vw} Valid"
 
         output_message.insert(0, 
-            f"{valid_text} Witness{witness_info}  `{time}` [🔎]({txn_link})"
+            f"{valid_text} Witness{witness_info}  `{time}` {txn_link}"
         )
 
     # other
     else:
         ac_type = activity["type"]
         output_message.insert(0, 
-            f"🏁 poc_receipts_v1 - {ac_type.upper()}  `{time}` [🔎]({txn_link})"
+            f"🏁 poc_receipts_v1 - {ac_type.upper()}  `{time}` {txn_link}"
         )
 
 
@@ -590,7 +603,7 @@ def loop_activities():
             # activity time
             time = nice_date(activity["time"])
 
-            txn_link = helium_explorer_tx + activity["hash"]
+            txn_link = f'[🔎](<{helium_explorer_tx}{activity["hash"]}>)'
 
             # reward
             if activity["type"] == "rewards_v2":
@@ -598,20 +611,20 @@ def loop_activities():
                     rew = reward_short_name(reward["type"])
                     amt = nice_hnt_amount_or_seconds(reward["amount"])
                     output_message.insert(0, 
-                        f"🍪 Reward 🥓{amt}, {rew}  `{time}` [🔎]({txn_link})"
+                        f"🍪 Reward 🥓{amt}, {rew}  `{time}` {txn_link}"
                     )
             # transferred data
             elif activity["type"] == "state_channel_close_v1":
                 for summary in activity["state_channel"]["summaries"]:
                     packet_plural = "s" if summary["num_packets"] != 1 else ""
                     output_message.insert(0, 
-                        f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}` [🔎]({txn_link})"
+                        f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}` {txn_link}"
                     )
 
             # ...challenge accepted
             elif activity["type"] == "poc_request_v1":
                 output_message.insert(0, 
-                    f"🎲 Created Challenge...  `{time}` [🔎]({txn_link})"
+                    f"🎲 Created Challenge...  `{time}` {txn_link}"
                 )
 
             # beacon sent, valid witness, invalid witness
@@ -622,7 +635,7 @@ def loop_activities():
             else:
                 other_type = activity["type"]
                 output_message.insert(0, 
-                    f"🚀 {other_type.upper()}  `{time}` [🔎]({txn_link})"
+                    f"🚀 {other_type.upper()}  `{time}` {txn_link}"
                 )
 
 
