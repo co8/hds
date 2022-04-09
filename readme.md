@@ -150,8 +150,14 @@ pip3 install discord-webhook
 Option C: Docker Container - [Dockerfile](https://github.com/co8/hds/blob/latest/Dockerfile)
 
 ```BASH
-
-(instructions to come)
+docker run -td \
+    -e HOTSPOT="" \
+    -e DISCORD_WEBHOOK="" \
+    -e BOBCAT_LOCAL_ENDPOINT="" \
+    -e WELLNESS_CHECK_HOURS="8" \
+    -e VIRTUAL_ENV=/opt/venv \
+    -e PATH="$VIRTUAL_ENV/bin:$PATH" \
+    --name hds-cll simeononsecurity/hds
 ```
 
 ---
