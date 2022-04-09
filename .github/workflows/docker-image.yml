@@ -29,3 +29,4 @@ jobs:
           context: .
           push: true
           tags: simeononsecurity/hds:latest
+
