@@ -16,7 +16,7 @@ ENV HOTSPOT="" \
 RUN python3 -m venv $VIRTUAL_ENV
 
 RUN apt-get update; \
-    apt-get install -y -f -m --show-progress git cron;
+    apt-get install -y git cron;
 
 RUN git clone -b latest https://github.com/co8/hds.git
 
