@@ -622,7 +622,7 @@ def loop_activities():
                     )
 
             # ...challenge accepted
-            elif activity["type"] == "poc_request_v1":
+            elif activity["type"] == "poc_request_v1" or "poc_request_v2":
                 output_message.append(
                     f"🎲 Created Challenge...  `{time}` {txn_link}"
                 )
