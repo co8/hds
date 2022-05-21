@@ -46,7 +46,9 @@ import logging
 from datetime import datetime
 from discord_webhook import DiscordWebhook
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 ####
 # Notes:
@@ -61,8 +63,8 @@ wellness_check_hours = 12  # Default 8 hours. send status msg if X hours have la
 report_interval_hours = 72  # HOURS scheduled miner report. time after last report sent. slows miner, don't abuse
 #
 #
-history_length_max = 200 # Trim activity history when reaches this length
-history_length_min = 125 # when trim activity history, leave newest
+history_length_max = 200  # Trim activity history when reaches this length
+history_length_min = 125  # when trim activity history, leave newest
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 api_sync_lag_multiple = 5  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
 pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
@@ -89,7 +91,7 @@ reward_short_names = {
     "data_credits": "Data",
 }
 # Generate a UUID from a host ID, sequence number, and the current time
-headers = {'User-Agent': str(uuid.uuid1())}
+headers = {"User-Agent": str(uuid.uuid1())}
 
 #### functions
 def local_bobcat_miner_report():
@@ -622,10 +624,9 @@ def loop_activities():
                     )
 
             # ...challenge accepted
+            # initial poc_request_v2 support
             elif activity["type"] == "poc_request_v1" or "poc_request_v2":
-                output_message.append(
-                    f"🎲 Created Challenge...  `{time}` {txn_link}"
-                )
+                output_message.append(f"🎲 Created Challenge...  `{time}` {txn_link}")
 
             # beacon sent, valid witness, invalid witness
             elif activity["type"] == "poc_receipts_v1":
@@ -634,9 +635,7 @@ def loop_activities():
             # other
             else:
                 other_type = activity["type"]
-                output_message.append(
-                    f"🚀 {other_type.upper()}  `{time}` {txn_link}"
-                )
+                output_message.append(f"🚀 {other_type.upper()}  `{time}` {txn_link}")
 
 
 def load_hotspot_data_and_status():
@@ -739,7 +738,9 @@ def load_hotspot_data_and_status():
     ########################################################
 
     ###wallet data
-    wallet_request = requests.get(helium_api_endpoint + "accounts/" + hs["owner"], headers=headers)
+    wallet_request = requests.get(
+        helium_api_endpoint + "accounts/" + hs["owner"], headers=headers
+    )
     w = wallet_request.json()
 
     if "data" not in w:
