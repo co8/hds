@@ -797,7 +797,7 @@ def load_hotspot_data_and_status():
         + hs["initials"]
         + "** 🔥"
         + status_styled
-        + " 🥑Light"
+        + " ⛅️Light"
         # + " 🥑"
         # + api_sync_styled
         + " 🍕"
