@@ -10,6 +10,8 @@
 
 **Listed as a Helium Community Tool** [https://explorer.helium.com/tools](https://explorer.helium.com/tools)
 
+#### v0.5.6+ adds LIGHT HOTSPOT SUPPORT
+
 [Bobcat 300 Miner](https://www.bobcatminer.com/) owners can add their local address and receive miner reports via the [Bobcat Diagnoser](https://www.bobcatminer.com/post/bobcat-diagnoser-user-guide) including status, temperature and OTA firmware versions.
 
 #### Features
