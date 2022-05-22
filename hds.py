@@ -67,7 +67,9 @@ history_length_max = 200  # Trim activity history when reaches this length
 history_length_min = 125  # when trim activity history, leave newest
 sync_blocks_behind = 100  # Blocks Behind blockchain to be considered out of sync
 api_sync_lag_multiple = 5  # Multiply sync_blocks_behind * api_sync_lag_multiple to balance with Helium API "Sync Status"
-pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
+# pop_status_minutes = 7  # MINUTES remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
+# interval_pop_status_seconds = int(60 * pop_status_minutes)
+interval_pop_status_seconds = 390  # seconds - remove status msg when sending activity if activity is recent to last activity sent. keep discord tidy
 helium_api_endpoint = "https://api.helium.io/v1/"
 helium_explorer_tx = "https://explorer.helium.com/txns/"
 config_file = "config.json"
@@ -77,7 +79,6 @@ activity_history = []
 hs = {}
 wellness_check = history_repeats = wellness_check_seconds = 0
 report_interval_seconds = output_message_length = 0
-interval_pop_status_seconds = int(60 * pop_status_minutes)
 send = send_report = add_welcome = send_wellness_check = False
 invalid_reason_short_names = {
     "witness_too_close": "Too Close",
