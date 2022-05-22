@@ -793,7 +793,7 @@ def load_hotspot_data_and_status():
 
     # default status msg
     status_msg = (
-        "📡 **"
+        "📡**"
         + hs["initials"]
         + "** 🔥"
         + status_styled
