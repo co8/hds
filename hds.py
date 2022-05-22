@@ -505,7 +505,7 @@ def load_activity_data():
 
 
 ###activity type poc_receipts_v1
-def poc_receipts_v1(activity):
+def poc_receipts(activity):
     valid_text = "💩  Invalid"
     time = nice_date(activity["time"])
 
@@ -591,6 +591,7 @@ def loop_activities():
         # load history
         load_activity_history()
 
+        # loop activities
         for activity in activities:
 
             # skip if activity is in history
@@ -623,14 +624,16 @@ def loop_activities():
                         f"🚛 Transferred {summary['num_packets']} Packet{packet_plural} ({summary['num_dcs']} DC)  `{time}` {txn_link}"
                     )
 
+            ## Disabled for Light Hotspots. no longer needed
             # ...challenge accepted
             # initial poc_request_v2 support
-            elif activity["type"] == "poc_request_v1" or "poc_request_v2":
-                output_message.append(f"🎲 Created Challenge...  `{time}` {txn_link}")
+            # elif activity["type"] == "poc_request_v1":
+            #     output_message.append(f"🎲 Created Challenge...  `{time}` {txn_link}")
 
             # beacon sent, valid witness, invalid witness
-            elif activity["type"] == "poc_receipts_v1":
-                poc_receipts_v1(activity)
+            # elif activity["type"] == "poc_receipts_v1":
+            elif activity["type"] == "poc_receipts_v1" or "poc_receipts_v2":
+                poc_receipts(activity)
 
             # other
             else:
@@ -878,6 +881,10 @@ def main():
     get_time()
     load_config()
     load_activity_data()
+
+    ### Dev only
+    # print(activities)
+    # exit()
 
     # if activity data...
     load_hotspot_data_and_status()
