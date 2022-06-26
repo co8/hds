@@ -44,6 +44,7 @@ import json
 import uuid
 import logging
 from datetime import datetime
+from decimal import Decimal
 from discord_webhook import DiscordWebhook
 
 logging.basicConfig(
@@ -95,6 +96,16 @@ reward_short_names = {
 headers = {"User-Agent": str(uuid.uuid1())}
 
 #### functions
+def get_current_hnt_price(currency):
+    url = "https://api.coingecko.com/api/v3/coins/helium"
+    try:
+        response = requests.get(url)
+        current_price = response.json()["market_data"]["current_price"][currency.lower()]
+    except requests.RequestException:
+        return None
+    return Decimal(current_price)
+
+
 def local_bobcat_miner_report():
     # only run if bobcat_local_endpoint is set
     if "bobcat_local_endpoint" in config and bool(config["bobcat_local_endpoint"]):
@@ -779,6 +790,12 @@ def load_hotspot_data_and_status():
     #### STYLED status text
     ### bold balance if has changed
     balance_styled = "**" + hs["balance"] + "**" if bool(new_balance) else hs["balance"]
+    other_ccy = "USD"
+    hnt_value_in_other_ccy = get_current_hnt_price(other_ccy)
+    if hnt_value_in_other_ccy:
+        logging.info(f"Current HNT value in {other_ccy}: {hnt_value_in_other_ccy:.2f}")
+        balance_in_other_ccy = Decimal(hs["balance"]) * hnt_value_in_other_ccy
+        balance_styled += f" ({other_ccy} {balance_in_other_ccy:.2f}, HNT price in {other_ccy}: {hnt_value_in_other_ccy:.2f})"
     ### bold reward_scale if has changed
     reward_scale_styled = (
         "**" + hs["reward_scale"] + "**"
