@@ -6,5 +6,8 @@
     "peerbook",
     "Rity",
     "simplejson"
+  ],
+  "githubPullRequests.ignoredPullRequestBranches": [
+    "latest"
   ]
 }
