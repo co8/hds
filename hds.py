@@ -633,7 +633,7 @@ def loop_activities():
 
             # beacon sent, valid witness, invalid witness
             # elif activity["type"] == "poc_receipts_v1":
-            elif activity["type"] == "poc_receipts_v1" or "poc_receipts_v2":
+            elif activity["type"] == "poc_receipts_v1" or activity["type"] == "poc_receipts_v2":
                 poc_receipts(activity)
 
             # other
